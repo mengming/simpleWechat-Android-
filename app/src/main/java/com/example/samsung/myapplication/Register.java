@@ -12,6 +12,7 @@ import android.widget.Toast;
 public class Register extends Activity {
 
     private String r_identification,r_password,r_password_sure;
+    private EditText r_et_password,r_et_password_sure;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,17 +21,19 @@ public class Register extends Activity {
 
         EditText r_et_identification = (EditText) findViewById(R.id.r_et_identification);
         r_identification = r_et_identification.getText().toString();
-        EditText r_et_password = (EditText) findViewById(R.id.r_et_password);
+
+        r_et_password = (EditText) findViewById(R.id.r_et_password);
         r_et_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
-        r_password = r_et_password.getText().toString();
-        EditText r_et_password_sure = (EditText) findViewById(R.id.r_et_password_sure);
+
+        r_et_password_sure = (EditText) findViewById(R.id.r_et_password_sure);
         r_et_password_sure.setTransformationMethod(PasswordTransformationMethod.getInstance());
-        r_password_sure = r_et_password_sure.getText().toString();
 
         Button b_sure = (Button) findViewById(R.id.b_sure);
         b_sure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                r_password = r_et_password.getText().toString();
+                r_password_sure = r_et_password_sure.getText().toString();
                 if (!r_password.equals(r_password_sure))
                     Toast.makeText(getApplicationContext(), "密码输入不一致", Toast.LENGTH_LONG).show();
                 else {

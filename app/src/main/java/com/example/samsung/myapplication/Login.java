@@ -14,14 +14,15 @@ import android.widget.EditText;
 public class Login extends ActionBarActivity {
 
     private String identification,password;
+    private EditText et_identification,et_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        EditText et_identification = (EditText) findViewById(R.id.et_identification);
-        EditText et_password = (EditText) findViewById(R.id.et_password);
+        et_identification = (EditText) findViewById(R.id.et_identification);
+        et_password = (EditText) findViewById(R.id.et_password);
         et_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
         identification = et_identification.getText().toString();
         password = et_password.getText().toString();
@@ -38,7 +39,7 @@ public class Login extends ActionBarActivity {
         b_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(MainActivity.this, FriendList.class));
+                startActivity(new Intent(Login.this, FriendList.class));
             }
         });
     }
