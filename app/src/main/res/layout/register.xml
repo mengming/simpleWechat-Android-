@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/return_aty"
+        android:textSize="26dp"
+        android:id="@+id/b_return"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/identification"
+        android:textSize="36dp"
+        android:id="@+id/r_t_identification"
+        android:layout_below="@+id/b_return"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/password"
+        android:textSize="36dp"
+        android:id="@+id/r_password"
+        android:layout_below="@+id/r_t_identification"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/password_sure"
+        android:textSize="36dp"
+        android:id="@+id/r_password_sure"
+        android:layout_below="@+id/r_password"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/r_et_identification"
+        android:layout_above="@+id/r_password"
+        android:layout_toRightOf="@+id/r_t_identification"
+        android:layout_toEndOf="@+id/r_t_identification" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/r_et_password"
+        android:layout_below="@+id/r_t_identification"
+        android:layout_toRightOf="@+id/r_t_identification"
+        android:layout_toEndOf="@+id/r_t_identification" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/r_et_password_sure"
+        android:layout_alignTop="@+id/r_password_sure"
+        android:layout_toRightOf="@+id/r_password_sure"
+        android:layout_toEndOf="@+id/r_password_sure" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sure"
+        android:textSize="26dp"
+        android:id="@+id/b_sure"
+        android:layout_below="@+id/r_password_sure"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
