@@ -3,13 +3,14 @@ package com.example.samsung.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class Register extends Activity {
+public class Register extends ActionBarActivity {
 
     private String r_identification,r_password,r_password_sure;
     private EditText r_et_password,r_et_password_sure;

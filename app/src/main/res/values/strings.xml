@@ -8,5 +8,6 @@
     <string name="sure">确认</string>
     <string name="return_aty">返回</string>
     <string name="register">未有账号，注册</string>
+    <string name="send">发送</string>
     <string name="action_settings">Settings</string>
 </resources>
