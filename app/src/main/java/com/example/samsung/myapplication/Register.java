@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 public class Register extends ActionBarActivity {
 
-    private String r_identification,r_password,r_password_sure;
+    private String r_account,r_password,r_password_sure;
     private EditText r_et_password,r_et_password_sure;
 
     @Override
@@ -20,8 +20,8 @@ public class Register extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
 
-        EditText r_et_identification = (EditText) findViewById(R.id.r_et_identification);
-        r_identification = r_et_identification.getText().toString();
+        EditText r_et_account = (EditText) findViewById(R.id.r_et_account);
+        r_account = r_et_account.getText().toString();
 
         r_et_password = (EditText) findViewById(R.id.r_et_password);
         r_et_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
@@ -38,6 +38,7 @@ public class Register extends ActionBarActivity {
                 if (!r_password.equals(r_password_sure))
                     Toast.makeText(getApplicationContext(), "密码输入不一致", Toast.LENGTH_LONG).show();
                 else {
+                    //send account and password to server
                     Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(Register.this,Login.class));
                 }

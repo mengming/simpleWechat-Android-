@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/identification"
-        android:id="@+id/t_identification"
+        android:id="@+id/t_account"
         android:textSize="36dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -24,25 +24,25 @@
         android:text="@string/password"
         android:id="@+id/t_password"
         android:textSize="36dp"
-        android:layout_below="@+id/t_identification"
+        android:layout_below="@+id/t_account"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/et_identification"
+        android:id="@+id/et_account"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/t_identification"
-        android:layout_toEndOf="@+id/t_identification" />
+        android:layout_toRightOf="@+id/t_account"
+        android:layout_toEndOf="@+id/t_account" />
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_password"
-        android:layout_below="@+id/et_identification"
-        android:layout_alignLeft="@+id/et_identification"
-        android:layout_alignStart="@+id/et_identification" />
+        android:layout_below="@+id/et_account"
+        android:layout_alignLeft="@+id/et_account"
+        android:layout_alignStart="@+id/et_account" />
 
     <Button
         android:layout_width="wrap_content"

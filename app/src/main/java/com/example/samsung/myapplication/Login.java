@@ -9,24 +9,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class Login extends ActionBarActivity {
 
-    private String identification,password;
-    private EditText et_identification,et_password;
+    private String account,password;
+    private EditText et_account,et_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        et_identification = (EditText) findViewById(R.id.et_identification);
+        //get account and password
+        et_account = (EditText) findViewById(R.id.et_account);
         et_password = (EditText) findViewById(R.id.et_password);
         et_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
-        identification = et_identification.getText().toString();
-        password = et_password.getText().toString();
 
+        //enter the register interface
         Button b_register = (Button) findViewById(R.id.b_register);
         b_register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,11 +36,17 @@ public class Login extends ActionBarActivity {
             }
         });
 
+        //enter the friendlist interface
         Button b_login = (Button) findViewById(R.id.b_login);
         b_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Login.this, FriendList.class));
+                account = et_account.getText().toString();
+                password = et_password.getText().toString();
+                //determine whether your accout and password are correct
+                if (account.equals("admin") && password.equals("123"))
+                    startActivity(new Intent(Login.this, FriendList.class));
+                else Toast.makeText(getApplicationContext(),"账号密码不正确",Toast.LENGTH_LONG).show();
             }
         });
     }
