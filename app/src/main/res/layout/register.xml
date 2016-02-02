@@ -75,7 +75,92 @@
         android:text="@string/sure"
         android:textSize="26dp"
         android:id="@+id/b_sure"
-        android:layout_below="@+id/r_password_sure"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/name"
+        android:textSize="36dp"
+        android:id="@+id/r_t_name"
+        android:layout_below="@+id/r_et_password_sure"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/r_et_name"
+        android:layout_below="@+id/r_et_password_sure"
+        android:layout_toRightOf="@+id/r_t_name"
+        android:layout_toEndOf="@+id/r_t_name" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/signature"
+        android:textSize="36sp"
+        android:id="@+id/r_t_signature"
+        android:layout_below="@+id/r_et_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/r_et_signature"
+        android:layout_below="@+id/r_et_name"
+        android:layout_toRightOf="@+id/r_t_signature"
+        android:layout_toEndOf="@+id/r_t_signature" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/age"
+        android:textSize="36sp"
+        android:id="@+id/r_t_age"
+        android:layout_below="@+id/r_t_signature"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/r_et_age"
+        android:layout_below="@+id/r_t_signature"
+        android:layout_toRightOf="@+id/r_t_age"
+        android:layout_toEndOf="@+id/r_t_age" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/sex"
+        android:textSize="36sp"
+        android:id="@+id/sex"
+        android:layout_below="@+id/r_et_age"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/r_et_age"
+        android:layout_toRightOf="@+id/sex">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/male"
+            android:text="@string/male"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/female"
+            android:text="@string/female"/>
+    </RadioGroup>
 
 </RelativeLayout>

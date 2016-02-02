@@ -1,6 +1,5 @@
 package com.example.samsung.myapplication;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -52,5 +51,6 @@ public class Register extends ActionBarActivity {
                 startActivity(new Intent(Register.this,Login.class));
             }
         });
+
     }
 }
