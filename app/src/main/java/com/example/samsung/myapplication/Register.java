@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 public class Register extends ActionBarActivity {
 
-    private String r_account,r_password,r_password_sure;
-    private EditText r_et_password,r_et_password_sure;
+    private String rAccount,rPassword,rPasswordSure;
+    private EditText rEtPassword,rEtPasswordSure;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,21 +20,21 @@ public class Register extends ActionBarActivity {
         setContentView(R.layout.register);
 
         EditText r_et_account = (EditText) findViewById(R.id.r_et_account);
-        r_account = r_et_account.getText().toString();
+        rAccount = r_et_account.getText().toString();
 
-        r_et_password = (EditText) findViewById(R.id.r_et_password);
-        r_et_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        rEtPassword = (EditText) findViewById(R.id.r_et_password);
+        rEtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
-        r_et_password_sure = (EditText) findViewById(R.id.r_et_password_sure);
-        r_et_password_sure.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        rEtPasswordSure = (EditText) findViewById(R.id.r_et_password_sure);
+        rEtPasswordSure.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
-        Button b_sure = (Button) findViewById(R.id.b_sure);
-        b_sure.setOnClickListener(new View.OnClickListener() {
+        Button btnSure = (Button) findViewById(R.id.b_sure);
+        btnSure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                r_password = r_et_password.getText().toString();
-                r_password_sure = r_et_password_sure.getText().toString();
-                if (!r_password.equals(r_password_sure))
+                rPassword = rEtPassword.getText().toString();
+                rPasswordSure = rEtPasswordSure.getText().toString();
+                if (!rPassword.equals(rPasswordSure))
                     Toast.makeText(getApplicationContext(), "密码输入不一致", Toast.LENGTH_LONG).show();
                 else {
                     //send account and password to server
@@ -44,8 +44,8 @@ public class Register extends ActionBarActivity {
             }
         });
 
-        Button b_return = (Button) findViewById(R.id.b_return);
-        b_return.setOnClickListener(new View.OnClickListener() {
+        Button btnReturn = (Button) findViewById(R.id.b_return);
+        btnReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Register.this,Login.class));

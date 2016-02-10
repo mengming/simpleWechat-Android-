@@ -11,11 +11,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
+
 
 public class Login extends ActionBarActivity {
 
     private String account,password;
-    private EditText et_account,et_password;
+    private EditText etAccount,etPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,13 +31,13 @@ public class Login extends ActionBarActivity {
         setContentView(R.layout.login);
 
         //get account and password
-        et_account = (EditText) findViewById(R.id.et_account);
-        et_password = (EditText) findViewById(R.id.et_password);
-        et_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        etAccount = (EditText) findViewById(R.id.et_account);
+        etPassword = (EditText) findViewById(R.id.et_password);
+        etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
         //enter the register interface
-        Button b_register = (Button) findViewById(R.id.b_register);
-        b_register.setOnClickListener(new View.OnClickListener() {
+        Button btnRegister = (Button) findViewById(R.id.b_register);
+        btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Login.this, Register.class));
@@ -37,16 +45,32 @@ public class Login extends ActionBarActivity {
         });
 
         //enter the friendlist interface
-        Button b_login = (Button) findViewById(R.id.b_login);
-        b_login.setOnClickListener(new View.OnClickListener() {
+        Button btnLogin = (Button) findViewById(R.id.b_login);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                account = et_account.getText().toString();
-                password = et_password.getText().toString();
-                //determine whether your accout and password are correct
-                if (account.equals("admin") && password.equals("123"))
-                    startActivity(new Intent(Login.this, FriendList.class));
-                else Toast.makeText(getApplicationContext(),"账号密码不正确",Toast.LENGTH_LONG).show();
+                account = etAccount.getText().toString();
+                password = etPassword.getText().toString();
+                AsyncHttpClient client = new AsyncHttpClient();
+                client.get("http://8.sundoge.applinzi.com/index.php?table=users&method=get&data={%22Identification%22:%22"
+                        +account+"%22}",new JsonHttpResponseHandler(){
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        String rightPassword = new String();
+                        try {
+                            rightPassword = response.getString("Password");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (rightPassword.equals(password)) startActivity(new Intent(Login.this, FriendList.class));
+                        else Toast.makeText(getApplicationContext(),"密码不正确",Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        Toast.makeText(getApplicationContext(),"账号不存在",Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
     }

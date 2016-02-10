@@ -3,15 +3,20 @@ package com.example.samsung.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+
+import com.example.samsung.Adapter.ChatViewAdapter;
+
+import org.json.JSONObject;
 
 public class ChatView extends Activity {
 
-    private Button b_back,b_send;
+    private Button btnBack,btnSend;
     private String message;
+    private JSONObject messageJSONObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,23 +24,29 @@ public class ChatView extends Activity {
         setContentView(R.layout.chat_view);
 
         //back to friendlist button
-        b_back = (Button) findViewById(R.id.btn_back);
-        b_back.setOnClickListener(new View.OnClickListener() {
+        btnBack = (Button) findViewById(R.id.btn_back);
+        btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ChatView.this,FriendList.class));
+                startActivity(new Intent(ChatView.this, FriendList.class));
             }
         });
 
-        EditText et_message = (EditText) findViewById(R.id.et_sendmessage);
-        message = et_message.getText().toString();
+        EditText etMessage = (EditText) findViewById(R.id.et_sendmessage);
+        message = etMessage.getText().toString();
 
-        b_send = (Button) findViewById(R.id.btn_send);
-        b_send.setOnClickListener(new View.OnClickListener() {
+        btnSend = (Button) findViewById(R.id.btn_send);
+        btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //send message to server
             }
         });
+
+        ListView chat_list = (ListView) findViewById(R.id.chat_list);
+        ChatViewAdapter chat_list_adapter = new ChatViewAdapter();
+        chat_list.setAdapter(chat_list_adapter);
+
     }
+
 }
