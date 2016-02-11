@@ -22,7 +22,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class Login extends ActionBarActivity {
 
-    private String account,password;
+    private String account,password,rightPassword,name;
     private EditText etAccount,etPassword;
 
     @Override
@@ -56,19 +56,25 @@ public class Login extends ActionBarActivity {
                         +account+"%22}",new JsonHttpResponseHandler(){
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        String rightPassword = new String();
                         try {
                             rightPassword = response.getString("Password");
+                            name = response.getString("Name");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        if (rightPassword.equals(password)) startActivity(new Intent(Login.this, FriendList.class));
-                        else Toast.makeText(getApplicationContext(),"密码不正确",Toast.LENGTH_LONG).show();
+                        if (rightPassword.equals(password)) {
+                            Intent FriendList = new Intent();
+                            FriendList.setClass(Login.this,FriendList.class);
+                            FriendList.putExtra("account", account);
+                            FriendList.putExtra("name",name);
+                            startActivity(FriendList);
+                        }
+                        else Toast.makeText(getApplicationContext(),"密码不正确",Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        Toast.makeText(getApplicationContext(),"账号不存在",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"账号不存在",Toast.LENGTH_SHORT).show();
                     }
                 });
             }
