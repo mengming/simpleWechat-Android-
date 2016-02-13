@@ -17,4 +17,6 @@
     <string name="male">男</string>
     <string name="female">女</string>
     <string name="action_settings">Settings</string>
+    <string name="action_addfriend">添加朋友</string>
+    <string name="request_message">发送您的验证信息</string>
 </resources>

@@ -73,7 +73,7 @@ public class Register extends ActionBarActivity {
 
     private void saveInformationToServer(){
         String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
-        String saveUrlString = baseUrl + "table=users&method=save&data="+accoutInformation();
+        String saveUrlString = baseUrl + "table=users&method=save&data="+accountInformation();
         AsyncHttpClient saveHttpClient = new AsyncHttpClient();
         saveHttpClient.get(saveUrlString, new AsyncHttpResponseHandler() {
             @Override
@@ -97,7 +97,7 @@ public class Register extends ActionBarActivity {
         rPasswordSure = rEtPasswordSure.getText().toString();
     }
 
-    private String accoutInformation(){
+    private String accountInformation(){
         String result = new String();
         result = "{%22Identification%22:%22"+rAccount+"%22,%22Password%22:%22"+rPassword
             +"%22,%22Name%22:%22"+rName+"%22,%22Signature%22:%22"+rSignature+

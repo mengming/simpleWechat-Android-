@@ -56,6 +56,7 @@ public class Login extends ActionBarActivity {
                         +account+"%22}",new JsonHttpResponseHandler(){
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
                         try {
                             rightPassword = response.getString("Password");
                             name = response.getString("Name");
