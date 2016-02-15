@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,11 +56,14 @@ public class Login extends ActionBarActivity {
                 client.get("http://8.sundoge.applinzi.com/index.php?table=users&method=get&data={%22Identification%22:%22"
                         +account+"%22}",new JsonHttpResponseHandler(){
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                         super.onSuccess(statusCode, headers, response);
                         try {
-                            rightPassword = response.getString("Password");
-                            name = response.getString("Name");
+                            int length = response.length();
+                            for (int i=0;i<length;i++) {
+                            rightPassword = response.getJSONObject(i).getString("Password");
+                            name = response.getJSONObject(i).getString("Name");
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
