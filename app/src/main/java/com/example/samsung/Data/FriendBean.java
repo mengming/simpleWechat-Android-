@@ -1,44 +1,68 @@
 package com.example.samsung.Data;
 
-/**
- * Created by SAMSUNG on 2016/2/15.
- */
 public class FriendBean {
 
-    private int ID;
-    private String name;
-    private String message;
-    private String time;
+    private int ID,Sign;
+    private String Friendrequest,Friendresponse;
+    private String Message;
+    private String Time;
 
     public int getID(){
         return ID;
     }
 
-    public void setID(){
+    public void setID(int ID){
         this.ID = ID;
     }
 
-    public String getName(){
-        return name;
+    public String getFriendrequest(){
+        return Friendrequest;
     }
 
-    public void setName(){
-        this.name = name;
+    public void setFriendrequest(String Friendrequest){
+        this.Friendrequest = Friendrequest;
     }
 
     public String getMessage(){
-        return message;
+        return Message;
     }
 
-    public void setMessage(){
-        this.message = message;
+    public void setMessage(String message){
+        this.Message = message;
     }
 
     public String getTime(){
-        return time;
+        return Time;
     }
 
-    public void setTime(){
-        this.time = time;
+    public void setTime(String Time){
+        this.Time = Time;
+    }
+
+    public String getFriendresponse(){
+        return Friendresponse;
+    }
+
+    public void setFriendresponse(String Friendresponse){
+        this.Friendresponse = Friendresponse;
+    }
+
+    public int getSign(){
+        return Sign;
+    }
+
+    public void setSign(int Sign){
+        this.Sign = Sign;
+    }
+
+    @Override
+    public String toString() {
+        return "FriendBean{" + ID + '\''+
+                Friendrequest + '\'' +
+                Friendresponse + '\'' +
+                Sign + '\'' +
+                Message + '\'' +
+                Time + '\'' +
+                '}';
     }
 }

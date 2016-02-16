@@ -11,15 +11,17 @@ import android.widget.TextView;
 import com.example.samsung.Data.FriendBean;
 import com.example.samsung.myapplication.R;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class FriendListAdapter extends BaseAdapter {
-    public LinkedList<FriendBean> friendBeans;
+    public ArrayList<FriendBean> friendBeans;
     private LayoutInflater mInflater;
     private Context context;
-    public FriendListAdapter(Context context,LinkedList<FriendBean> friendBeans)
+
+    public FriendListAdapter(Context context,ArrayList<FriendBean> friendBeans)
     {
-        this.mInflater = LayoutInflater.from(context);
+        mInflater = LayoutInflater.from(context);
         this.friendBeans = friendBeans;
         this.context = context;
     }
@@ -47,7 +49,7 @@ public class FriendListAdapter extends BaseAdapter {
         {
             holder = new ViewHolder();
             //根据自定义的Item布局加载布局
-            convertView = mInflater.inflate(R.layout.friend, null);
+            convertView = mInflater.inflate(R.layout.friend, parent,false);
             holder.nameText = (TextView) convertView.findViewById(R.id.name);
             holder.messageText = (TextView)convertView.findViewById(R.id.message);
             holder.timeText = (TextView)convertView.findViewById(R.id.time);
@@ -57,9 +59,16 @@ public class FriendListAdapter extends BaseAdapter {
         {
             holder = (ViewHolder)convertView.getTag();
         }
-        holder.nameText.setText(friendBean.getName());
-        holder.messageText.setText(friendBean.getMessage());
-        holder.timeText.setText(friendBean.getTime());
+        if (friendBean.getSign()==0) {
+            holder.nameText.setText(friendBean.getFriendrequest());
+            holder.messageText.setText(friendBean.getMessage());
+            holder.timeText.setText(friendBean.getTime());
+        }
+        else {
+            holder.nameText.setText(friendBean.getFriendresponse());
+            holder.messageText.setText(friendBean.getMessage());
+            holder.timeText.setText(friendBean.getTime());
+        }
         return convertView;
     }
 
@@ -69,8 +78,4 @@ public class FriendListAdapter extends BaseAdapter {
         public TextView timeText;
     }
 
-    public void appendFriendBean(FriendBean friendBean){
-        FriendBean bean = friendBean;
-        friendBeans.addLast(bean);
-    }
 }

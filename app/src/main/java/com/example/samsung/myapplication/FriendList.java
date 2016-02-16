@@ -1,12 +1,11 @@
 package com.example.samsung.myapplication;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,24 +26,9 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.params.HttpClientParams;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,7 +41,7 @@ public class FriendList extends ActionBarActivity {
     private TextView textView;
     private String name,account,friendAccount,message,baseUrl,saveUrlString,getUrlString,
             agreeUrlString,friend,askMessage;
-    private LinkedList<FriendBean> friendBeans;
+    private ArrayList<FriendBean> friendBeans;
     private FriendListAdapter friendListAdapter;
 
     @Override
@@ -65,8 +49,7 @@ public class FriendList extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.friendlist);
 
-        friendListAdapter = new FriendListAdapter(this,friendBeans);
-        textView = (TextView) findViewById(R.id.textView);
+        friendBeans = new ArrayList<>();
 
         Intent intent = getIntent();
         name = intent.getStringExtra("name");
@@ -77,73 +60,51 @@ public class FriendList extends ActionBarActivity {
         getFriendListClient.get(getUrlString, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                System.out.println(response.toString());
                 try {
-                    for (int i=0;i<response.length();i++) {
-                        LinkedList<FriendBean> friendBeans = new LinkedList<FriendBean>();
+                    for (int i = 0; i < response.length(); i++) {
                         JSONObject friendJsonObject = response.getJSONObject(i);
                         Gson gson = new Gson();
-                        FriendBean friendBean = gson.fromJson(friendJsonObject.toString(),FriendBean.class);
+                        FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
                         friendBeans.add(friendBean);
-//                        if (friendJsonObject.getInt("Sign")==0) {
-//                            getUnsignedFriend(friendJsonObject);
-//                        }
-//                        else getSignedFriend();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                friendListAdapter = new FriendListAdapter(FriendList.this,friendBeans);
+                initFriendListView();
             }
         });
 
-        Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void initFriendListView(){
+//        //create friendlist
+        listView = (PullToRefreshListView) findViewById(R.id.pull_to_refresh_listview);
+        listView.getRefreshableView().setDivider(null);
+        listView.setMode(PullToRefreshBase.Mode.BOTH);
+        listView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
+        listView.setAdapter(friendListAdapter);
+
+        //friendlist select
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                AsyncHttpClient agreeFriendClient = new AsyncHttpClient();
-                System.out.println(agreeUrlString);
-                agreeFriendClient.get(agreeUrlString, new AsyncHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                        Toast.makeText(getApplicationContext(), "成功添加对方为好友", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                        Toast.makeText(getApplicationContext(), "对方账号不存在", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (friendBeans.get(position - 1).getSign() == 0) addFriendResponseDialog(position-1);
             }
         });
 
-        //create friendlist
-//        listView = (PullToRefreshListView) findViewById(R.id.pull_to_refresh_listview);
-//        listView.getRefreshableView().setDivider(null);
-//        listView.setMode(PullToRefreshBase.Mode.BOTH);
-//        listView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
-//        listView.setAdapter(friendListAdapter);
-//
-//        //friendlist select
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                startActivity(new Intent(FriendList.this, ChatView.class));
-//            }
-//        });
-//
-//        //friendlist pull down to refresh
-//        listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
-//            @Override
-//            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-//
-//            }
-//
-//            @Override
-//            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-//
-//            }
-//        });
+        //friendlist pull down to refresh
+        listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+                initFriendListView();
+            }
 
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+
+            }
+        });
     }
 
     @Override
@@ -227,19 +188,42 @@ public class FriendList extends ActionBarActivity {
         return result;
     }
 
-    private void getUnsignedFriend(JSONObject jsonObject){
-        try {
-            friend = jsonObject.getString("Friendrequest");
-            agreeUrlString = baseUrl + "table=friendList&method=update&data=" + friendResponse();
-            askMessage = jsonObject.getString("Message");
-            textView.setText(friend + "\n");
-            textView.append(askMessage);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private void agreeUnsignedFriend(FriendBean friendBean){
+        friend = friendBean.getFriendrequest();
+        agreeUrlString = baseUrl + "table=friendList&method=update&data=" + friendResponse();
+        askMessage = friendBean.getMessage();
+        AsyncHttpClient agreeHttpClient = new AsyncHttpClient();
+        agreeHttpClient.get(agreeUrlString, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Toast.makeText(getApplicationContext(),"添加好友成功",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+            }
+        });
     }
 
-    private void getSignFriend(JSONObject jsonObject){
-
+    private void addFriendResponseDialog(int index){
+        final int position = index;
+        LayoutInflater dialogInflater = LayoutInflater.from(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(FriendList.this);
+        builder.setPositiveButton("同意", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                agreeUnsignedFriend(friendBeans.get(position));
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("不同意", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
+
 }
