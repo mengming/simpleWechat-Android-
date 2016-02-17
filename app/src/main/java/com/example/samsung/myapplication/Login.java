@@ -25,65 +25,17 @@ public class Login extends ActionBarActivity {
 
     private String account,password,rightPassword,name;
     private EditText etAccount,etPassword;
+    private Button btnLogin,btnRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        //get account and password
-        etAccount = (EditText) findViewById(R.id.et_account);
-        etPassword = (EditText) findViewById(R.id.et_password);
-        etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-
-        //enter the register interface
-        Button btnRegister = (Button) findViewById(R.id.b_register);
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Login.this, Register.class));
-            }
-        });
-
-        //enter the friendlist interface
-        Button btnLogin = (Button) findViewById(R.id.b_login);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                account = etAccount.getText().toString();
-                password = etPassword.getText().toString();
-                AsyncHttpClient client = new AsyncHttpClient();
-                client.get("http://8.sundoge.applinzi.com/index.php?table=users&method=get&data={%22Identification%22:%22"
-                        +account+"%22}",new JsonHttpResponseHandler(){
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                        super.onSuccess(statusCode, headers, response);
-                        try {
-                            int length = response.length();
-                            for (int i=0;i<length;i++) {
-                            rightPassword = response.getJSONObject(i).getString("Password");
-                            name = response.getJSONObject(i).getString("Name");
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        if (rightPassword.equals(password)) {
-                            Intent FriendList = new Intent();
-                            FriendList.setClass(Login.this,FriendList.class);
-                            FriendList.putExtra("account", account);
-                            FriendList.putExtra("name",name);
-                            startActivity(FriendList);
-                        }
-                        else Toast.makeText(getApplicationContext(),"密码不正确",Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        Toast.makeText(getApplicationContext(),"账号不存在",Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
+        setEtAccount();
+        setEtPassword();
+        setBtnLogin();
+        setBtnRegister();
     }
 
     @Override
@@ -106,5 +58,65 @@ public class Login extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setEtAccount(){
+        etAccount = (EditText) findViewById(R.id.et_account);
+    }
+
+    private void setEtPassword(){
+        etPassword = (EditText) findViewById(R.id.et_password);
+        etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+    }
+
+    private void setBtnRegister(){
+        btnRegister = (Button) findViewById(R.id.b_register);
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Login.this, Register.class));
+            }
+        });
+    }
+
+    private void setBtnLogin(){
+        btnLogin = (Button) findViewById(R.id.b_login);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                account = etAccount.getText().toString();
+                password = etPassword.getText().toString();
+                AsyncHttpClient client = new AsyncHttpClient();
+                client.get("http://8.sundoge.applinzi.com/index.php?table=users&method=get&data={%22identification%22:%22"
+                        +account+"%22}",new JsonHttpResponseHandler(){
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        super.onSuccess(statusCode, headers, response);
+                        try {
+                            int length = response.length();
+                            for (int i=0;i<length;i++) {
+                                rightPassword = response.getJSONObject(i).getString("Password");
+                                name = response.getJSONObject(i).getString("Name");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (rightPassword.equals(password)) {
+                            Intent friendListIntent = new Intent();
+                            friendListIntent.setClass(Login.this,FriendList.class);
+                            friendListIntent.putExtra("account", account);
+                            friendListIntent.putExtra("name",name);
+                            startActivity(friendListIntent);
+                        }
+                        else Toast.makeText(getApplicationContext(),"密码不正确",Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        Toast.makeText(getApplicationContext(),"账号不存在",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
     }
 }

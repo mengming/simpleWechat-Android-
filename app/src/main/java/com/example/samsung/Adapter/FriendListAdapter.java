@@ -1,6 +1,7 @@
 package com.example.samsung.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.samsung.Data.FriendBean;
+import com.example.samsung.myapplication.FriendList;
 import com.example.samsung.myapplication.R;
 
 import java.util.ArrayList;
@@ -18,12 +20,14 @@ public class FriendListAdapter extends BaseAdapter {
     public ArrayList<FriendBean> friendBeans;
     private LayoutInflater mInflater;
     private Context context;
+    private String account,name;
 
-    public FriendListAdapter(Context context,ArrayList<FriendBean> friendBeans)
+    public FriendListAdapter(Context context,ArrayList<FriendBean> friendBeans,String account)
     {
         mInflater = LayoutInflater.from(context);
         this.friendBeans = friendBeans;
         this.context = context;
+        this.account = account;
     }
     @Override
     public int getCount() {
@@ -60,12 +64,23 @@ public class FriendListAdapter extends BaseAdapter {
             holder = (ViewHolder)convertView.getTag();
         }
         if (friendBean.getSign()==0) {
-            holder.nameText.setText(friendBean.getFriendrequest());
-            holder.messageText.setText(friendBean.getMessage());
-            holder.timeText.setText(friendBean.getTime());
+            if (friendBean.getFriendresponse().equals(account)) {
+                name = friendBean.getFriendrequest();
+                holder.nameText.setText(name);
+                holder.messageText.setText("请求添加您为好友:" + friendBean.getMessage());
+                holder.timeText.setText(friendBean.getTime());
+            }
+            else {
+                name = friendBean.getFriendresponse();
+                holder.nameText.setText(name);
+                holder.messageText.setText("等待对方同意您的请求");
+                holder.timeText.setText(friendBean.getTime());
+            }
         }
         else {
-            holder.nameText.setText(friendBean.getFriendresponse());
+            if (friendBean.getFriendresponse().equals(account)) name = friendBean.getFriendrequest();
+            else name = friendBean.getFriendresponse();
+            holder.nameText.setText(name);
             holder.messageText.setText(friendBean.getMessage());
             holder.timeText.setText(friendBean.getTime());
         }

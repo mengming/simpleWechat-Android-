@@ -1,16 +1,26 @@
 package com.example.samsung.Adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.samsung.Data.MessageBean;
 import com.example.samsung.myapplication.R;
+
+import java.util.ArrayList;
 
 public class ChatViewAdapter  extends BaseAdapter{
 
-    private LayoutInflater mInflater = null;
+    private LayoutInflater mInflater;
+    public ArrayList<MessageBean> messageBeans;
+
+    public ChatViewAdapter(Context context,ArrayList<MessageBean> messageBeans){
+        mInflater = LayoutInflater.from(context);
+        this.messageBeans = messageBeans;
+    }
 
     @Override
     public int getCount() {

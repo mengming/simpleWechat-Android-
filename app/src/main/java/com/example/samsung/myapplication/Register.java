@@ -21,23 +21,55 @@ public class Register extends ActionBarActivity {
     private String rAccount,rPassword,rPasswordSure,rName,rSignature,rAge,rSex;
     private EditText rEtAccount,rEtPassword,rEtPasswordSure,rEtName,rEtSignature,rEtAge;
     private RadioButton male,female;
+    private RadioGroup sexRadioGroup;
+    private Button btnSure,btnReturn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
 
+        setrEtAccount();
+        setrEtPassword();
+        setrEtPasswordSure();
+        setrEtAge();
+        setrEtName();
+        setrEtSignature();
+        setSexRadioGroup();
+        setBtnSure();
+        setBtnReturn();
+    }
+
+    private void setrEtAccount(){
         rEtAccount = (EditText) findViewById(R.id.r_et_account);
+    }
+
+    private void setrEtPassword(){
         rEtPassword = (EditText) findViewById(R.id.r_et_password);
         rEtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+    }
+
+    private void setrEtPasswordSure(){
         rEtPasswordSure = (EditText) findViewById(R.id.r_et_password_sure);
         rEtPasswordSure.setTransformationMethod(PasswordTransformationMethod.getInstance());
+    }
+
+    private void setrEtName(){
         rEtName = (EditText) findViewById(R.id.r_et_name);
+    }
+
+    private void setrEtSignature(){
         rEtSignature = (EditText) findViewById(R.id.r_et_signature);
+    }
+
+    private void setrEtAge(){
         rEtAge = (EditText) findViewById(R.id.r_et_age);
+    }
+
+    private void setSexRadioGroup(){
         male = (RadioButton) findViewById(R.id.male);
         female = (RadioButton) findViewById(R.id.female);
-        RadioGroup sexRadioGroup = (RadioGroup) findViewById(R.id.sexRadioGroup);
+        sexRadioGroup = (RadioGroup) findViewById(R.id.sexRadioGroup);
         sexRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -45,8 +77,10 @@ public class Register extends ActionBarActivity {
                 if (checkedId == female.getId()) rSex = "女";
             }
         });
+    }
 
-        Button btnSure = (Button) findViewById(R.id.b_sure);
+    private void setBtnSure(){
+        btnSure = (Button) findViewById(R.id.b_sure);
         btnSure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,19 +90,20 @@ public class Register extends ActionBarActivity {
                 else {
                     //send account and password to server
                     saveInformationToServer();
-                    startActivity(new Intent(Register.this,Login.class));
+                    startActivity(new Intent(Register.this, Login.class));
                 }
             }
         });
+    }
 
-        Button btnReturn = (Button) findViewById(R.id.b_return);
+    private void setBtnReturn(){
+        btnReturn = (Button) findViewById(R.id.b_return);
         btnReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Register.this,Login.class));
             }
         });
-
     }
 
     private void saveInformationToServer(){
