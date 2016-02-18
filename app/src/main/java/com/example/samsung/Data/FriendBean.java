@@ -2,10 +2,10 @@ package com.example.samsung.Data;
 
 public class FriendBean {
 
-    private int ID,Sign;
-    private String Friendrequest,Friendresponse;
-    private String Message;
-    private String Time;
+    private int ID,sign;
+    private String friendRequest,friendResponse,friendRequestName,friendResponseName;
+    private String message;
+    private String time;
 
     public int getID(){
         return ID;
@@ -15,54 +15,72 @@ public class FriendBean {
         this.ID = ID;
     }
 
-    public String getFriendrequest(){
-        return Friendrequest;
+    public String getFriendRequest(){
+        return friendRequest;
     }
 
-    public void setFriendrequest(String Friendrequest){
-        this.Friendrequest = Friendrequest;
+    public void setFriendRequest(String friendRequest){
+        this.friendRequest = friendRequest;
     }
 
     public String getMessage(){
-        return Message;
+        return message;
     }
 
     public void setMessage(String message){
-        this.Message = message;
+        this.message = message;
     }
 
     public String getTime(){
-        return Time;
+        return time;
     }
 
-    public void setTime(String Time){
-        this.Time = Time;
+    public void setTime(String time){
+        this.time = time;
     }
 
-    public String getFriendresponse(){
-        return Friendresponse;
+    public String getFriendResponse(){
+        return friendResponse;
     }
 
-    public void setFriendresponse(String Friendresponse){
-        this.Friendresponse = Friendresponse;
+    public void setFriendResponse(String friendResponse){
+        this.friendResponse = friendResponse;
     }
 
     public int getSign(){
-        return Sign;
+        return sign;
     }
 
-    public void setSign(int Sign){
-        this.Sign = Sign;
+    public void setSign(int sign){
+        this.sign = sign;
+    }
+
+    public String getFriendRequestName(){
+        return friendRequestName;
+    }
+
+    public void setFriendRequestName(String friendRequestName){
+        this.friendRequestName = friendRequestName;
+    }
+
+    public String getFriendResponseName(){
+        return friendResponseName;
+    }
+
+    public void setFriendResponseName(String friendResponseName){
+        this.friendResponseName = friendResponseName;
     }
 
     @Override
     public String toString() {
         return "FriendBean{" + ID + '\''+
-                Friendrequest + '\'' +
-                Friendresponse + '\'' +
-                Sign + '\'' +
-                Message + '\'' +
-                Time + '\'' +
+                friendRequest + '\'' +
+                friendResponse + '\'' +
+                sign + '\'' +
+                message + '\'' +
+                time + '\'' +
+                friendRequestName + '\'' +
+                friendResponseName + '\'' +
                 '}';
     }
 }

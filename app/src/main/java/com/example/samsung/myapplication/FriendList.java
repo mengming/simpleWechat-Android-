@@ -5,16 +5,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.samsung.Adapter.FriendListAdapter;
@@ -27,7 +24,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -88,14 +84,15 @@ public class FriendList extends ActionBarActivity {
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject friendJsonObject = response.getJSONObject(i);
                         Gson gson = new Gson();
-                        FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
-                        friendBeans.add(friendBean);
+                        FriendBean friendBean = gson.fromJson(friendJsonObject.toString(),FriendBean.class);
+//                        System.out.println(friendBean.toString());
+//                        friendBeans.add(friendBean);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                friendListAdapter = new FriendListAdapter(FriendList.this, friendBeans, account);
-                initFriendListView();
+//                friendListAdapter = new FriendListAdapter(FriendList.this, friendBeans, account);
+//                initFriendListView();
             }
         });
     }
@@ -128,6 +125,7 @@ public class FriendList extends ActionBarActivity {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 initFriendListView();
+                listView.onRefreshComplete();
             }
 
             @Override
@@ -207,13 +205,13 @@ public class FriendList extends ActionBarActivity {
 
     private String judgeFriendAccount(FriendBean friendBean){
         String result = new String();
-        if (friendBean.getFriendrequest().equals(account)) result = friendBean.getFriendresponse();
-        else result = friendBean.getFriendrequest();
+        if (friendBean.getFriendRequest().equals(account)) result = friendBean.getFriendResponse();
+        else result = friendBean.getFriendRequest();
         return result;
     }
 
     private void agreeUnsignedFriend(FriendBean friendBean){
-        friend = friendBean.getFriendrequest();
+        friend = friendBean.getFriendRequest();
         agreeUrlString = baseUrl + "table=friendList&method=update&data=" + friendResponse();
         askMessage = friendBean.getMessage();
         AsyncHttpClient agreeHttpClient = new AsyncHttpClient();
@@ -231,7 +229,7 @@ public class FriendList extends ActionBarActivity {
     }
 
     private void disagreeUnsignedFriend(FriendBean friendBean){
-        friend = friendBean.getFriendrequest();
+        friend = friendBean.getFriendRequest();
         disagreeUrlString = baseUrl + "table=friendList&method=delete&data=" + friendDisagree();
         AsyncHttpClient disagreeHttpClient = new AsyncHttpClient();
         disagreeHttpClient.get(disagreeUrlString, new AsyncHttpResponseHandler() {
@@ -268,4 +266,7 @@ public class FriendList extends ActionBarActivity {
         builder.create().show();
     }
 
+    private void autoGetLatestMessages(){
+
+    }
 }

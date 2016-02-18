@@ -9,9 +9,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -23,7 +25,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class Login extends ActionBarActivity {
 
-    private String account,password,rightPassword,name;
+    private String account,password,rightPassword,name,getUserClient;
     private EditText etAccount,etPassword;
     private Button btnLogin,btnRegister;
 
@@ -34,8 +36,8 @@ public class Login extends ActionBarActivity {
 
         setEtAccount();
         setEtPassword();
-        setBtnLogin();
         setBtnRegister();
+        setBtnLogin();
     }
 
     @Override
@@ -85,18 +87,20 @@ public class Login extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 account = etAccount.getText().toString();
+                System.out.println(account);
                 password = etPassword.getText().toString();
                 AsyncHttpClient client = new AsyncHttpClient();
-                client.get("http://8.sundoge.applinzi.com/index.php?table=users&method=get&data={%22identification%22:%22"
-                        +account+"%22}",new JsonHttpResponseHandler(){
+                getUserClient = "http://8.sundoge.applinzi.com/index.php?table=users&method=get&data" +
+                        "={%22identification%22:%22" +account+"%22}";
+                client.get(getUserClient,new JsonHttpResponseHandler(){
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                         super.onSuccess(statusCode, headers, response);
                         try {
                             int length = response.length();
                             for (int i=0;i<length;i++) {
-                                rightPassword = response.getJSONObject(i).getString("Password");
-                                name = response.getJSONObject(i).getString("Name");
+                                rightPassword = response.getJSONObject(i).getString("password");
+                                name = response.getJSONObject(i).getString("name");
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

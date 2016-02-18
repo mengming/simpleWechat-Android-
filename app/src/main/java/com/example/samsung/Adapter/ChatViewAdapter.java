@@ -15,21 +15,26 @@ import java.util.ArrayList;
 public class ChatViewAdapter  extends BaseAdapter{
 
     private LayoutInflater mInflater;
+    private MessageBean messageBean;
+    private String account,friendAccount;
     public ArrayList<MessageBean> messageBeans;
 
-    public ChatViewAdapter(Context context,ArrayList<MessageBean> messageBeans){
+    public ChatViewAdapter(Context context,ArrayList<MessageBean> messageBeans
+            ,String account,String friendAccount){
         mInflater = LayoutInflater.from(context);
         this.messageBeans = messageBeans;
+        this.account = account;
+        this.friendAccount = friendAccount;
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return messageBeans.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return position;
+    public Object getItem(int index) {
+        return index;
     }
 
     @Override
@@ -40,24 +45,34 @@ public class ChatViewAdapter  extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
-        //如果缓存convertView为空，则需要创建View
+        messageBean = messageBeans.get(position);
+        //if sender is self then otherOrSelf is true,else is false;
+        Boolean otherOrSelf = false;
+        if (messageBean.getSender().equals(account)) otherOrSelf = true;
         if(convertView == null)
         {
             holder = new ViewHolder();
-            //根据自定义的Item布局加载布局
-            convertView = mInflater.inflate(R.layout.chat_view_left, null);
-            holder.nameText = (TextView) convertView.findViewById(R.id.chat_left_name);
-            holder.messageText = (TextView) convertView.findViewById(R.id.chat_left_message);
-            holder.timeText = (TextView) convertView.findViewById(R.id.chat_left_time);
-            //将设置好的布局保存到缓存中，并将其设置在Tag里，以便后面方便取出Tag
+            if (otherOrSelf) {
+                convertView = mInflater.inflate(R.layout.chat_view_right, parent,false);
+                holder.nameText = (TextView) convertView.findViewById(R.id.chat_right_name);
+                holder.messageText = (TextView) convertView.findViewById(R.id.chat_right_name);
+                holder.timeText = (TextView) convertView.findViewById(R.id.chat_right_time);
+            }
+            else {
+                convertView = mInflater.inflate(R.layout.chat_view_left, parent,false);
+                holder.nameText = (TextView) convertView.findViewById(R.id.chat_left_name);
+                holder.messageText = (TextView) convertView.findViewById(R.id.chat_left_message);
+                holder.timeText = (TextView) convertView.findViewById(R.id.chat_left_time);
+            }
             convertView.setTag(holder);
         }else
         {
             holder = (ViewHolder)convertView.getTag();
         }
-//        holder.nameText.setText((String)data.get(position).get("name"));
-//        holder.messageText.setText((String)data.get(position).get("message"));
-
+        holder.messageText.setText(messageBean.getMessage());
+        holder.timeText.setText(messageBean.getTime());
+        if (otherOrSelf) holder.nameText.setText(account);
+        else holder.nameText.setText(friendAccount);
         return convertView;
     }
 

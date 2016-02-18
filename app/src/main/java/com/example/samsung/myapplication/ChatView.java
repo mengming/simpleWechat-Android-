@@ -10,23 +10,31 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.samsung.Adapter.ChatViewAdapter;
+import com.example.samsung.Data.MessageBean;
+import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
 public class ChatView extends Activity {
 
     private PullToRefreshListView chatListView;
+    private ArrayList<MessageBean> messageBeans = new ArrayList<>();
     private ChatViewAdapter chatViewAdapter;
     private EditText etMessage;
     private TextView nameText;
     private Button btnBack,btnSend;
-    private String message,account,friendAccount,sendMessageUrlString;
+    private String message,account,friendAccount,sendMessageUrlString,getMessageUrlString;
     private String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
 
     @Override
@@ -79,7 +87,7 @@ public class ChatView extends Activity {
                 sendMessageHttpClient.get(sendMessageUrlString, new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-
+                        etMessage.setText("");
                     }
 
                     @Override
@@ -94,7 +102,7 @@ public class ChatView extends Activity {
     private String sendMessageData(){
         String result = new String();
         result = "{%22sender%22:%22" + account + "%22,%22receiver%22:%22" + friendAccount +
-            "%22,%22message%22:%22" + message + "%22}";
+                "%22,%22message%22:%22" + message + "%22}";
         return result;
     }
 
@@ -107,7 +115,7 @@ public class ChatView extends Activity {
         chatListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-
+                chatListView.onRefreshComplete();
             }
 
             @Override
@@ -115,5 +123,32 @@ public class ChatView extends Activity {
 
             }
         });
+    }
+
+    private void getMessageHistory(){
+        AsyncHttpClient getMessageClient = new AsyncHttpClient();
+        getMessageUrlString = baseUrl + "table=messageList&method=get&data="+ messageSenderAndReceiver();
+        getMessageClient.get(getMessageUrlString,new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                for (int i=0;i<response.length();i++) {
+                    try {
+                        JSONObject messageJsonObject = response.getJSONObject(i);
+                        Gson gson = new Gson();
+                        MessageBean messageBean = gson.fromJson(messageJsonObject.toString(),MessageBean.class);
+                        messageBeans.add(messageBean);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                chatViewAdapter = new ChatViewAdapter(ChatView.this,messageBeans,account,friendAccount);
+            }
+        });
+    }
+
+    private String messageSenderAndReceiver(){
+        String result = new String();
+        result = "{%22sender%22:%22" + account + "%22,%22receiver%22:%22" + friendAccount + "%22}";
+        return result;
     }
 }

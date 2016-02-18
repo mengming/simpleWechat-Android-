@@ -64,22 +64,22 @@ public class FriendListAdapter extends BaseAdapter {
             holder = (ViewHolder)convertView.getTag();
         }
         if (friendBean.getSign()==0) {
-            if (friendBean.getFriendresponse().equals(account)) {
-                name = friendBean.getFriendrequest();
+            if (friendBean.getFriendResponse().equals(account)) {
+                name = friendBean.getFriendRequest();
                 holder.nameText.setText(name);
                 holder.messageText.setText("请求添加您为好友:" + friendBean.getMessage());
                 holder.timeText.setText(friendBean.getTime());
             }
             else {
-                name = friendBean.getFriendresponse();
+                name = friendBean.getFriendResponse();
                 holder.nameText.setText(name);
                 holder.messageText.setText("等待对方同意您的请求");
                 holder.timeText.setText(friendBean.getTime());
             }
         }
         else {
-            if (friendBean.getFriendresponse().equals(account)) name = friendBean.getFriendrequest();
-            else name = friendBean.getFriendresponse();
+            if (friendBean.getFriendResponse().equals(account)) name = friendBean.getFriendRequest();
+            else name = friendBean.getFriendResponse();
             holder.nameText.setText(name);
             holder.messageText.setText(friendBean.getMessage());
             holder.timeText.setText(friendBean.getTime());
