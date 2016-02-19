@@ -1,1 +1,1 @@
-include ':app', ':pull_to_refresh_library'
+include ':app', ':pull_to_refresh_library', ':gson-2.3.1'

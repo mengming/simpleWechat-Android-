@@ -26,6 +26,7 @@ import cz.msebera.android.httpclient.Header;
 public class Login extends ActionBarActivity {
 
     private String account,password,rightPassword,name,getUserClient;
+    static String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
     private EditText etAccount,etPassword;
     private Button btnLogin,btnRegister;
 
@@ -90,8 +91,7 @@ public class Login extends ActionBarActivity {
                 System.out.println(account);
                 password = etPassword.getText().toString();
                 AsyncHttpClient client = new AsyncHttpClient();
-                getUserClient = "http://8.sundoge.applinzi.com/index.php?table=users&method=get&data" +
-                        "={%22identification%22:%22" +account+"%22}";
+                getUserClient = baseUrl + getUserParam();
                 client.get(getUserClient,new JsonHttpResponseHandler(){
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -122,5 +122,9 @@ public class Login extends ActionBarActivity {
                 });
             }
         });
+    }
+
+    private String getUserParam(){
+        return "table=users&method=get&identification=" + account;
     }
 }

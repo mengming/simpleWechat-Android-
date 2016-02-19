@@ -1,0 +1,2 @@
+configurations.create("default")
+artifacts.add("default", file('gson-2.3.1.jar'))

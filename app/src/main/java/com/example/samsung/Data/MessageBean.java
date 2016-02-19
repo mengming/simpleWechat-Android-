@@ -44,4 +44,14 @@ public class MessageBean {
     public String getSender(){
         return sender;
     }
+
+    @Override
+    public String toString(){
+        String result = "MessageBean{" + ID + "/"
+                + message + "/"
+                + time + "/"
+                + receiver + "/"
+                + sender + "}";
+        return result;
+    }
 }

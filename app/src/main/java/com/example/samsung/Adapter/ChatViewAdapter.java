@@ -16,6 +16,7 @@ public class ChatViewAdapter  extends BaseAdapter{
 
     private LayoutInflater mInflater;
     private MessageBean messageBean;
+    private Context context;
     private String account,friendAccount;
     public ArrayList<MessageBean> messageBeans;
 
@@ -34,7 +35,7 @@ public class ChatViewAdapter  extends BaseAdapter{
 
     @Override
     public Object getItem(int index) {
-        return index;
+        return messageBeans.get(index);
     }
 
     @Override
@@ -46,24 +47,25 @@ public class ChatViewAdapter  extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         messageBean = messageBeans.get(position);
-        //if sender is self then otherOrSelf is true,else is false;
-        Boolean otherOrSelf = false;
-        if (messageBean.getSender().equals(account)) otherOrSelf = true;
+//        //if sender is self then otherOrSelf is true,else is false;
+//        Boolean otherOrSelf = false;
+//        if (messageBean.getSender().equals(account)) otherOrSelf = true;
+//        if (otherOrSelf) System.out.println("true");
         if(convertView == null)
         {
             holder = new ViewHolder();
-            if (otherOrSelf) {
+            /*if (otherOrSelf) */{
                 convertView = mInflater.inflate(R.layout.chat_view_right, parent,false);
                 holder.nameText = (TextView) convertView.findViewById(R.id.chat_right_name);
                 holder.messageText = (TextView) convertView.findViewById(R.id.chat_right_name);
                 holder.timeText = (TextView) convertView.findViewById(R.id.chat_right_time);
             }
-            else {
-                convertView = mInflater.inflate(R.layout.chat_view_left, parent,false);
-                holder.nameText = (TextView) convertView.findViewById(R.id.chat_left_name);
-                holder.messageText = (TextView) convertView.findViewById(R.id.chat_left_message);
-                holder.timeText = (TextView) convertView.findViewById(R.id.chat_left_time);
-            }
+//            else {
+//                convertView = mInflater.inflate(R.layout.chat_view_left, parent,false);
+//                holder.nameText = (TextView) convertView.findViewById(R.id.chat_left_name);
+//                holder.messageText = (TextView) convertView.findViewById(R.id.chat_left_message);
+//                holder.timeText = (TextView) convertView.findViewById(R.id.chat_left_time);
+//            }
             convertView.setTag(holder);
         }else
         {
@@ -71,8 +73,8 @@ public class ChatViewAdapter  extends BaseAdapter{
         }
         holder.messageText.setText(messageBean.getMessage());
         holder.timeText.setText(messageBean.getTime());
-        if (otherOrSelf) holder.nameText.setText(account);
-        else holder.nameText.setText(friendAccount);
+        /*if (otherOrSelf) holder.nameText.setText(account);
+        else */holder.nameText.setText(friendAccount);
         return convertView;
     }
 
@@ -80,7 +82,6 @@ public class ChatViewAdapter  extends BaseAdapter{
         public TextView nameText;
         public TextView messageText;
         public TextView timeText;
-
     }
 
 }

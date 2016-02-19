@@ -92,7 +92,7 @@ public class ChatView extends Activity {
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
+                        etMessage.setText("");
                     }
                 });
             }
@@ -115,6 +115,7 @@ public class ChatView extends Activity {
         chatListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+                getMessageHistory();
                 chatListView.onRefreshComplete();
             }
 
@@ -123,6 +124,7 @@ public class ChatView extends Activity {
 
             }
         });
+        getMessageHistory();
     }
 
     private void getMessageHistory(){

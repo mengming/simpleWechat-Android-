@@ -21,8 +21,9 @@ public class FriendListAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private Context context;
     private String account,name;
+    private int sign;
 
-    public FriendListAdapter(Context context,ArrayList<FriendBean> friendBeans,String account)
+    public FriendListAdapter(Context context,ArrayList<FriendBean> friendBeans, String account)
     {
         mInflater = LayoutInflater.from(context);
         this.friendBeans = friendBeans;
@@ -48,22 +49,20 @@ public class FriendListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         FriendBean friendBean = friendBeans.get(position);
-        //如果缓存convertView为空，则需要创建View
+        sign = friendBean.getSign();
         if(convertView == null)
         {
             holder = new ViewHolder();
-            //根据自定义的Item布局加载布局
             convertView = mInflater.inflate(R.layout.friend, parent,false);
             holder.nameText = (TextView) convertView.findViewById(R.id.name);
             holder.messageText = (TextView)convertView.findViewById(R.id.message);
             holder.timeText = (TextView)convertView.findViewById(R.id.time);
-            //将设置好的布局保存到缓存中，并将其设置在Tag里，以便后面方便取出Tag
             convertView.setTag(holder);
         }else
         {
             holder = (ViewHolder)convertView.getTag();
         }
-        if (friendBean.getSign()==0) {
+        if (sign==0) {
             if (friendBean.getFriendResponse().equals(account)) {
                 name = friendBean.getFriendRequest();
                 holder.nameText.setText(name);
@@ -78,8 +77,8 @@ public class FriendListAdapter extends BaseAdapter {
             }
         }
         else {
-            if (friendBean.getFriendResponse().equals(account)) name = friendBean.getFriendRequest();
-            else name = friendBean.getFriendResponse();
+            if (friendBean.getReceiver().equals(account)) name = friendBean.getSender();
+            else name = friendBean.getReceiver();
             holder.nameText.setText(name);
             holder.messageText.setText(friendBean.getMessage());
             holder.timeText.setText(friendBean.getTime());

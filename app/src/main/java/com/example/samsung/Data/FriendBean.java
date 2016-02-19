@@ -3,9 +3,8 @@ package com.example.samsung.Data;
 public class FriendBean {
 
     private int ID,sign;
-    private String friendRequest,friendResponse,friendRequestName,friendResponseName;
-    private String message;
-    private String time;
+    private String friendRequest,friendResponse,friendRequestName,friendResponseName,
+        message,time,sender,receiver;
 
     public int getID(){
         return ID;
@@ -71,16 +70,33 @@ public class FriendBean {
         this.friendResponseName = friendResponseName;
     }
 
+    public String getSender(){
+        return sender;
+    }
+
+    public void setSender(String sender){
+        this.sender = sender;
+    }
+
+    public String getReceiver(){
+        return receiver;
+    }
+
+    public void setReceiver(String receiver){
+        this.receiver = receiver;
+    }
+
     @Override
     public String toString() {
-        return "FriendBean{" + ID + '\''+
-                friendRequest + '\'' +
-                friendResponse + '\'' +
-                sign + '\'' +
-                message + '\'' +
-                time + '\'' +
-                friendRequestName + '\'' +
-                friendResponseName + '\'' +
-                '}';
+        return "friendBean{" + ID + "/"
+                + sign + "/"
+                + friendRequest + "/"
+                + friendResponse+ "/"
+                + friendRequestName+ "/"
+                + friendResponseName+ "/"
+                + message+ "/"
+                + time + "/"
+                + sender + "/"
+                + receiver + "}";
     }
 }
