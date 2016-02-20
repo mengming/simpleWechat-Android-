@@ -2,6 +2,8 @@ package com.example.samsung.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
@@ -38,6 +40,7 @@ public class ChatView extends Activity {
     private Button btnBack,btnSend;
     private String message,account,friendAccount,sendMessageUrlString,getMessageUrlString;
     private String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
+    private int count=10,positionStart,positionEnd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,20 +81,19 @@ public class ChatView extends Activity {
     }
 
     private void setBtnSend(){
-        if (TextUtils.isEmpty(etMessage.getText()))
         btnSend = (Button) findViewById(R.id.btn_send);
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //send message to server
                 message = etMessage.getText().toString();
-                if (message=="") finish();
                 sendMessageUrlString = baseUrl + "table=messageList&method=save&data=" + sendMessageData();
                 AsyncHttpClient sendMessageHttpClient = new AsyncHttpClient();
                 sendMessageHttpClient.get(sendMessageUrlString, new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                         etMessage.setText("");
+                        chatViewAdapter.notifyDataSetInvalidated();
                     }
 
                     @Override
@@ -113,19 +115,19 @@ public class ChatView extends Activity {
     private void initChatView(){
         chatListView = (PullToRefreshListView) findViewById(R.id.chat_list);
         chatListView.getRefreshableView().setDivider(null);
-        chatListView.setMode(PullToRefreshBase.Mode.PULL_DOWN_TO_REFRESH);
+        chatListView.setMode(PullToRefreshBase.Mode.BOTH);
         chatListView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
         chatListView.setAdapter(chatViewAdapter);
-        chatListView.setDividerPadding(5);
         chatListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+                count+=10;
                 getMessageHistory();
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-
+                getMessageHistory();
             }
         });
         getMessageHistory();
@@ -138,7 +140,9 @@ public class ChatView extends Activity {
         getMessageClient.get(getMessageUrlString,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                for (int i=0;i<response.length();i++) {
+                positionEnd = response.length();
+                positionStart = positionEnd-count;
+                for (int i=positionStart;i<positionEnd;i++) {
                     try {
                         JSONObject messageJsonObject = response.getJSONObject(i);
                         Gson gson = new Gson();
@@ -148,8 +152,10 @@ public class ChatView extends Activity {
                         e.printStackTrace();
                     }
                 }
-                chatViewAdapter = new ChatViewAdapter(ChatView.this,messageBeans,account,friendAccount);
+                chatViewAdapter = new ChatViewAdapter(ChatView.this,messageBeans,account,friendAccount,count);
+                chatViewAdapter.notifyDataSetInvalidated();
                 chatListView.setAdapter(chatViewAdapter);
+                chatListView.getRefreshableView().setSelection(messageBeans.size() - 1);
                 chatListView.onRefreshComplete();
             }
         });

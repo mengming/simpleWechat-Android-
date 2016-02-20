@@ -55,13 +55,13 @@
         <EditText
             android:id="@+id/et_sendmessage"
             android:layout_width="fill_parent"
-            android:background="@android:color/white"
             android:layout_height="30dp"
+            android:background="@android:color/white"
             android:layout_toLeftOf="@id/btn_send"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
-            android:singleLine="true"
+            android:singleLine="false"
             android:textSize="18sp"/>
     </RelativeLayout>
 
@@ -73,8 +73,6 @@
         android:layout_marginLeft="10.0dip"
         android:layout_marginTop="10.0dip"
         android:layout_marginRight="10.0dip"
-        android:divider="@android:color/black"
-        android:dividerHeight="20dp"
         android:scrollbars="none"
         android:cacheColorHint="@android:color/white"
         android:id="@+id/chat_list">

@@ -3,6 +3,8 @@ package com.example.samsung.myapplication;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -88,6 +90,8 @@ public class FriendList extends ActionBarActivity {
         friendListView.setMode(PullToRefreshBase.Mode.PULL_DOWN_TO_REFRESH);
         friendListView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
         friendListView.setAdapter(friendListAdapter);
+        friendListView.getRefreshableView().setDivider(new ColorDrawable(Color.GRAY));
+        friendListView.getRefreshableView().setDividerHeight(1);
         //friendlist select
         friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -109,7 +113,6 @@ public class FriendList extends ActionBarActivity {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 getFriendList();
-                friendListView.onRefreshComplete();
             }
 
             @Override
@@ -117,6 +120,7 @@ public class FriendList extends ActionBarActivity {
 
             }
         });
+        friendListView.onRefreshComplete();
     }
 
     protected void addFriendDialog(){

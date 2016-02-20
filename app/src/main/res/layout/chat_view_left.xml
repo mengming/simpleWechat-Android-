@@ -18,10 +18,10 @@
         android:layout_height="wrap_content"
         android:text="@string/message"
         android:background="@drawable/chat_message_background"
-        android:gravity="center"
+        android:gravity="left"
         android:padding="10sp"
         android:id="@+id/chat_left_message"
-        android:layout_below="@+id/chat_left_time"
+        android:layout_alignTop="@+id/chat_left_name"
         android:layout_toRightOf="@+id/chat_left_name"
         android:layout_toEndOf="@+id/chat_left_name" />
 

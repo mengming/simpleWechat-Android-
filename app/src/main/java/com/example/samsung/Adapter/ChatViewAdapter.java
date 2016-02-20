@@ -19,18 +19,21 @@ public class ChatViewAdapter  extends BaseAdapter{
     private Context context;
     private String account,friendAccount;
     public ArrayList<MessageBean> messageBeans;
+    private int count;
 
     public ChatViewAdapter(Context context,ArrayList<MessageBean> messageBeans
-            ,String account,String friendAccount){
+            ,String account,String friendAccount,int count){
         mInflater = LayoutInflater.from(context);
         this.messageBeans = messageBeans;
         this.account = account;
         this.friendAccount = friendAccount;
+        this.count = count;
     }
 
     @Override
     public int getCount() {
-        return messageBeans.size();
+        if (count<=messageBeans.size()) return count;
+        else return messageBeans.size();
     }
 
     @Override
