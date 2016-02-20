@@ -19,4 +19,6 @@
     <string name="action_settings">Settings</string>
     <string name="action_addfriend">添加朋友</string>
     <string name="request_message">发送您的验证信息</string>
+    <string name="message">信息</string>
+    <string name="time">时间</string>
 </resources>

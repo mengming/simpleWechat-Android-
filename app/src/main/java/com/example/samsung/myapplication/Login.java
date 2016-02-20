@@ -88,7 +88,6 @@ public class Login extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 account = etAccount.getText().toString();
-                System.out.println(account);
                 password = etPassword.getText().toString();
                 AsyncHttpClient client = new AsyncHttpClient();
                 getUserClient = baseUrl + getUserParam();

@@ -8,12 +8,13 @@
         android:id="@+id/rl_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/darker_gray">
+        android:background="@android:color/holo_blue_light">
         <Button
             android:id="@+id/btn_back"
             android:gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:paddingLeft="18dp"
+            android:background="@android:color/holo_blue_light"
             android:textSize="18.0sp"
             android:textColor="#ffffff"
             android:layout_width="70dp"
@@ -23,6 +24,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="name"
+            android:textSize="25sp"
+            android:textColor="@android:color/white"
             android:id="@+id/chat_name"
             android:layout_centerInParent="true"/>
         <ImageView
@@ -43,15 +46,17 @@
             android:id="@+id/btn_send"
             android:layout_width="60dp"
             android:layout_height="40dp"
+            android:background="@drawable/chat_send_background"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
-            android:text="@string/send" />
+            android:text="@string/send"
+            android:textSize="20sp"/>
         <EditText
             android:id="@+id/et_sendmessage"
             android:layout_width="fill_parent"
             android:background="@android:color/white"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:layout_toLeftOf="@id/btn_send"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
@@ -68,10 +73,10 @@
         android:layout_marginLeft="10.0dip"
         android:layout_marginTop="10.0dip"
         android:layout_marginRight="10.0dip"
-        android:divider="@null"
-        android:dividerHeight="5dp"
+        android:divider="@android:color/black"
+        android:dividerHeight="20dp"
         android:scrollbars="none"
-        android:cacheColorHint="#00000000"
+        android:cacheColorHint="@android:color/white"
         android:id="@+id/chat_list">
     </android:com.handmark.pulltorefresh.library.PullToRefreshListView>
 </RelativeLayout>

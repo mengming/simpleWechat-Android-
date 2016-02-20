@@ -3,6 +3,8 @@ package com.example.samsung.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,7 +31,7 @@ import cz.msebera.android.httpclient.Header;
 public class ChatView extends Activity {
 
     private PullToRefreshListView chatListView;
-    private ArrayList<MessageBean> messageBeans = new ArrayList<>();
+    private ArrayList<MessageBean> messageBeans;
     private ChatViewAdapter chatViewAdapter;
     private EditText etMessage;
     private TextView nameText;
@@ -76,12 +78,14 @@ public class ChatView extends Activity {
     }
 
     private void setBtnSend(){
+        if (TextUtils.isEmpty(etMessage.getText()))
         btnSend = (Button) findViewById(R.id.btn_send);
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //send message to server
                 message = etMessage.getText().toString();
+                if (message=="") finish();
                 sendMessageUrlString = baseUrl + "table=messageList&method=save&data=" + sendMessageData();
                 AsyncHttpClient sendMessageHttpClient = new AsyncHttpClient();
                 sendMessageHttpClient.get(sendMessageUrlString, new AsyncHttpResponseHandler() {
@@ -112,11 +116,11 @@ public class ChatView extends Activity {
         chatListView.setMode(PullToRefreshBase.Mode.PULL_DOWN_TO_REFRESH);
         chatListView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
         chatListView.setAdapter(chatViewAdapter);
+        chatListView.setDividerPadding(5);
         chatListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 getMessageHistory();
-                chatListView.onRefreshComplete();
             }
 
             @Override
@@ -128,6 +132,7 @@ public class ChatView extends Activity {
     }
 
     private void getMessageHistory(){
+        messageBeans = new ArrayList<>();
         AsyncHttpClient getMessageClient = new AsyncHttpClient();
         getMessageUrlString = baseUrl + "table=messageList&method=get&data="+ messageSenderAndReceiver();
         getMessageClient.get(getMessageUrlString,new JsonHttpResponseHandler(){
@@ -144,6 +149,8 @@ public class ChatView extends Activity {
                     }
                 }
                 chatViewAdapter = new ChatViewAdapter(ChatView.this,messageBeans,account,friendAccount);
+                chatListView.setAdapter(chatViewAdapter);
+                chatListView.onRefreshComplete();
             }
         });
     }

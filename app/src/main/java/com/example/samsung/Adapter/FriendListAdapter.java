@@ -63,6 +63,7 @@ public class FriendListAdapter extends BaseAdapter {
             holder = (ViewHolder)convertView.getTag();
         }
         if (sign==0) {
+            System.out.println(friendBean.getFriendResponse()+"/"+account);
             if (friendBean.getFriendResponse().equals(account)) {
                 name = friendBean.getFriendRequest();
                 holder.nameText.setText(name);

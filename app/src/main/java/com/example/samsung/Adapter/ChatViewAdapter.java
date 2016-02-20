@@ -47,34 +47,36 @@ public class ChatViewAdapter  extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         messageBean = messageBeans.get(position);
-//        //if sender is self then otherOrSelf is true,else is false;
-//        Boolean otherOrSelf = false;
-//        if (messageBean.getSender().equals(account)) otherOrSelf = true;
-//        if (otherOrSelf) System.out.println("true");
+        System.out.println(messageBean);
+        //if sender is self then otherOrSelf is true,else is false;
+        Boolean otherOrSelf = false;
+        if (messageBean.getSender().equals(account)) otherOrSelf = true;
+        if (otherOrSelf) System.out.println("true");
         if(convertView == null)
         {
             holder = new ViewHolder();
-            /*if (otherOrSelf) */{
+            if (otherOrSelf) {
                 convertView = mInflater.inflate(R.layout.chat_view_right, parent,false);
                 holder.nameText = (TextView) convertView.findViewById(R.id.chat_right_name);
-                holder.messageText = (TextView) convertView.findViewById(R.id.chat_right_name);
+                holder.messageText = (TextView) convertView.findViewById(R.id.chat_right_message);
                 holder.timeText = (TextView) convertView.findViewById(R.id.chat_right_time);
             }
-//            else {
-//                convertView = mInflater.inflate(R.layout.chat_view_left, parent,false);
-//                holder.nameText = (TextView) convertView.findViewById(R.id.chat_left_name);
-//                holder.messageText = (TextView) convertView.findViewById(R.id.chat_left_message);
-//                holder.timeText = (TextView) convertView.findViewById(R.id.chat_left_time);
-//            }
+            else {
+                convertView = mInflater.inflate(R.layout.chat_view_left, parent,false);
+                holder.nameText = (TextView) convertView.findViewById(R.id.chat_left_name);
+                holder.messageText = (TextView) convertView.findViewById(R.id.chat_left_message);
+                holder.timeText = (TextView) convertView.findViewById(R.id.chat_left_time);
+            }
             convertView.setTag(holder);
         }else
         {
             holder = (ViewHolder)convertView.getTag();
         }
         holder.messageText.setText(messageBean.getMessage());
+        System.out.println(messageBean.getMessage());
         holder.timeText.setText(messageBean.getTime());
-        /*if (otherOrSelf) holder.nameText.setText(account);
-        else */holder.nameText.setText(friendAccount);
+        if (otherOrSelf) holder.nameText.setText(account);
+        else holder.nameText.setText(friendAccount);
         return convertView;
     }
 

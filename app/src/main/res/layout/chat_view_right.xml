@@ -7,30 +7,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
+        android:text="@string/name"
         android:textSize="20sp"
         android:id="@+id/chat_right_name"
-        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/chat_right_message"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:textSize="26sp"
+        android:text="@string/message"
+        android:gravity="center"
+        android:padding="10sp"
         android:id="@+id/chat_right_message"
-        android:layout_below="@+id/chat_right_name"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:background="@drawable/chat_message_background"
+        android:layout_below="@+id/chat_right_time"
+        android:layout_toLeftOf="@+id/chat_right_name"
+        android:layout_toStartOf="@+id/chat_right_name" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
+        android:background="@android:color/darker_gray"
+        android:text="@string/time"
         android:id="@+id/chat_right_time"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

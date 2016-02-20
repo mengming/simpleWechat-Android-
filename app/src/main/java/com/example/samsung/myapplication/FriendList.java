@@ -33,11 +33,11 @@ import cz.msebera.android.httpclient.Header;
 
 public class FriendList extends ActionBarActivity {
 
-    private PullToRefreshListView listView;
+    private PullToRefreshListView friendListView;
     private String name,account,friendAccount,message,saveUrlString,getUnsignedUrlString,
-            agreeUrlString,friend,askMessage,disagreeUrlString,getLatestMessagesUrlString;
-    private String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
-    private ArrayList<FriendBean> friendBeanArrayList;
+            agreeUrlString,askMessage,disagreeUrlString,getLatestMessagesUrlString, sendMessageUrlString;
+    static String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
+    private ArrayList<FriendBean> friendBeans;
     private FriendListAdapter friendListAdapter;
 
     @Override
@@ -75,44 +75,41 @@ public class FriendList extends ActionBarActivity {
     }
 
     private void getFriendList(){
-        friendBeanArrayList = new ArrayList<>();
-        System.out.println(friendBeanArrayList.size());
+        friendBeans = new ArrayList<>();
         getFriendListUnsigned();
         getFriendListSigned();
-        friendListAdapter = new FriendListAdapter(FriendList.this, friendBeanArrayList, account);
-        System.out.println(friendBeanArrayList.size());
         initFriendListView();
     }
 
     private void initFriendListView(){
         //create friendlist
-        listView = (PullToRefreshListView) findViewById(R.id.pull_to_refresh_listview);
-        listView.getRefreshableView().setDivider(null);
-        listView.setMode(PullToRefreshBase.Mode.PULL_DOWN_TO_REFRESH);
-        listView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
-        listView.setAdapter(friendListAdapter);
+        friendListView = (PullToRefreshListView) findViewById(R.id.pull_to_refresh_listview);
+        friendListView.getRefreshableView().setDivider(null);
+        friendListView.setMode(PullToRefreshBase.Mode.PULL_DOWN_TO_REFRESH);
+        friendListView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
+        friendListView.setAdapter(friendListAdapter);
         //friendlist select
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (friendBeanArrayList.get(position - 1).getSign() == 0)
+                if (friendBeans.get(position - 1).getSign() == 0)
                     addFriendResponseDialog(position - 1);
                 else {
                     Intent chatViewIntent = new Intent();
                     chatViewIntent.setClass(FriendList.this, ChatView.class);
                     chatViewIntent.putExtra("account", account);
-                    chatViewIntent.putExtra("friendAccount", judgeFriendAccount(friendBeanArrayList.get(position - 1)));
+                    chatViewIntent.putExtra("friendAccount", judgeFriendAccount(friendBeans.get(position - 1)));
                     startActivity(chatViewIntent);
                 }
             }
         });
 
         //friendlist pull down to refresh
-        listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+        friendListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 getFriendList();
-                listView.onRefreshComplete();
+                friendListView.onRefreshComplete();
             }
 
             @Override
@@ -174,23 +171,29 @@ public class FriendList extends ActionBarActivity {
     }
 
     private String friendResponse(){
-        return "{%22friendRequest%22:%22"+friend+"%22,%22friendResponse%22:%22"+account
+        return "{%22friendRequest%22:%22"+friendAccount+"%22,%22friendResponse%22:%22"+account
                 +"%22,%22sign%22:%221%22}";
     }
 
     private String friendDisagree(){
-        return "{%22friendRequest%22:%22"+friend+"%22,%22friendResponse%22:%22"+account+"%22}";
+        return "{%22friendRequest%22:%22"+friendAccount+"%22,%22friendResponse%22:%22"+account+"%22}";
     }
 
     private String judgeFriendAccount(FriendBean friendBean){
         String result = new String();
-        if (friendBean.getFriendRequest().equals(account)) result = friendBean.getFriendResponse();
-        else result = friendBean.getFriendRequest();
+        if (friendBean.getSender().equals(account)) result = friendBean.getReceiver();
+        else result = friendBean.getSender();
         return result;
     }
 
+    private String sendMessageParam(){
+        return "table=messageList&method=save&data="+ "{%22sender%22:%22" + account +
+                "%22,%22receiver%22:%22" + friendAccount +
+                "%22,%22message%22:%22"+ name +"已添加你为好友%22}";
+    }
+
     private void agreeUnsignedFriend(FriendBean friendBean){
-        friend = friendBean.getFriendRequest();
+        friendAccount = friendBean.getFriendRequest();
         agreeUrlString = baseUrl + "table=friendList&method=update&data=" + friendResponse();
         askMessage = friendBean.getMessage();
         AsyncHttpClient agreeHttpClient = new AsyncHttpClient();
@@ -205,10 +208,24 @@ public class FriendList extends ActionBarActivity {
 
             }
         });
+        sendMessageUrlString = baseUrl + sendMessageParam();
+        AsyncHttpClient sendMessageHttpClient = new AsyncHttpClient();
+        sendMessageHttpClient.get(sendMessageUrlString, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+            }
+        });
+        getFriendList();
     }
 
     private void disagreeUnsignedFriend(FriendBean friendBean){
-        friend = friendBean.getFriendRequest();
+        friendAccount = friendBean.getFriendRequest();
         disagreeUrlString = baseUrl + "table=friendList&method=delete&data=" + friendDisagree();
         AsyncHttpClient disagreeHttpClient = new AsyncHttpClient();
         disagreeHttpClient.get(disagreeUrlString, new AsyncHttpResponseHandler() {
@@ -231,14 +248,14 @@ public class FriendList extends ActionBarActivity {
         builder.setPositiveButton("同意", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                agreeUnsignedFriend(friendBeanArrayList.get(position));
+                agreeUnsignedFriend(friendBeans.get(position));
                 dialog.dismiss();
             }
         });
         builder.setNegativeButton("不同意", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                disagreeUnsignedFriend(friendBeanArrayList.get(position));
+                disagreeUnsignedFriend(friendBeans.get(position));
                 dialog.dismiss();
             }
         });
@@ -256,7 +273,6 @@ public class FriendList extends ActionBarActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 try {
-                    ArrayList<FriendBean> friendBeans = new ArrayList<FriendBean>();
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject friendJsonObject = response.getJSONObject(i);
                         if (friendJsonObject.getInt("sign")==0) {
@@ -284,17 +300,19 @@ public class FriendList extends ActionBarActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 try {
-                    if (friendBeanArrayList.size()==0) friendBeanArrayList = new ArrayList<FriendBean>();
                     for (int i=0;i<response.length();i++) {
                         JSONObject friendJsonObject = response.getJSONObject(i);
                         Gson gson = new Gson();
                         FriendBean friendBean = gson.fromJson(friendJsonObject.toString(),FriendBean.class);
+                        friendBean.setSign(1);
                         System.out.println(friendBean.toString());
-                        friendBeanArrayList.add(friendBean);
+                        friendBeans.add(friendBean);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                friendListAdapter = new FriendListAdapter(FriendList.this, friendBeans, account);
+                friendListView.setAdapter(friendListAdapter);
             }
         });
     }
