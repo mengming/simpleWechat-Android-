@@ -120,7 +120,6 @@ public class FriendList extends ActionBarActivity {
 
             }
         });
-        friendListView.onRefreshComplete();
     }
 
     protected void addFriendDialog(){
@@ -283,7 +282,6 @@ public class FriendList extends ActionBarActivity {
                             Gson gson = new Gson();
                             FriendBean friendBean = gson.fromJson(friendJsonObject.toString(),FriendBean.class);
                             friendBeans.add(friendBean);
-                            System.out.println(friendBeans.get(0).toString());
                         }
                     }
                 } catch (JSONException e) {
@@ -300,14 +298,14 @@ public class FriendList extends ActionBarActivity {
     public void getLatestMessages(){
         AsyncHttpClient getLatestMessagesClient = new AsyncHttpClient();
         getLatestMessagesUrlString = baseUrl + getLatestMessagesParam();
-        getLatestMessagesClient.get(getLatestMessagesUrlString,new JsonHttpResponseHandler(){
+        getLatestMessagesClient.get(getLatestMessagesUrlString, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 try {
-                    for (int i=0;i<response.length();i++) {
+                    for (int i = 0; i < response.length(); i++) {
                         JSONObject friendJsonObject = response.getJSONObject(i);
                         Gson gson = new Gson();
-                        FriendBean friendBean = gson.fromJson(friendJsonObject.toString(),FriendBean.class);
+                        FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
                         friendBean.setSign(1);
                         System.out.println(friendBean.toString());
                         friendBeans.add(friendBean);
@@ -317,6 +315,7 @@ public class FriendList extends ActionBarActivity {
                 }
                 friendListAdapter = new FriendListAdapter(FriendList.this, friendBeans, account);
                 friendListView.setAdapter(friendListAdapter);
+                friendListView.onRefreshComplete();
             }
         });
     }

@@ -93,7 +93,7 @@ public class ChatView extends Activity {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                         etMessage.setText("");
-                        chatViewAdapter.notifyDataSetInvalidated();
+                        getMessageHistory();
                     }
 
                     @Override
@@ -142,6 +142,7 @@ public class ChatView extends Activity {
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 positionEnd = response.length();
                 positionStart = positionEnd-count;
+                if (positionStart<0) positionStart=0;
                 for (int i=positionStart;i<positionEnd;i++) {
                     try {
                         JSONObject messageJsonObject = response.getJSONObject(i);

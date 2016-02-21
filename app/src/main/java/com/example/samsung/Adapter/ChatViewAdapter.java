@@ -48,38 +48,39 @@ public class ChatViewAdapter  extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
+        ViewHolder holder1 = null;
+        ViewHolder holder2 = null;
         messageBean = messageBeans.get(position);
-        System.out.println(messageBean);
+        System.out.println(messageBean.toString());
         //if sender is self then otherOrSelf is true,else is false;
         Boolean otherOrSelf = false;
         if (messageBean.getSender().equals(account)) otherOrSelf = true;
         if (otherOrSelf) System.out.println("true");
-        if(convertView == null)
-        {
-            holder = new ViewHolder();
-            if (otherOrSelf) {
-                convertView = mInflater.inflate(R.layout.chat_view_right, parent,false);
-                holder.nameText = (TextView) convertView.findViewById(R.id.chat_right_name);
-                holder.messageText = (TextView) convertView.findViewById(R.id.chat_right_message);
-                holder.timeText = (TextView) convertView.findViewById(R.id.chat_right_time);
-            }
-            else {
-                convertView = mInflater.inflate(R.layout.chat_view_left, parent,false);
-                holder.nameText = (TextView) convertView.findViewById(R.id.chat_left_name);
-                holder.messageText = (TextView) convertView.findViewById(R.id.chat_left_message);
-                holder.timeText = (TextView) convertView.findViewById(R.id.chat_left_time);
-            }
-            convertView.setTag(holder);
-        }else
-        {
-            holder = (ViewHolder)convertView.getTag();
+        if (otherOrSelf) {
+            holder1 = new ViewHolder();
+            convertView = mInflater.inflate(R.layout.chat_view_right, null);
+            holder1.nameText = (TextView) convertView.findViewById(R.id.chat_right_name);
+            holder1.messageText = (TextView) convertView.findViewById(R.id.chat_right_message);
+            holder1.timeText = (TextView) convertView.findViewById(R.id.chat_right_time);
         }
-        holder.messageText.setText(messageBean.getMessage());
-        System.out.println(messageBean.getMessage());
-        holder.timeText.setText(messageBean.getTime());
-        if (otherOrSelf) holder.nameText.setText(account);
-        else holder.nameText.setText(friendAccount);
+        else {
+            holder2 = new ViewHolder();
+            convertView = mInflater.inflate(R.layout.chat_view_left, null);
+            holder2.nameText = (TextView) convertView.findViewById(R.id.chat_left_name);
+            holder2.messageText = (TextView) convertView.findViewById(R.id.chat_left_message);
+            holder2.timeText = (TextView) convertView.findViewById(R.id.chat_left_time);
+            convertView.setTag(holder2);
+        }
+        if (otherOrSelf) {
+            holder1.messageText.setText(messageBean.getMessage());
+            holder1.timeText.setText(messageBean.getTime());
+            holder1.nameText.setText(account);
+        }
+        else {
+            holder2.messageText.setText(messageBean.getMessage());
+            holder2.timeText.setText(messageBean.getTime());
+            holder2.nameText.setText(friendAccount);
+        }
         return convertView;
     }
 
