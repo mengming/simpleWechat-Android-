@@ -62,7 +62,7 @@ public class FriendList extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
-            case R.id.action_addfriend:
+            case R.id.actionbar_add_friend:
                 addFriendDialog();
                 return true;
             default:
@@ -307,7 +307,6 @@ public class FriendList extends ActionBarActivity {
                         Gson gson = new Gson();
                         FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
                         friendBean.setSign(1);
-                        System.out.println(friendBean.toString());
                         friendBeans.add(friendBean);
                     }
                 } catch (JSONException e) {
