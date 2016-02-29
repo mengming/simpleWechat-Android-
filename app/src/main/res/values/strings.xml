@@ -22,4 +22,5 @@
     <string name="time">时间</string>
     <string name="self_information">个人资料</string>
     <string name="add_friend">添加朋友</string>
+    <string name="btn_avator">选择头像</string>
 </resources>

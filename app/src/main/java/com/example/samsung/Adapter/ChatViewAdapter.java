@@ -19,21 +19,23 @@ public class ChatViewAdapter  extends BaseAdapter{
     private Context context;
     private String account,friendAccount;
     public ArrayList<MessageBean> messageBeans;
-    private int count;
+    private int count = 10;
 
     public ChatViewAdapter(Context context,ArrayList<MessageBean> messageBeans
-            ,String account,String friendAccount,int count){
+            ,String account,String friendAccount){
         mInflater = LayoutInflater.from(context);
         this.messageBeans = messageBeans;
         this.account = account;
         this.friendAccount = friendAccount;
+    }
+
+    public void setCount(int count){
         this.count = count;
     }
 
     @Override
     public int getCount() {
-        if (count<=messageBeans.size()) return count;
-        else return messageBeans.size();
+        return messageBeans.size();
     }
 
     @Override
@@ -51,11 +53,9 @@ public class ChatViewAdapter  extends BaseAdapter{
         ViewHolder holder1 = null;
         ViewHolder holder2 = null;
         messageBean = messageBeans.get(position);
-        System.out.println(messageBean.toString());
         //if sender is self then otherOrSelf is true,else is false;
         Boolean otherOrSelf = false;
         if (messageBean.getSender().equals(account)) otherOrSelf = true;
-        if (otherOrSelf) System.out.println("true");
         if (otherOrSelf) {
             holder1 = new ViewHolder();
             convertView = mInflater.inflate(R.layout.chat_view_right, null);

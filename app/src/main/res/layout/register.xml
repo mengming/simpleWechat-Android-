@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <Button
         android:layout_width="wrap_content"
@@ -164,4 +165,19 @@
             android:text="@string/female"/>
     </RadioGroup>
 
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/user_avator_select"
+        android:layout_width="46sp"
+        android:layout_height="46sp"
+        android:layout_below="@+id/sexRadioGroup"
+        android:layout_toRightOf="@+id/btn_avator"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_avator"
+        android:id="@+id/btn_avator"
+        android:layout_below="@+id/sexRadioGroup"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

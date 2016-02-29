@@ -33,7 +33,7 @@ import cz.msebera.android.httpclient.Header;
 public class ChatView extends Activity {
 
     private PullToRefreshListView chatListView;
-    private ArrayList<MessageBean> messageBeans;
+    private ArrayList<MessageBean> messageBeans,newMessageBeans;
     private ChatViewAdapter chatViewAdapter;
     private EditText etMessage;
     private TextView nameText;
@@ -53,6 +53,7 @@ public class ChatView extends Activity {
         setBtnBack();
         setBtnSend();
         initChatView();
+        getMessageHistory();
     }
 
     private void setNameText(){
@@ -113,6 +114,8 @@ public class ChatView extends Activity {
     }
 
     private void initChatView(){
+        messageBeans = new ArrayList<>();
+        chatViewAdapter = new ChatViewAdapter(ChatView.this,messageBeans,account,friendAccount);
         chatListView = (PullToRefreshListView) findViewById(R.id.chat_list);
         chatListView.getRefreshableView().setDivider(null);
         chatListView.setMode(PullToRefreshBase.Mode.BOTH);
@@ -121,7 +124,7 @@ public class ChatView extends Activity {
         chatListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                count+=10;
+                count += 10;
                 getMessageHistory();
             }
 
@@ -130,11 +133,10 @@ public class ChatView extends Activity {
                 getMessageHistory();
             }
         });
-        getMessageHistory();
     }
 
     private void getMessageHistory(){
-        messageBeans = new ArrayList<>();
+        newMessageBeans = new ArrayList<>();
         AsyncHttpClient getMessageClient = new AsyncHttpClient();
         getMessageUrlString = baseUrl + "table=messageList&method=get&data="+ messageSenderAndReceiver();
         getMessageClient.get(getMessageUrlString,new JsonHttpResponseHandler(){
@@ -148,14 +150,14 @@ public class ChatView extends Activity {
                         JSONObject messageJsonObject = response.getJSONObject(i);
                         Gson gson = new Gson();
                         MessageBean messageBean = gson.fromJson(messageJsonObject.toString(),MessageBean.class);
-                        messageBeans.add(messageBean);
+                        newMessageBeans.add(messageBean);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-                chatViewAdapter = new ChatViewAdapter(ChatView.this,messageBeans,account,friendAccount,count);
-                chatViewAdapter.notifyDataSetInvalidated();
-                chatListView.setAdapter(chatViewAdapter);
+                messageBeans.clear();
+                messageBeans.addAll(newMessageBeans);
+                chatViewAdapter.notifyDataSetChanged();
                 chatListView.getRefreshableView().setSelection(messageBeans.size() - 1);
                 chatListView.onRefreshComplete();
             }

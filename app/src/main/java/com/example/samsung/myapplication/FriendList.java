@@ -18,6 +18,9 @@ import android.widget.Toast;
 
 import com.example.samsung.Adapter.FriendListAdapter;
 import com.example.samsung.Data.FriendBean;
+import com.example.samsung.Data.FriendListEvent;
+import com.example.samsung.Service.FriendListService;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -32,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
+import de.greenrobot.event.EventBus;
 
 public class FriendList extends ActionBarActivity {
 
@@ -45,11 +49,34 @@ public class FriendList extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
         setContentView(R.layout.friendlist);
 
         getExtra();
         initFriendListView();
         getFriendList();
+//        Intent intent = new Intent();
+//        intent.setClass(this,FriendListService.class);
+//        startService(intent);
+//        EventBus.getDefault().register(this);
+    }
+
+    public void onEventMainThread(FriendListEvent event) {
+        String msg = "onEventMainThread收到了消息：" + event.getMsg();
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+//    public void onEventMainThread(FriendListEvent event) {
+//        ArrayList<FriendBean> newFriendBeans = event.getFriendBeans();
+//        friendBeans.clear();
+//        friendBeans.addAll(newFriendBeans);
+//        friendListAdapter.notifyDataSetChanged();
+//    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -97,8 +124,11 @@ public class FriendList extends ActionBarActivity {
         friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (friendBeans.get(position - 1).getSign() == 0)
-                    addFriendResponseDialog(position - 1);
+                FriendBean friendBean = friendBeans.get(position-1);
+                if (friendBean.getSign() == 0) {
+                    if (friendBean.getFriendResponse().equals(account)) addFriendResponseDialog(position - 1);
+                    else Toast.makeText(getApplicationContext(),"等待对方同意",Toast.LENGTH_SHORT).show();
+                }
                 else {
                     Intent chatViewIntent = new Intent();
                     chatViewIntent.setClass(FriendList.this, ChatView.class);
@@ -309,6 +339,7 @@ public class FriendList extends ActionBarActivity {
                         Gson gson = new Gson();
                         FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
                         friendBean.setSign(1);
+                        friendBean.setMessage(friendBean.getSender() + ":" + friendJsonObject.getString("message"));
                         newFriendBeans.add(friendBean);
                     }
                 } catch (JSONException e) {

@@ -1,6 +1,7 @@
 package com.example.samsung.myapplication;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.PasswordTransformationMethod;
@@ -11,6 +12,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -18,15 +21,16 @@ import cz.msebera.android.httpclient.Header;
 
 public class Register extends ActionBarActivity {
 
-    private String rAccount,rPassword,rPasswordSure,rName,rSignature,rAge,rSex;
+    private String rAccount,rPassword,rPasswordSure,rName,rSignature,rAge,rSex,avatorUrl;
     private EditText rEtAccount,rEtPassword,rEtPasswordSure,rEtName,rEtSignature,rEtAge;
     private RadioButton male,female;
     private RadioGroup sexRadioGroup;
-    private Button btnSure,btnReturn;
+    private Button btnSure,btnReturn,btnAvator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
         setContentView(R.layout.register);
 
         setrEtAccount();
@@ -38,6 +42,17 @@ public class Register extends ActionBarActivity {
         setSexRadioGroup();
         setBtnSure();
         setBtnReturn();
+        setBtnAvator();
+    }
+
+    private void setBtnAvator() {
+        btnAvator = (Button) findViewById(R.id.btn_avator);
+        btnAvator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAvatorSelect();
+            }
+        });
     }
 
     private void setrEtAccount(){
@@ -101,7 +116,7 @@ public class Register extends ActionBarActivity {
         btnReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Register.this,Login.class));
+                startActivity(new Intent(Register.this, Login.class));
             }
         });
     }
@@ -113,12 +128,12 @@ public class Register extends ActionBarActivity {
         saveHttpClient.get(saveUrlString, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Toast.makeText(getApplicationContext(),"注册成功",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(getApplicationContext(),"注册失败",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -136,7 +151,29 @@ public class Register extends ActionBarActivity {
         String result = new String();
         result = "{%22Identification%22:%22"+rAccount+"%22,%22Password%22:%22"+rPassword
             +"%22,%22Name%22:%22"+rName+"%22,%22Signature%22:%22"+rSignature+
-                "%22,%22Age%22:%22"+rAge+"%22,%22Sex%22:%22"+rSex+"%22}";
+                "%22,%22Age%22:%22"+rAge+"%22,%22Sex%22:%22"+rSex+
+                "%22,%22picUrl%22:%22"+avatorUrl+"%22}";
         return result;
+    }
+
+    private void setAvatorSelect(){
+        Intent intent = new Intent();
+        /* 开启Pictures画面Type设定为image */
+        intent.setType("image/*");
+        /* 使用Intent.ACTION_GET_CONTENT这个Action */
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        /* 取得相片后返回本画面 */
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            avatorUrl = data.getDataString();
+            Uri uri = Uri.parse(avatorUrl);
+            SimpleDraweeView draweeView = (SimpleDraweeView) findViewById(R.id.user_avator_select);
+            draweeView.setImageURI(uri);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.samsung.myapplication;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
@@ -12,6 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -84,12 +87,13 @@ public class Login extends ActionBarActivity {
 
     private void setBtnLogin(){
         btnLogin = (Button) findViewById(R.id.b_login);
+        rightPassword = new String();
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 account = etAccount.getText().toString();
                 password = etPassword.getText().toString();
-//                account="ceshi";password="123456";
+                account="ceshi";password="123456";
                 AsyncHttpClient client = new AsyncHttpClient();
                 getUserClient = baseUrl + getUserParam();
                 client.get(getUserClient,new JsonHttpResponseHandler(){
@@ -110,6 +114,7 @@ public class Login extends ActionBarActivity {
                             friendListIntent.setClass(Login.this,FriendList.class);
                             friendListIntent.putExtra("account", account);
                             friendListIntent.putExtra("name",name);
+                            rightPassword = null;
                             startActivity(friendListIntent);
                         }
                         else Toast.makeText(getApplicationContext(),"密码不正确",Toast.LENGTH_SHORT).show();

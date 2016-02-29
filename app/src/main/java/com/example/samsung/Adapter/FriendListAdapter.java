@@ -2,6 +2,7 @@ package com.example.samsung.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import com.example.samsung.Data.FriendBean;
 import com.example.samsung.myapplication.FriendList;
 import com.example.samsung.myapplication.R;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -57,13 +60,13 @@ public class FriendListAdapter extends BaseAdapter {
             holder.nameText = (TextView) convertView.findViewById(R.id.name);
             holder.messageText = (TextView)convertView.findViewById(R.id.message);
             holder.timeText = (TextView)convertView.findViewById(R.id.time);
+            holder.avator = (SimpleDraweeView) convertView.findViewById(R.id.pic);
             convertView.setTag(holder);
         }else
         {
             holder = (ViewHolder)convertView.getTag();
         }
         if (sign==0) {
-            System.out.println(friendBean.getFriendResponse()+"/"+account);
             if (friendBean.getFriendResponse().equals(account)) {
                 name = friendBean.getFriendRequest();
                 holder.nameText.setText(name);
@@ -84,6 +87,8 @@ public class FriendListAdapter extends BaseAdapter {
             holder.messageText.setText(friendBean.getMessage());
             holder.timeText.setText(friendBean.getTime());
         }
+        Uri uri = Uri.parse("res:///"+R.drawable.chat_pic);
+        holder.avator.setImageURI(uri);
         return convertView;
     }
 
@@ -91,6 +96,7 @@ public class FriendListAdapter extends BaseAdapter {
         public TextView nameText;
         public TextView messageText;
         public TextView timeText;
+        public SimpleDraweeView avator;
     }
 
 }
