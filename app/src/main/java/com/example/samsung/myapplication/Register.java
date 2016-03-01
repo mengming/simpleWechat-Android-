@@ -21,11 +21,12 @@ import cz.msebera.android.httpclient.Header;
 
 public class Register extends ActionBarActivity {
 
-    private String rAccount,rPassword,rPasswordSure,rName,rSignature,rAge,rSex,avatorUrl;
+    private String rAccount,rPassword,rPasswordSure,rName,rSignature,rAge,rSex,avatarUrl;
     private EditText rEtAccount,rEtPassword,rEtPasswordSure,rEtName,rEtSignature,rEtAge;
     private RadioButton male,female;
     private RadioGroup sexRadioGroup;
     private Button btnSure,btnReturn,btnAvator;
+    private int condition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class Register extends ActionBarActivity {
     }
 
     private void setBtnAvator() {
-        btnAvator = (Button) findViewById(R.id.btn_avator);
+        btnAvator = (Button) findViewById(R.id.btn_avatar);
         btnAvator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,12 +101,24 @@ public class Register extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 getAccountInformation();
-                if (!rPassword.equals(rPasswordSure))
-                    Toast.makeText(getApplicationContext(), "密码输入不一致", Toast.LENGTH_SHORT).show();
-                else {
-                    //send account and password to server
-                    saveInformationToServer();
-                    startActivity(new Intent(Register.this, Login.class));
+                condition = 0;
+                if (rAccount.length()>20 || rAccount.length()<6) condition = 1;
+                else if (!rPassword.equals(rPasswordSure)) condition = 2;
+                else if (rPassword.length()>20 || rPassword.length()<6) condition = 3;
+                else if (rSex == null) condition = 4;
+                if (rName.length()==0) rName = rAccount;
+                if (rSignature.length()==0) rSignature = "无";
+                if (rAge.length()==0) rAge = "0";
+                switch (condition) {
+                    case 1:Toast.makeText(getApplicationContext(), "账号长度应在6~20之间", Toast.LENGTH_SHORT).show();break;
+                    case 2:Toast.makeText(getApplicationContext(), "密码输入不一致", Toast.LENGTH_SHORT).show();break;
+                    case 3:Toast.makeText(getApplicationContext(),"密码长度应在6~20之间",Toast.LENGTH_SHORT).show();break;
+                    case 4:Toast.makeText(getApplicationContext(), "性别不能为空", Toast.LENGTH_SHORT).show();break;
+                    case 0:{//send account and password to server
+                        saveInformationToServer();
+                        startActivity(new Intent(Register.this, Login.class));
+                        break;
+                    }
                 }
             }
         });
@@ -152,7 +165,7 @@ public class Register extends ActionBarActivity {
         result = "{%22Identification%22:%22"+rAccount+"%22,%22Password%22:%22"+rPassword
             +"%22,%22Name%22:%22"+rName+"%22,%22Signature%22:%22"+rSignature+
                 "%22,%22Age%22:%22"+rAge+"%22,%22Sex%22:%22"+rSex+
-                "%22,%22picUrl%22:%22"+avatorUrl+"%22}";
+                "%22,%22picUrl%22:%22"+avatarUrl+"%22}";
         return result;
     }
 
@@ -169,9 +182,9 @@ public class Register extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            avatorUrl = data.getDataString();
-            Uri uri = Uri.parse(avatorUrl);
-            SimpleDraweeView draweeView = (SimpleDraweeView) findViewById(R.id.user_avator_select);
+            avatarUrl = data.getDataString();
+            Uri uri = Uri.parse(avatarUrl);
+            SimpleDraweeView draweeView = (SimpleDraweeView) findViewById(R.id.user_avatar_select);
             draweeView.setImageURI(uri);
         }
         super.onActivityResult(requestCode, resultCode, data);

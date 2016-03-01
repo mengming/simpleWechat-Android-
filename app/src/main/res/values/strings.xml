@@ -12,7 +12,7 @@
     <string name="name">昵称</string>
     <string name="signature">个性签名</string>
     <string name="age">年龄</string>
-    <string name="head_portrait">头像</string>
+    <string name="avatar">头像</string>
     <string name="sex">性别</string>
     <string name="male">男</string>
     <string name="female">女</string>
@@ -22,5 +22,5 @@
     <string name="time">时间</string>
     <string name="self_information">个人资料</string>
     <string name="add_friend">添加朋友</string>
-    <string name="btn_avator">选择头像</string>
+    <string name="btn_avatar">选择头像</string>
 </resources>

@@ -76,7 +76,8 @@ public class ChatView extends Activity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ChatView.this, FriendList.class));
+//                startActivity(new Intent(ChatView.this, FriendList.class));
+                finish();
             }
         });
     }

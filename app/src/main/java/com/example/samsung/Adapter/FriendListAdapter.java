@@ -61,6 +61,7 @@ public class FriendListAdapter extends BaseAdapter {
             holder.messageText = (TextView)convertView.findViewById(R.id.message);
             holder.timeText = (TextView)convertView.findViewById(R.id.time);
             holder.avator = (SimpleDraweeView) convertView.findViewById(R.id.pic);
+            holder.newMessageNumText = (TextView) convertView.findViewById(R.id.newMessageNum);
             convertView.setTag(holder);
         }else
         {
@@ -86,6 +87,8 @@ public class FriendListAdapter extends BaseAdapter {
             holder.nameText.setText(name);
             holder.messageText.setText(friendBean.getMessage());
             holder.timeText.setText(friendBean.getTime());
+//            if (friendBean.getNewJudge()) holder.newMessageNumText.setText("new");
+//            else holder.newMessageNumText.setText("");
         }
         Uri uri = Uri.parse("res:///"+R.drawable.chat_pic);
         holder.avator.setImageURI(uri);
@@ -96,6 +99,7 @@ public class FriendListAdapter extends BaseAdapter {
         public TextView nameText;
         public TextView messageText;
         public TextView timeText;
+        public TextView newMessageNumText;
         public SimpleDraweeView avator;
     }
 

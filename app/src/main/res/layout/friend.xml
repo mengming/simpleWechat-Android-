@@ -42,15 +42,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <!--<ImageView-->
-        <!--android:layout_width="46sp"-->
-        <!--android:layout_height="46sp"-->
-        <!--android:id="@+id/pic"-->
-        <!--android:background="@drawable/chat_pic"-->
-        <!--android:gravity="center"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:layout_marginLeft="10dp" />-->
-
     <com.facebook.drawee.view.SimpleDraweeView
         android:layout_width="46sp"
         android:layout_height="46sp"
@@ -59,4 +50,13 @@
         android:gravity="center"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/newMessageNum"
+        android:layout_alignBottom="@+id/pic"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

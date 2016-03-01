@@ -93,7 +93,7 @@ public class Login extends ActionBarActivity {
             public void onClick(View v) {
                 account = etAccount.getText().toString();
                 password = etPassword.getText().toString();
-                account="ceshi";password="123456";
+//                account="ceshi";password="123456";
                 AsyncHttpClient client = new AsyncHttpClient();
                 getUserClient = baseUrl + getUserParam();
                 client.get(getUserClient,new JsonHttpResponseHandler(){

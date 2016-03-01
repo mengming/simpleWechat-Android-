@@ -5,6 +5,15 @@ public class FriendBean {
     private int ID,sign;
     private String friendRequest,friendResponse,friendRequestName,friendResponseName,
         message,time,sender,receiver;
+    private boolean newJudge;
+
+    public boolean getNewJudge(){
+        return newJudge;
+    }
+
+    public void setNewJudge(boolean newJudge) {
+        this.newJudge = newJudge;
+    }
 
     public int getID(){
         return ID;

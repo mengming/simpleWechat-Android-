@@ -45,6 +45,7 @@ public class FriendList extends ActionBarActivity {
     static String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
     private ArrayList<FriendBean> friendBeans,newFriendBeans;
     private FriendListAdapter friendListAdapter;
+    private int unsignedNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,11 +92,30 @@ public class FriendList extends ActionBarActivity {
         switch (item.getItemId())
         {
             case R.id.actionbar_add_friend:
-                addFriendDialog();
+                checkFriendDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void checkFriendDialog() {
+        final EditText accountInput = new EditText(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(FriendList.this);
+        builder.setMessage("请输入对方账号：").setView(accountInput);
+        builder.setPositiveButton("查找", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent friendInformationIntent = new Intent();
+                friendAccount = accountInput.getText().toString();
+                friendInformationIntent.setClass(FriendList.this, AccountInformation.class);
+                friendInformationIntent.putExtra("friendAccount", friendAccount);
+                friendInformationIntent.putExtra("account", account);
+                startActivity(friendInformationIntent);
+                dialog.dismiss();
+            }
+        }).setNegativeButton("取消",null);
+        builder.create().show();
     }
 
     private void getExtra(){
@@ -153,56 +173,8 @@ public class FriendList extends ActionBarActivity {
         });
     }
 
-    protected void addFriendDialog(){
-        LayoutInflater dialogInflater = LayoutInflater.from(this);
-        final View dialogView = dialogInflater.inflate(R.layout.alert_dialog_view,null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(FriendList.this);
-        builder.setMessage("请输入朋友账号");
-        builder.setView(dialogView);
-        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                EditText dialogAccount = (EditText) dialogView.findViewById(R.id.friend_account);
-                friendAccount = dialogAccount.getText().toString();
-                EditText dialogRequestMessage = (EditText) dialogView.findViewById(R.id.friend_request_message);
-                message = dialogRequestMessage.getText().toString();
-                saveRequestToServer();
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
-
-    private void saveRequestToServer(){
-        saveUrlString = baseUrl + "table=friendList&method=save&data=" + friendRequest();
-        AsyncHttpClient saveHttpClient = new AsyncHttpClient();
-        saveHttpClient.get(saveUrlString, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Toast.makeText(getApplicationContext(), "发送请求成功，等待对方确认", Toast.LENGTH_SHORT).show();
-                getFriendList();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(getApplicationContext(), "对方账号不存在", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     private String getFriendListParam(){
         return "table=friendList&method=get&identification=" + account;
-    }
-
-    private String friendRequest(){
-        return "{%22friendRequest%22:%22"+account+"%22,%22friendResponse%22:%22"+friendAccount
-                +"%22,%22sign%22:%220%22,%22message%22:%22"+message+"%22}";
     }
 
     private String friendResponse(){
@@ -302,6 +274,7 @@ public class FriendList extends ActionBarActivity {
 
     private void getFriendListUnsigned(){
         newFriendBeans = new ArrayList<>();
+        unsignedNumber = 0;
         AsyncHttpClient getFriendListUnsignedClient = new AsyncHttpClient();
         getUnsignedUrlString = baseUrl + getFriendListParam();
         getFriendListUnsignedClient.get(getUnsignedUrlString, new JsonHttpResponseHandler() {
@@ -314,6 +287,7 @@ public class FriendList extends ActionBarActivity {
                             Gson gson = new Gson();
                             FriendBean friendBean = gson.fromJson(friendJsonObject.toString(),FriendBean.class);
                             newFriendBeans.add(friendBean);
+//                            unsignedNumber++;
                         }
                     }
                 } catch (JSONException e) {
@@ -339,6 +313,13 @@ public class FriendList extends ActionBarActivity {
                         Gson gson = new Gson();
                         FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
                         friendBean.setSign(1);
+//                        if (friendBeans.size()!=0) {
+//                            int oldID = friendBeans.get(i+unsignedNumber).getID();
+//                            int newID = friendBean.getID();
+//                            if (oldID!=newID && !friendBean.getSender().equals(account)) friendBean.setNewJudge(true);
+//                            else friendBean.setNewJudge(false);
+//                        }
+//                        else friendBean.setNewJudge(false);
                         friendBean.setMessage(friendBean.getSender() + ":" + friendJsonObject.getString("message"));
                         newFriendBeans.add(friendBean);
                     }

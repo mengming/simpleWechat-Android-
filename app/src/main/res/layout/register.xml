@@ -166,17 +166,17 @@
     </RadioGroup>
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/user_avator_select"
+        android:id="@+id/user_avatar_select"
         android:layout_width="46sp"
         android:layout_height="46sp"
         android:layout_below="@+id/sexRadioGroup"
-        android:layout_toRightOf="@+id/btn_avator"/>
+        android:layout_toRightOf="@+id/btn_avatar"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_avator"
-        android:id="@+id/btn_avator"
+        android:text="@string/btn_avatar"
+        android:id="@+id/btn_avatar"
         android:layout_below="@+id/sexRadioGroup"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
