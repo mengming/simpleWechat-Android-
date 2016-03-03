@@ -49,6 +49,7 @@ public class FriendList extends ActionBarActivity {
     private ArrayList<FriendBean> friendBeans,newFriendBeans;
     private FriendListAdapter friendListAdapter;
     private int unsignedNumber;
+    private boolean isCreate;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -60,6 +61,7 @@ public class FriendList extends ActionBarActivity {
         getExtra();
         initFriendListView();
         getFriendList();
+        isCreate = true;
 //        Intent intent = new Intent();
 //        intent.setClass(this,FriendListService.class);
 //        startService(intent);
@@ -69,7 +71,8 @@ public class FriendList extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getFriendList();
+        if (!isCreate) getFriendList();
+        isCreate = false;
     }
 
     public void onEventMainThread(FriendListEvent event) {
@@ -321,8 +324,7 @@ public class FriendList extends ActionBarActivity {
                             FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
                             friendBean.setNewJudge(false);
                             newFriendBeans.add(friendBean);
-//                            unsignedNumber++;
-                            System.out.println("");
+                            unsignedNumber++;
                         }
                     }
                 } catch (JSONException e) {
@@ -349,20 +351,26 @@ public class FriendList extends ActionBarActivity {
                     for (int i = 0; i <length; i++) {
                         JSONObject friendJsonObject = response.getJSONObject(i);
                         Gson gson = new Gson();
-//                        FriendBean friendBean1 = friendBeans.get(i+unsignedNumber);
                         FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
+                        FriendBean oldFriendBean = null;
+                        if (friendBeans.size()!=0) oldFriendBean = friendBeans.get(i+unsignedNumber);
                         friendBean.setSign(1);
                         friendBean.setMessage(friendBean.getSender() + ":" + friendJsonObject.getString("message"));
                         friendAccount = judgeFriendAccount(friendBean);
                         int oldID = sharedPreferences.getInt(friendAccount, 0);
                         if (oldID==0) editor.putInt(friendAccount, friendBean.getID());
                         else if (oldID!=friendBean.getID()) {
-                            friendBean.setNewJudge(true);
-                            friendBean.setUnRead(true);
+                            if (friendBean.getSender().equals(friendAccount)) {
+                                friendBean.setNewJudge(true);
+                                friendBean.setUnRead(true);
+                            }
                             editor.remove(friendAccount);
                             editor.putInt(friendAccount, friendBean.getID());
                         }
-                        else if (!friendBean.getUnRead()) friendBean.setNewJudge(false);
+                        else if (oldFriendBean!=null && oldFriendBean.getUnRead()) {
+                            friendBean.setUnRead(true);
+                            friendBean.setNewJudge(true);
+                        }
                         newFriendBeans.add(friendBean);
                     }
                 } catch (JSONException e) {
