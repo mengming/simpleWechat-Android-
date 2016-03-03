@@ -1,8 +1,10 @@
 package com.example.samsung.myapplication;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -41,12 +43,13 @@ import de.greenrobot.event.EventBus;
 public class FriendList extends ActionBarActivity {
 
     private PullToRefreshListView friendListView;
-    private String name,account,friendAccount,message,saveUrlString,getUnsignedUrlString,
-            agreeUrlString,askMessage,disagreeUrlString,getLatestMessagesUrlString, sendMessageUrlString;
+    private String name,account,friendAccount,getUnsignedUrlString, agreeUrlString,askMessage,
+            disagreeUrlString,getLatestMessagesUrlString, sendMessageUrlString;
     static String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
     private ArrayList<FriendBean> friendBeans,newFriendBeans;
     private FriendListAdapter friendListAdapter;
     private int unsignedNumber;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,12 +101,29 @@ public class FriendList extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
-            case R.id.actionbar_add_friend:
+            case R.id.actionbar_add_friend: 
                 checkFriendDialog();
-                return true;
+                break;
+            case R.id.actionbar_logout:
+                logout();
+                break;
+            case R.id.actionbar_self_information:
+                checkSelfInformation();
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+        return true;
+    }
+
+    private void checkSelfInformation() {
+        
+    }
+
+    private void logout() {
+        sharedPreferences = getSharedPreferences("login",Activity.MODE_PRIVATE);
+        sharedPreferences.edit().clear().commit();
+        finish();
     }
 
     private void checkFriendDialog() {
@@ -158,6 +178,7 @@ public class FriendList extends ActionBarActivity {
                 }
                 else {
                     Intent chatViewIntent = new Intent();
+                    friendBean.setUnRead(false);
                     chatViewIntent.setClass(FriendList.this, ChatView.class);
                     chatViewIntent.putExtra("account", account);
                     chatViewIntent.putExtra("friendAccount", judgeFriendAccount(friendBeans.get(position - 1)));
@@ -290,11 +311,13 @@ public class FriendList extends ActionBarActivity {
                 try {
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject friendJsonObject = response.getJSONObject(i);
-                        if (friendJsonObject.getInt("sign")==0) {
+                        if (friendJsonObject.getInt("sign") == 0) {
                             Gson gson = new Gson();
-                            FriendBean friendBean = gson.fromJson(friendJsonObject.toString(),FriendBean.class);
+                            FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
+                            friendBean.setNewJudge(false);
                             newFriendBeans.add(friendBean);
 //                            unsignedNumber++;
+                            System.out.println("");
                         }
                     }
                 } catch (JSONException e) {
@@ -314,25 +337,33 @@ public class FriendList extends ActionBarActivity {
         getLatestMessagesClient.get(getLatestMessagesUrlString, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                sharedPreferences = getSharedPreferences("IDList", Activity.MODE_PRIVATE);
+                int length = response.length();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
                 try {
-                    for (int i = 0; i < response.length(); i++) {
+                    for (int i = 0; i <length; i++) {
                         JSONObject friendJsonObject = response.getJSONObject(i);
                         Gson gson = new Gson();
+//                        FriendBean friendBean1 = friendBeans.get(i+unsignedNumber);
                         FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
                         friendBean.setSign(1);
-//                        if (friendBeans.size()!=0) {
-//                            int oldID = friendBeans.get(i+unsignedNumber).getID();
-//                            int newID = friendBean.getID();
-//                            if (oldID!=newID && !friendBean.getSender().equals(account)) friendBean.setNewJudge(true);
-//                            else friendBean.setNewJudge(false);
-//                        }
-//                        else friendBean.setNewJudge(false);
                         friendBean.setMessage(friendBean.getSender() + ":" + friendJsonObject.getString("message"));
+                        friendAccount = judgeFriendAccount(friendBean);
+                        int oldID = sharedPreferences.getInt(friendAccount, 0);
+                        if (oldID==0) editor.putInt(friendAccount, friendBean.getID());
+                        else if (oldID!=friendBean.getID()) {
+                            friendBean.setNewJudge(true);
+                            friendBean.setUnRead(true);
+                            editor.remove(friendAccount);
+                            editor.putInt(friendAccount, friendBean.getID());
+                        }
+                        else if (!friendBean.getUnRead()) friendBean.setNewJudge(false);
                         newFriendBeans.add(friendBean);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                editor.commit();
                 friendBeans.clear();
                 friendBeans.addAll(newFriendBeans);
                 friendListAdapter.notifyDataSetChanged();
@@ -348,4 +379,5 @@ public class FriendList extends ActionBarActivity {
             }
         });
     }
+
 }

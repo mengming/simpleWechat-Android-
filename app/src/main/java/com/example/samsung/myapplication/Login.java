@@ -34,6 +34,7 @@ public class Login extends ActionBarActivity {
     static String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
     private EditText etAccount,etPassword;
     private Button btnLogin,btnRegister;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +143,7 @@ public class Login extends ActionBarActivity {
     }
 
     private void saveAccount(){
-        SharedPreferences sharedPreferences = getSharedPreferences("login", Activity.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("login", Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("account", account);
         editor.putString("password",password);
@@ -151,7 +152,7 @@ public class Login extends ActionBarActivity {
     }
 
     private void readAccount(){
-        SharedPreferences sharedPreferences = getSharedPreferences("login", Activity.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("login", Activity.MODE_PRIVATE);
         account = sharedPreferences.getString("account","");
         password = sharedPreferences.getString("password","");
         name = sharedPreferences.getString("name","");

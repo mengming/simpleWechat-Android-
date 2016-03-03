@@ -5,7 +5,15 @@ public class FriendBean {
     private int ID,sign;
     private String friendRequest,friendResponse,friendRequestName,friendResponseName,
         message,time,sender,receiver;
-    private boolean newJudge;
+    private boolean newJudge,unRead;
+
+    public boolean getUnRead(){
+        return unRead;
+    }
+
+    public void setUnRead(boolean unRead){
+        this.unRead = unRead;
+    }
 
     public boolean getNewJudge(){
         return newJudge;

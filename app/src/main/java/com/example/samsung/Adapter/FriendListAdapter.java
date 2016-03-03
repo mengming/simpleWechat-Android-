@@ -87,8 +87,8 @@ public class FriendListAdapter extends BaseAdapter {
             holder.nameText.setText(name);
             holder.messageText.setText(friendBean.getMessage());
             holder.timeText.setText(friendBean.getTime());
-//            if (friendBean.getNewJudge()) holder.newMessageNumText.setText("new");
-//            else holder.newMessageNumText.setText("");
+            if (friendBean.getNewJudge()) holder.newMessageNumText.setText("new");
+            else holder.newMessageNumText.setText("");
         }
         Uri uri = Uri.parse("res:///"+R.drawable.chat_pic);
         holder.avator.setImageURI(uri);

@@ -23,4 +23,5 @@
     <string name="self_information">个人资料</string>
     <string name="add_friend">添加朋友</string>
     <string name="btn_avatar">选择头像</string>
+    <string name="logout">退出登录</string>
 </resources>

@@ -6,9 +6,13 @@
         android:title="@string/add_friend"
         android:icon="@drawable/actionbar_add_icon"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item android:id="@+id/actionbar_self_information"
         android:title="@string/self_information"
-        app:showAsAction="ifRoom"
+        app:showAsAction="never"
+        android:orderInCategory="100"/>
+    <item android:id="@+id/actionbar_logout"
+        android:title="@string/logout"
+        app:showAsAction="never"
         android:orderInCategory="100"/>
 </menu>
