@@ -27,7 +27,9 @@ import static com.example.samsung.myapplication.R.id.tv_signature;
 public class AccountInformation extends ActionBarActivity{
 
     private TextView tvAccount,tvName,tvSex,tvAge,tvSignature;
-    private String account,friendAccount,getUserClient,message,saveUrlString;
+    private String account,friendAccount,getSelfClient,getFriendClient,message,saveUrlString;
+    final static int self = 1,other = 0;
+    private int statusCode;
     private Button btnAdd;
     static String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
 
@@ -36,9 +38,8 @@ public class AccountInformation extends ActionBarActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_information);
 
-        init();
         getExtra();
-        getAccountInformation();
+        init();
     }
 
     private void init() {
@@ -52,43 +53,79 @@ public class AccountInformation extends ActionBarActivity{
 
     private void getExtra() {
         Intent intent = getIntent();
-        account = intent.getStringExtra("account");
-        friendAccount = intent.getStringExtra("friendAccount");
+        statusCode = intent.getIntExtra("statusCode",0);
+        if (statusCode==other) {
+            account = intent.getStringExtra("account");
+            friendAccount = intent.getStringExtra("friendAccount");
+            getFriendAccountInformation();
+        }
+        if (statusCode==self) {
+            account = intent.getStringExtra("account");
+            getSelfAccountInformation();
+        }
     }
 
-    private void getAccountInformation() {
+    private void getSelfAccountInformation() {
         AsyncHttpClient getInformationClient = new AsyncHttpClient();
-        getUserClient = baseUrl + getUserParam();
-        getInformationClient.get(getUserClient, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                super.onSuccess(statusCode, headers, response);
-                try {
-                    JSONObject jsonObject = response.getJSONObject(0);
-                    tvAccount.setText("账号:" + jsonObject.getString("identification"));
-                    tvName.setText("昵称:" + jsonObject.getString("name"));
-                    tvAge.setText("年龄:" + jsonObject.getInt("age"));
-                    tvSex.setText("性别:" + jsonObject.getString("sex"));
-                    tvSignature.setText("个性签名:" + jsonObject.getString("signature"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        getSelfClient = baseUrl + getUserParam(account);
+        getInformationClient.get(getSelfClient,handler);
     }
+
+    private void getFriendAccountInformation() {
+        AsyncHttpClient getInformationClient = new AsyncHttpClient();
+        getFriendClient = baseUrl + getUserParam(friendAccount);
+        getInformationClient.get(getFriendClient,handler);
+    }
+
+    JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+            super.onSuccess(statusCode, headers, response);
+            try {
+                JSONObject jsonObject = response.getJSONObject(0);
+                tvAccount.setText("账号:" + jsonObject.getString("identification"));
+                tvName.setText("昵称:" + jsonObject.getString("name"));
+                tvAge.setText("年龄:" + jsonObject.getInt("age"));
+                tvSex.setText("性别:" + jsonObject.getString("sex"));
+                tvSignature.setText("个性签名:" + jsonObject.getString("signature"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
     private void setBtnAdd(){
         btnAdd = (Button) findViewById(R.id.btn_sure_add);
-        btnAdd.setText("确定添加");
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addFriendDialog();
+        switch (statusCode) {
+            case self: {
+                btnAdd.setText("修改个人资料");
+                btnAdd.setOnClickListener(selfOnClickListener);
+                break;
             }
-        });
+            case other: {
+                btnAdd.setText("确认添加");
+                btnAdd.setOnClickListener(otherOnClickListener);
+                break;
+            }
+        }
     }
 
-    private String getUserParam(){
-        return "table=users&method=get&identification=" + friendAccount;
+    View.OnClickListener selfOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
+
+    View.OnClickListener otherOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            addFriendDialog();
+        }
+    };
+
+    private String getUserParam(String account){
+        return "table=users&method=get&identification=" + account;
     }
 
     private void addFriendDialog(){

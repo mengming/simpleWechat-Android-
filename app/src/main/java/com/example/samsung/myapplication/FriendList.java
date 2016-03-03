@@ -117,7 +117,11 @@ public class FriendList extends ActionBarActivity {
     }
 
     private void checkSelfInformation() {
-        
+        Intent selfInformationIntent = new Intent();
+        selfInformationIntent.setClass(FriendList.this,AccountInformation.class);
+        selfInformationIntent.putExtra("statusCode",1);
+        selfInformationIntent.putExtra("account",account);
+        startActivity(selfInformationIntent);
     }
 
     private void logout() {
@@ -136,6 +140,7 @@ public class FriendList extends ActionBarActivity {
                 Intent friendInformationIntent = new Intent();
                 friendAccount = accountInput.getText().toString();
                 friendInformationIntent.setClass(FriendList.this, AccountInformation.class);
+                friendInformationIntent.putExtra("statusCode", 0);
                 friendInformationIntent.putExtra("friendAccount", friendAccount);
                 friendInformationIntent.putExtra("account", account);
                 startActivity(friendInformationIntent);
