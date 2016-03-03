@@ -7,4 +7,8 @@
         android:icon="@drawable/actionbar_add_icon"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
+    <item android:id="@+id/actionbar_self_information"
+        android:title="@string/self_information"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="100"/>
 </menu>

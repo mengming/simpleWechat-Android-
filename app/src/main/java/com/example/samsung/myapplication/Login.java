@@ -1,6 +1,8 @@
 package com.example.samsung.myapplication;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -38,6 +40,7 @@ public class Login extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
+        readAccount();
         setEtAccount();
         setEtPassword();
         setBtnRegister();
@@ -64,6 +67,14 @@ public class Login extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void login(){
+        Intent friendListIntent = new Intent();
+        friendListIntent.setClass(Login.this, FriendList.class);
+        friendListIntent.putExtra("account", account);
+        friendListIntent.putExtra("name",name);
+        startActivity(friendListIntent);
     }
 
     private void setEtAccount(){
@@ -96,13 +107,13 @@ public class Login extends ActionBarActivity {
 //                account="ceshi";password="123456";
                 AsyncHttpClient client = new AsyncHttpClient();
                 getUserClient = baseUrl + getUserParam();
-                client.get(getUserClient,new JsonHttpResponseHandler(){
+                client.get(getUserClient, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                         super.onSuccess(statusCode, headers, response);
                         try {
                             int length = response.length();
-                            for (int i=0;i<length;i++) {
+                            for (int i = 0; i < length; i++) {
                                 rightPassword = response.getJSONObject(i).getString("password");
                                 name = response.getJSONObject(i).getString("name");
                             }
@@ -110,19 +121,16 @@ public class Login extends ActionBarActivity {
                             e.printStackTrace();
                         }
                         if (rightPassword.equals(password)) {
-                            Intent friendListIntent = new Intent();
-                            friendListIntent.setClass(Login.this,FriendList.class);
-                            friendListIntent.putExtra("account", account);
-                            friendListIntent.putExtra("name",name);
                             rightPassword = null;
-                            startActivity(friendListIntent);
-                        }
-                        else Toast.makeText(getApplicationContext(),"密码不正确",Toast.LENGTH_SHORT).show();
+                            saveAccount();
+                            login();
+                        } else
+                            Toast.makeText(getApplicationContext(), "密码不正确", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        Toast.makeText(getApplicationContext(),"账号不存在",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "账号不存在", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -131,5 +139,22 @@ public class Login extends ActionBarActivity {
 
     private String getUserParam(){
         return "table=users&method=get&identification=" + account;
+    }
+
+    private void saveAccount(){
+        SharedPreferences sharedPreferences = getSharedPreferences("login", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("account", account);
+        editor.putString("password",password);
+        editor.putString("name",name);
+        editor.commit();
+    }
+
+    private void readAccount(){
+        SharedPreferences sharedPreferences = getSharedPreferences("login", Activity.MODE_PRIVATE);
+        account = sharedPreferences.getString("account","");
+        password = sharedPreferences.getString("password","");
+        name = sharedPreferences.getString("name","");
+        if (account.length()!=0 && password.length()!=0) login();
     }
 }

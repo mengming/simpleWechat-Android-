@@ -122,9 +122,6 @@ public class AccountInformation extends ActionBarActivity{
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Toast.makeText(getApplicationContext(), "发送请求成功，等待对方确认", Toast.LENGTH_SHORT).show();
-//                Intent friendListIntent = new Intent();
-//                friendListIntent.setClass(AccountInformation.this,FriendList.class);
-//                startActivity(friendListIntent);
                 finish();
             }
 
