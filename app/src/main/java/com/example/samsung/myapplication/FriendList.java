@@ -2,12 +2,16 @@ package com.example.samsung.myapplication;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +36,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +55,7 @@ public class FriendList extends ActionBarActivity {
     private FriendListAdapter friendListAdapter;
     private int unsignedNumber;
     private boolean isCreate;
+    private Intent intent;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -58,39 +64,56 @@ public class FriendList extends ActionBarActivity {
         Fresco.initialize(this);
         setContentView(R.layout.friendlist);
 
+        System.out.println("onCreateF");
+        EventBus.getDefault().register(this);
         getExtra();
         initFriendListView();
         getFriendList();
         isCreate = true;
-//        Intent intent = new Intent();
-//        intent.setClass(this,FriendListService.class);
-//        startService(intent);
-//        EventBus.getDefault().register(this);
+        intent = new Intent(this,FriendListService.class);
+        intent.putExtra("account", account);
+        startService(intent);
+        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+    }
+
+    ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            System.out.println("onServiceConnected");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            System.out.println("onServiceDisconnected");
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        System.out.println("onStartF");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        System.out.println("onResumeF");
         if (!isCreate) getFriendList();
         isCreate = false;
     }
 
-    public void onEventMainThread(FriendListEvent event) {
-        String msg = "onEventMainThread收到了消息：" + event.getMsg();
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    @Override
+    protected void onStop() {
+        super.onStop();
+        System.out.println("onStopF");
     }
-
-//    public void onEventMainThread(FriendListEvent event) {
-//        ArrayList<FriendBean> newFriendBeans = event.getFriendBeans();
-//        friendBeans.clear();
-//        friendBeans.addAll(newFriendBeans);
-//        friendListAdapter.notifyDataSetChanged();
-//    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unbindService(connection);
         EventBus.getDefault().unregister(this);
+        System.out.println("onDestroyF");
     }
 
     @Override
@@ -117,6 +140,20 @@ public class FriendList extends ActionBarActivity {
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    public void onEventMainThread(FriendListEvent event) {
+        newFriendBeans = new ArrayList<>();
+        JSONArray latestMessagesArray = event.latestMessagesArray;
+        JSONArray unsignedArray = event.unsignedArray;
+        System.out.println(latestMessagesArray.toString());
+        System.out.println(unsignedArray.toString());
+        newFriendBeans.addAll(unsignedArray(unsignedArray));
+        newFriendBeans.addAll(latestArrayHandle(latestMessagesArray));
+        System.out.println("change");
+        friendBeans.clear();
+        friendBeans.addAll(newFriendBeans);
+        friendListAdapter.notifyDataSetChanged();
     }
 
     private void checkSelfInformation() {
@@ -313,25 +350,7 @@ public class FriendList extends ActionBarActivity {
         unsignedNumber = 0;
         AsyncHttpClient getFriendListUnsignedClient = new AsyncHttpClient();
         getUnsignedUrlString = baseUrl + getFriendListParam();
-        getFriendListUnsignedClient.get(getUnsignedUrlString, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                try {
-                    for (int i = 0; i < response.length(); i++) {
-                        JSONObject friendJsonObject = response.getJSONObject(i);
-                        if (friendJsonObject.getInt("sign") == 0) {
-                            Gson gson = new Gson();
-                            FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
-                            friendBean.setNewJudge(false);
-                            newFriendBeans.add(friendBean);
-                            unsignedNumber++;
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        getFriendListUnsignedClient.get(getUnsignedUrlString,unsignedHandler);
     }
 
     private void getFriendListSigned(){
@@ -341,56 +360,89 @@ public class FriendList extends ActionBarActivity {
     public void getLatestMessages(){
         AsyncHttpClient getLatestMessagesClient = new AsyncHttpClient();
         getLatestMessagesUrlString = baseUrl + getLatestMessagesParam();
-        getLatestMessagesClient.get(getLatestMessagesUrlString, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                sharedPreferences = getSharedPreferences("IDList", Activity.MODE_PRIVATE);
-                int length = response.length();
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                try {
-                    for (int i = 0; i <length; i++) {
-                        JSONObject friendJsonObject = response.getJSONObject(i);
-                        Gson gson = new Gson();
-                        FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
-                        FriendBean oldFriendBean = null;
-                        if (friendBeans.size()!=0) oldFriendBean = friendBeans.get(i+unsignedNumber);
-                        friendBean.setSign(1);
-                        friendBean.setMessage(friendBean.getSender() + ":" + friendJsonObject.getString("message"));
-                        friendAccount = judgeFriendAccount(friendBean);
-                        int oldID = sharedPreferences.getInt(friendAccount, 0);
-                        if (oldID==0) editor.putInt(friendAccount, friendBean.getID());
-                        else if (oldID!=friendBean.getID()) {
-                            if (friendBean.getSender().equals(friendAccount)) {
-                                friendBean.setNewJudge(true);
-                                friendBean.setUnRead(true);
-                            }
-                            editor.remove(friendAccount);
-                            editor.putInt(friendAccount, friendBean.getID());
-                        }
-                        else if (oldFriendBean!=null && oldFriendBean.getUnRead()) {
-                            friendBean.setUnRead(true);
-                            friendBean.setNewJudge(true);
-                        }
-                        newFriendBeans.add(friendBean);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                editor.commit();
-                friendBeans.clear();
-                friendBeans.addAll(newFriendBeans);
-                friendListAdapter.notifyDataSetChanged();
-                friendListView.onRefreshComplete();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                friendBeans.clear();
-                friendBeans.addAll(newFriendBeans);
-                friendListAdapter.notifyDataSetChanged();
-                friendListView.onRefreshComplete();
-            }
-        });
+        getLatestMessagesClient.get(getLatestMessagesUrlString,latestHandler);
     }
 
+    JsonHttpResponseHandler unsignedHandler = new JsonHttpResponseHandler(){
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+            newFriendBeans.addAll(unsignedArray(response));
+        }
+    };
+
+    JsonHttpResponseHandler latestHandler = new JsonHttpResponseHandler(){
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+            newFriendBeans.addAll(latestArrayHandle(response));
+            friendBeans.clear();
+            friendBeans.addAll(newFriendBeans);
+            friendListAdapter.notifyDataSetChanged();
+            friendListView.onRefreshComplete();
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            friendBeans.clear();
+            friendBeans.addAll(newFriendBeans);
+            friendListAdapter.notifyDataSetChanged();
+            friendListView.onRefreshComplete();
+        }
+    };
+
+    private ArrayList<FriendBean> latestArrayHandle(JSONArray response){
+        ArrayList<FriendBean> result = new ArrayList<>();
+        sharedPreferences = getSharedPreferences("IDList", Activity.MODE_PRIVATE);
+        int length = response.length();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        try {
+            for (int i = 0; i <length; i++) {
+                JSONObject friendJsonObject = response.getJSONObject(i);
+                Gson gson = new Gson();
+                FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
+                FriendBean oldFriendBean = null;
+                if (friendBeans.size()!=0) oldFriendBean = friendBeans.get(i+unsignedNumber);
+                friendBean.setSign(1);
+                friendBean.setMessage(friendBean.getSender() + ":" + friendJsonObject.getString("message"));
+                friendAccount = judgeFriendAccount(friendBean);
+                int oldID = sharedPreferences.getInt(friendAccount, 0);
+                if (oldID==0) editor.putInt(friendAccount, friendBean.getID());
+                else if (oldID!=friendBean.getID()) {
+                    if (friendBean.getSender().equals(friendAccount)) {
+                        friendBean.setNewJudge(true);
+                        friendBean.setUnRead(true);
+                    }
+                    editor.remove(friendAccount);
+                    editor.putInt(friendAccount, friendBean.getID());
+                }
+                else if (oldFriendBean!=null && oldFriendBean.getUnRead()) {
+                    friendBean.setUnRead(true);
+                    friendBean.setNewJudge(true);
+                }
+                result.add(friendBean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        editor.commit();
+        return result;
+    }
+
+    private ArrayList<FriendBean> unsignedArray(JSONArray response){
+        ArrayList<FriendBean> result = new ArrayList<>();
+        try {
+            for (int i = 0; i < response.length(); i++) {
+                JSONObject friendJsonObject = response.getJSONObject(i);
+                if (friendJsonObject.getInt("sign") == 0) {
+                    Gson gson = new Gson();
+                    FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
+                    friendBean.setNewJudge(false);
+                    result.add(friendBean);
+                    unsignedNumber++;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

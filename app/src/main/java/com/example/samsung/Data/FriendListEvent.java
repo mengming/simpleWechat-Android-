@@ -2,25 +2,17 @@ package com.example.samsung.Data;
 
 import com.example.samsung.myapplication.FriendList;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 
 public class FriendListEvent {
-//    private ArrayList<FriendBean> friendBeans;
-//
-//    public FriendListEvent(ArrayList<FriendBean> friendBeans){
-//        this.friendBeans = friendBeans;
-//    }
-//
-//    public ArrayList<FriendBean> getFriendBeans(){
-//        return friendBeans;
-//    }
 
-    private String mMsg;
-    public FriendListEvent(String msg) {
+    public JSONArray unsignedArray,latestMessagesArray;
+
+    public FriendListEvent(JSONArray unsignedArray,JSONArray latestMessagesArray) {
         // TODO Auto-generated constructor stub
-        mMsg = msg;
-    }
-    public String getMsg(){
-        return mMsg;
+        this.unsignedArray = unsignedArray;
+        this.latestMessagesArray = latestMessagesArray;
     }
 }

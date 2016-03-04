@@ -5,115 +5,96 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
-import com.example.samsung.Data.FriendBean;
 import com.example.samsung.Data.FriendListEvent;
-import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 import de.greenrobot.event.EventBus;
 
 public class FriendListService extends Service {
 
-    private final IBinder mBinder = new RemoteBinder();
-    private boolean threadContinue = true;
-    private String account,friendListUnsignedUrl,friendListSignedUrl;
     static String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
-    private ArrayList<FriendBean> friendBeans;
-    Thread friendListThread;
-
-    public FriendListService (String account) {
-        this.account = account;
-    }
+    private String account;
+    private String getLatestMessagesUrlString,getUnsignedUrlString;
+    private JSONArray unsignedArray,latestMessagesArray;
 
     @Override
     public IBinder onBind(Intent intent) {
-        return mBinder;
+        return new Binder();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        friendListUnsignedUrl = baseUrl + "table=friendList&method=get&identification=" + account;
-        friendListSignedUrl = baseUrl + "method=getLatestMessages&identification=" + account;
-        friendListThread = new Thread(){
-            @Override
-            public void run() {
-//                AsyncHttpClient friendListUnsignedClient = new AsyncHttpClient();
-//                AsyncHttpClient friendListSignedClient = new AsyncHttpClient();
-//                friendBeans = new ArrayList<>();
-                while (threadContinue) {
-                    EventBus.getDefault().post("hello");
-//                    friendListUnsignedClient.get(friendListUnsignedUrl, unsignedFriendHandler);
-//                    friendListSignedClient.get(friendListSignedUrl, signedFriendHandler);
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        friendListThread.start();
+        System.out.println("onCreate");
     }
 
     @Override
-    public void onStart(Intent intent, int startId) {
-        super.onStart(intent, startId);
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        System.out.println("onStartCommand");
+        account = intent.getStringExtra("account");
+        new MyServerThread().start();
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
+        System.out.println("onDestroy");
         super.onDestroy();
     }
 
-    public class RemoteBinder extends Binder {
-        public FriendListService getService() {
-            // 返回Activity所关联的Service对象，这样在Activity里，就可调用Service里的一些公用方法和公用属性
-            return FriendListService.this;
+    class MyServerThread extends Thread{
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    getFriendListUnsigned();
+                    getLatestMessages();
+                    MyServerThread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
-    private JsonHttpResponseHandler unsignedFriendHandler = new JsonHttpResponseHandler() {
+    private void getLatestMessages(){
+        AsyncHttpClient getLatestMessagesClient = new AsyncHttpClient();
+        getLatestMessagesUrlString = baseUrl + getLatestMessagesParam();
+        getLatestMessagesClient.get(getLatestMessagesUrlString,getLatestMessagesHandler);
+    }
+
+    private String getLatestMessagesParam(){
+        return "method=getLatestMessages&identification=" + account;
+    }
+
+    JsonHttpResponseHandler getLatestMessagesHandler = new JsonHttpResponseHandler(){
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-            try {
-                for (int i = 0; i < response.length(); i++) {
-                    JSONObject friendJsonObject = response.getJSONObject(i);
-                    if (friendJsonObject.getInt("sign") == 0) {
-                        Gson gson = new Gson();
-                        FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
-                        friendBeans.add(friendBean);
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            super.onSuccess(statusCode, headers, response);
+            latestMessagesArray = response;
+            EventBus.getDefault().post(new FriendListEvent(unsignedArray,latestMessagesArray));
         }
     };
 
-    private JsonHttpResponseHandler signedFriendHandler = new JsonHttpResponseHandler() {
+    private void getFriendListUnsigned(){
+        AsyncHttpClient getFriendListUnsignedClient = new AsyncHttpClient();
+        getUnsignedUrlString = baseUrl + getFriendListParam();
+        getFriendListUnsignedClient.get(getUnsignedUrlString,unsignedHandler);
+    }
+
+    JsonHttpResponseHandler unsignedHandler = new JsonHttpResponseHandler(){
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-            try {
-                for (int i = 0; i < response.length(); i++) {
-                    JSONObject friendJsonObject = response.getJSONObject(i);
-                    Gson gson = new Gson();
-                    FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
-                    friendBean.setSign(1);
-                    friendBeans.add(friendBean);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-//            EventBus.getDefault().post(new FriendListEvent(friendBeans));
+            super.onSuccess(statusCode, headers, response);
+            unsignedArray = response;
         }
     };
+
+    private String getFriendListParam(){
+        return "table=friendList&method=get&identification=" + account;
+    }
 }
