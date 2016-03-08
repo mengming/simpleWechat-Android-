@@ -2,25 +2,16 @@ package com.example.samsung.Data;
 
 public class FriendBean {
 
-    private int ID,sign;
+    private int ID,sign,unReadNum;
     private String friendRequest,friendResponse,friendRequestName,friendResponseName,
         message,time,sender,receiver;
-    private boolean newJudge,unRead;
 
-    public boolean getUnRead(){
-        return unRead;
+    public int getUnReadNum(){
+        return unReadNum;
     }
 
-    public void setUnRead(boolean unRead){
-        this.unRead = unRead;
-    }
-
-    public boolean getNewJudge(){
-        return newJudge;
-    }
-
-    public void setNewJudge(boolean newJudge) {
-        this.newJudge = newJudge;
+    public void setUnReadNum(int unReadNum) {
+        this.unReadNum = unReadNum;
     }
 
     public int getID(){

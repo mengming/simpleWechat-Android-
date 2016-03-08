@@ -2,6 +2,9 @@ package com.example.samsung.myapplication;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,7 +16,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,7 +38,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,12 +50,12 @@ public class FriendList extends ActionBarActivity {
 
     private PullToRefreshListView friendListView;
     private String name,account,friendAccount,getUnsignedUrlString, agreeUrlString,askMessage,
-            disagreeUrlString,getLatestMessagesUrlString, sendMessageUrlString;
+            disagreeUrlString,getLatestMessagesUrlString, sendMessageUrlString,countUrlString;
     static String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
     private ArrayList<FriendBean> friendBeans,newFriendBeans;
     private FriendListAdapter friendListAdapter;
-    private int unsignedNumber;
-    private boolean isCreate;
+    private int unsignedNumber,count;
+    private boolean isCreate,isStart;
     private Intent intent;
     private SharedPreferences sharedPreferences;
 
@@ -68,12 +69,12 @@ public class FriendList extends ActionBarActivity {
         EventBus.getDefault().register(this);
         getExtra();
         initFriendListView();
-        getFriendList();
         isCreate = true;
-        intent = new Intent(this,FriendListService.class);
-        intent.putExtra("account", account);
-        startService(intent);
-        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        getFriendList();
+//        intent = new Intent(this,FriendListService.class);
+//        intent.putExtra("account", account);
+//        startService(intent);
+//        bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
     ServiceConnection connection = new ServiceConnection() {
@@ -92,14 +93,16 @@ public class FriendList extends ActionBarActivity {
     protected void onStart() {
         super.onStart();
         System.out.println("onStartF");
+        isStart = true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         System.out.println("onResumeF");
-        if (!isCreate) getFriendList();
+        if (!isCreate && !isStart) getFriendList();
         isCreate = false;
+        isStart = false;
     }
 
     @Override
@@ -146,14 +149,31 @@ public class FriendList extends ActionBarActivity {
         newFriendBeans = new ArrayList<>();
         JSONArray latestMessagesArray = event.latestMessagesArray;
         JSONArray unsignedArray = event.unsignedArray;
-        System.out.println(latestMessagesArray.toString());
-        System.out.println(unsignedArray.toString());
-        newFriendBeans.addAll(unsignedArray(unsignedArray));
+        newFriendBeans.addAll(unsignedArrayHandle(unsignedArray));
         newFriendBeans.addAll(latestArrayHandle(latestMessagesArray));
-        System.out.println("change");
         friendBeans.clear();
         friendBeans.addAll(newFriendBeans);
         friendListAdapter.notifyDataSetChanged();
+    }
+
+    private void initNotification(String name,String message){
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        int icon = R.drawable.chat_pic;
+        String tickerText = message;
+        long when = System.currentTimeMillis();
+        Context context = getApplicationContext();
+        CharSequence contentTitle = name;
+        CharSequence contentText = message;
+        Notification notification = new Notification(icon, tickerText, when);
+        Intent notificationIntent = new Intent(this,ChatView.class);
+        notificationIntent.putExtra("account",account);
+        notificationIntent.putExtra("friendAccount",name);
+        notification.defaults = notification.DEFAULT_SOUND;
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
+        notification.setLatestEventInfo(context, contentTitle, contentText,
+                contentIntent);
+        notificationManager.notify(1,notification);
     }
 
     private void checkSelfInformation() {
@@ -222,12 +242,15 @@ public class FriendList extends ActionBarActivity {
                     else Toast.makeText(getApplicationContext(),"等待对方同意",Toast.LENGTH_SHORT).show();
                 }
                 else {
+                    friendAccount = judgeFriendAccount(friendBeans.get(position - 1));
                     Intent chatViewIntent = new Intent();
-                    friendBean.setUnRead(false);
+                    sharedPreferences = getSharedPreferences("IDList", Activity.MODE_PRIVATE);
                     chatViewIntent.setClass(FriendList.this, ChatView.class);
                     chatViewIntent.putExtra("account", account);
-                    chatViewIntent.putExtra("friendAccount", judgeFriendAccount(friendBeans.get(position - 1)));
+                    chatViewIntent.putExtra("friendAccount",friendAccount);
                     startActivity(chatViewIntent);
+                    sharedPreferences.edit().remove(friendAccount).putInt(friendAccount,friendBean.getID())
+                            .remove(friendAccount+"Num").putInt(friendAccount+"Num",0).commit();
                 }
             }
         });
@@ -347,7 +370,6 @@ public class FriendList extends ActionBarActivity {
 
     private void getFriendListUnsigned(){
         newFriendBeans = new ArrayList<>();
-        unsignedNumber = 0;
         AsyncHttpClient getFriendListUnsignedClient = new AsyncHttpClient();
         getUnsignedUrlString = baseUrl + getFriendListParam();
         getFriendListUnsignedClient.get(getUnsignedUrlString,unsignedHandler);
@@ -366,7 +388,7 @@ public class FriendList extends ActionBarActivity {
     JsonHttpResponseHandler unsignedHandler = new JsonHttpResponseHandler(){
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-            newFriendBeans.addAll(unsignedArray(response));
+            newFriendBeans.addAll(unsignedArrayHandle(response));
         }
     };
 
@@ -399,25 +421,40 @@ public class FriendList extends ActionBarActivity {
                 JSONObject friendJsonObject = response.getJSONObject(i);
                 Gson gson = new Gson();
                 FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
-                FriendBean oldFriendBean = null;
-                if (friendBeans.size()!=0) oldFriendBean = friendBeans.get(i+unsignedNumber);
                 friendBean.setSign(1);
                 friendBean.setMessage(friendBean.getSender() + ":" + friendJsonObject.getString("message"));
                 friendAccount = judgeFriendAccount(friendBean);
+                //最新已读消息的ID为oldID
                 int oldID = sharedPreferences.getInt(friendAccount, 0);
-                if (oldID==0) editor.putInt(friendAccount, friendBean.getID());
-                else if (oldID!=friendBean.getID()) {
-                    if (friendBean.getSender().equals(friendAccount)) {
-                        friendBean.setNewJudge(true);
-                        friendBean.setUnRead(true);
-                    }
-                    editor.remove(friendAccount);
+                int unReadNum = sharedPreferences.getInt(friendAccount + "Num", 0);
+                System.out.println(oldID);
+                System.out.println(unReadNum);
+                //如果为新聊天无oldID则保存ID及未读消息数目置0
+                if (oldID==0) {
                     editor.putInt(friendAccount, friendBean.getID());
+                    editor.putInt(friendAccount + "Num", 0);
                 }
-                else if (oldFriendBean!=null && oldFriendBean.getUnRead()) {
-                    friendBean.setUnRead(true);
-                    friendBean.setNewJudge(true);
-                }
+                //有oldID判断消息源,如果是自己发的则设置已读和未读数目为0
+                else if (friendBean.getSender().equals(account)) {
+                    editor.remove(friendAccount+"Num");
+                    editor.putInt(friendAccount+"Num",0);
+                }//如果是朋友发的则判断上一条是否已读
+                else if (unReadNum==0) {
+                    //如果上一条已读，则判断数据是否有刷新
+                    if (oldID!=friendBean.getID()) {
+                        //如果刷新则更新oldID以及unReadNum
+                        editor.remove(friendAccount);
+                        editor.putInt(friendAccount,friendBean.getID());
+                        editor.remove(friendAccount+"Num");
+                        editor.putInt(friendAccount+"Num",countUnReadNum(oldID,friendAccount));
+                    }}//如果上一条未读，则判断unReadNum是否需要刷新
+                else {
+                    int newUnReadNum = countUnReadNum(oldID,friendAccount);
+                    if (newUnReadNum!=unReadNum) {
+                        editor.remove(friendAccount);
+                        editor.putInt(friendAccount + "Num", newUnReadNum);
+                    }}
+                friendBean.setUnReadNum(sharedPreferences.getInt(friendAccount+"Num",0));
                 result.add(friendBean);
             }
         } catch (JSONException e) {
@@ -427,7 +464,8 @@ public class FriendList extends ActionBarActivity {
         return result;
     }
 
-    private ArrayList<FriendBean> unsignedArray(JSONArray response){
+    private ArrayList<FriendBean> unsignedArrayHandle(JSONArray response){
+        unsignedNumber = 0;
         ArrayList<FriendBean> result = new ArrayList<>();
         try {
             for (int i = 0; i < response.length(); i++) {
@@ -435,7 +473,6 @@ public class FriendList extends ActionBarActivity {
                 if (friendJsonObject.getInt("sign") == 0) {
                     Gson gson = new Gson();
                     FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
-                    friendBean.setNewJudge(false);
                     result.add(friendBean);
                     unsignedNumber++;
                 }
@@ -443,6 +480,32 @@ public class FriendList extends ActionBarActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return result;
+    }
+
+    private int countUnReadNum(final int oldID,String friendAccount) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        count = 0;
+        countUrlString = baseUrl + "table=messageList&method=get&data="+ messageSenderAndReceiver();
+        client.get(countUrlString, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        int ID = response.getJSONObject(i).getInt("ID");
+                        if (ID >= oldID) count++;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        return count;
+    }
+
+    private String messageSenderAndReceiver(){
+        String result = new String();
+        result = "{%22sender%22:%22" + account + "%22,%22receiver%22:%22" + friendAccount + "%22}";
         return result;
     }
 }

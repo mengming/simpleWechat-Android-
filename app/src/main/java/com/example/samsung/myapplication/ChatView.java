@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.samsung.Adapter.ChatViewAdapter;
 import com.example.samsung.Data.MessageBean;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -45,6 +46,7 @@ public class ChatView extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
         setContentView(R.layout.chat_view);
 
         getExtra();

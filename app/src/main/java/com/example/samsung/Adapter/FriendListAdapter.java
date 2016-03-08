@@ -1,7 +1,9 @@
 package com.example.samsung.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +26,9 @@ public class FriendListAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private Context context;
     private String account,name;
-    private int sign;
+    private int sign,unReadNum;
 
-    public FriendListAdapter(Context context,ArrayList<FriendBean> friendBeans, String account)
+    public FriendListAdapter(Context context,ArrayList<FriendBean> friendBeans,String account)
     {
         mInflater = LayoutInflater.from(context);
         this.friendBeans = friendBeans;
@@ -87,8 +89,9 @@ public class FriendListAdapter extends BaseAdapter {
             holder.nameText.setText(name);
             holder.messageText.setText(friendBean.getMessage());
             holder.timeText.setText(friendBean.getTime());
-            if (friendBean.getNewJudge()) holder.newMessageNumText.setText("new");
-            else holder.newMessageNumText.setText("");
+            unReadNum = friendBean.getUnReadNum();
+            if (unReadNum==0) holder.newMessageNumText.setText("");
+            else holder.newMessageNumText.setText(unReadNum);
         }
         Uri uri = Uri.parse("res:///"+R.drawable.chat_pic);
         holder.avator.setImageURI(uri);

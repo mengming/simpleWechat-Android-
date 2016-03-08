@@ -9,7 +9,7 @@
         android:text="@string/name"
         android:textSize="20sp"
         android:id="@+id/chat_left_name"
-        android:layout_below="@+id/chat_left_time"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -21,9 +21,9 @@
         android:gravity="left"
         android:padding="10sp"
         android:id="@+id/chat_left_message"
-        android:layout_alignTop="@+id/chat_left_name"
-        android:layout_toRightOf="@+id/chat_left_name"
-        android:layout_toEndOf="@+id/chat_left_name" />
+        android:layout_alignTop="@+id/chat_left_pic"
+        android:layout_toRightOf="@+id/chat_left_pic"
+        android:layout_toEndOf="@+id/chat_left_pic" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,4 +34,14 @@
         android:id="@+id/chat_left_time"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:layout_width="46sp"
+        android:layout_height="46sp"
+        android:id="@+id/chat_left_pic"
+        android:background="@drawable/chat_pic"
+        android:gravity="center"
+        android:layout_below="@+id/chat_left_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>
