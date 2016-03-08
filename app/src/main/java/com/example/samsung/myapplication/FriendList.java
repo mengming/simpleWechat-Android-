@@ -486,7 +486,8 @@ public class FriendList extends ActionBarActivity {
     private int countUnReadNum(final int oldID,String friendAccount) {
         AsyncHttpClient client = new AsyncHttpClient();
         count = 0;
-        countUrlString = baseUrl + "table=messageList&method=get&data="+ messageSenderAndReceiver();
+        countUrlString = baseUrl + "table=messageList&method=get&data="+
+                "{%22sender%22:%22" + account + "%22,%22receiver%22:%22" + friendAccount + "%22}";
         client.get(countUrlString, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -503,9 +504,4 @@ public class FriendList extends ActionBarActivity {
         return count;
     }
 
-    private String messageSenderAndReceiver(){
-        String result = new String();
-        result = "{%22sender%22:%22" + account + "%22,%22receiver%22:%22" + friendAccount + "%22}";
-        return result;
-    }
 }
