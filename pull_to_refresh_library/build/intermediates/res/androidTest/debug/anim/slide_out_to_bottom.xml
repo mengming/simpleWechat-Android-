@@ -19,4 +19,4 @@
     android:duration="@android:integer/config_longAnimTime"
     android:fromYDelta="0"
     android:toYDelta="100%p" />
-<!-- From: file:/C:/Android/MyApplication/pull_to_refresh_library/src/main/res/anim/slide_out_to_bottom.xml --><!-- From: file:/C:/Android/MyApplication/pull_to_refresh_library/build/intermediates/bundles/debug/res/anim/slide_out_to_bottom.xml -->
+<!-- From: file:/C:/Android/simpleWechat-Android-/pull_to_refresh_library/src/main/res/anim/slide_out_to_bottom.xml --><!-- From: file:/C:/Android/simpleWechat-Android-/pull_to_refresh_library/build/intermediates/bundles/debug/res/anim/slide_out_to_bottom.xml -->
