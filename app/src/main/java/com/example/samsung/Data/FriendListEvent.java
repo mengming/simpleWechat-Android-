@@ -1,10 +1,6 @@
 package com.example.samsung.Data;
 
-import com.example.samsung.myapplication.FriendList;
-
 import org.json.JSONArray;
-
-import java.util.ArrayList;
 
 public class FriendListEvent {
 

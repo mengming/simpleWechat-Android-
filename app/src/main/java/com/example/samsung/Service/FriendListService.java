@@ -53,13 +53,13 @@ public class FriendListService extends Service {
                 try {
                     getFriendListUnsigned();
                     getLatestMessages();
-                    MyServerThread.sleep(10000);
+                    MyServerThread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }
-    }
+}
 
     private void getLatestMessages(){
         AsyncHttpClient getLatestMessagesClient = new AsyncHttpClient();

@@ -3,7 +3,6 @@ package com.example.samsung.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
@@ -12,18 +11,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -46,6 +40,7 @@ public class Login extends ActionBarActivity {
         setEtPassword();
         setBtnRegister();
         setBtnLogin();
+        login();
     }
 
     @Override
@@ -72,7 +67,7 @@ public class Login extends ActionBarActivity {
 
     private void login(){
         Intent friendListIntent = new Intent();
-        friendListIntent.setClass(Login.this, FriendList.class);
+        friendListIntent.setClass(Login.this, Main.class);
         friendListIntent.putExtra("account", account);
         friendListIntent.putExtra("name",name);
         startActivity(friendListIntent);

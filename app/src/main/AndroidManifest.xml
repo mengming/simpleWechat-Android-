@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Register"></activity>
-        <activity android:name=".FriendList"></activity>
+        <activity android:name=".Main"></activity>
         <activity android:name=".ChatView"></activity>
         <activity android:name=".AccountInformation"></activity>
         <service android:name="com.example.samsung.Service.FriendListService"></service>

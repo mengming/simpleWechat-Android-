@@ -24,4 +24,7 @@
     <string name="add_friend">添加朋友</string>
     <string name="btn_avatar">选择头像</string>
     <string name="logout">退出登录</string>
+    <string name="unknown_model">未知型号</string>
+    <string name="friend_list">朋友列表</string>
+    <string name="chat_view">聊天界面</string>
 </resources>
