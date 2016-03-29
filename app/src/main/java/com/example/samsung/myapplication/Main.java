@@ -80,8 +80,11 @@ public class Main extends ActionBarActivity {
         account = "abc";
         bundle1.putString("account", account);
         friendAccount = "321";
-        bundle1.putString("friendAccount",friendAccount);
+        bundle1.putString("friendAccount", friendAccount);
         fragments[1].setArguments(bundle1);
+        fragmentTransaction.setCustomAnimations(
+                R.animator.fragment_slide_right_enter, R.animator.fragment_slide_left_exit,
+                R.animator.fragment_slide_left_enter, R.animator.fragment_slide_right_exit);
         fragmentTransaction.replace(R.id.fragment_container, fragments[1]);
         fragments[0] = new FriendList();
         Bundle bundle = new Bundle();
@@ -155,7 +158,7 @@ public class Main extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(connection);
+//        unbindService(connection);
         System.out.println("onDestroyF");
     }
 

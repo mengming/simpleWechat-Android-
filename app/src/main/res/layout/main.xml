@@ -12,9 +12,7 @@
         android:id="@+id/bottom_menu">
         <info.hoang8f.widget.FButton
             fbutton:buttonColor="#CDBDBA"
-            fbutton:shadowColor="#CDBDBA"
-            fbutton:shadowEnabled="true"
-            fbutton:shadowHeight="10dp"
+            fbutton:shadowEnabled="false"
             fbutton:cornerRadius="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,9 +26,7 @@
 
         <info.hoang8f.widget.FButton
             fbutton:buttonColor="#CDBDBA"
-            fbutton:shadowColor="#CDBDBA"
-            fbutton:shadowEnabled="true"
-            fbutton:shadowHeight="10dp"
+            fbutton:shadowEnabled="false"
             fbutton:cornerRadius="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

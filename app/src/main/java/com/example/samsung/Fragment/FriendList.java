@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.example.samsung.Adapter.FriendListAdapter;
 import com.example.samsung.Data.FriendBean;
-import com.example.samsung.Data.FriendListEvent;
 import com.example.samsung.myapplication.R;
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -34,7 +33,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
-import de.greenrobot.event.EventBus;
 
 public class FriendList extends Fragment{
 
@@ -54,17 +52,16 @@ public class FriendList extends Fragment{
         return view;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        EventBus.getDefault().register(getActivity());
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        EventBus.getDefault().unregister(getActivity());
-    }
+//    public void onEvent(FriendListEvent event) {
+//        newFriendBeans = new ArrayList<>();
+//        JSONArray latestMessagesArray = event.latestMessagesArray;
+//        JSONArray unsignedArray = event.unsignedArray;
+//        newFriendBeans.addAll(unsignedArrayHandle(unsignedArray));
+//        newFriendBeans.addAll(latestArrayHandle(latestMessagesArray));
+//        friendBeans.clear();
+//        friendBeans.addAll(newFriendBeans);
+//        friendListAdapter.notifyDataSetChanged();
+//    }
 
     private void initFriendListView(View view){
         Bundle bundle = getArguments();
@@ -116,17 +113,6 @@ public class FriendList extends Fragment{
             }
         });
     }
-    public void onEvent(FriendListEvent event) {
-        newFriendBeans = new ArrayList<>();
-        JSONArray latestMessagesArray = event.latestMessagesArray;
-        JSONArray unsignedArray = event.unsignedArray;
-        newFriendBeans.addAll(unsignedArrayHandle(unsignedArray));
-        newFriendBeans.addAll(latestArrayHandle(latestMessagesArray));
-        friendBeans.clear();
-        friendBeans.addAll(newFriendBeans);
-        friendListAdapter.notifyDataSetChanged();
-    }
-
 
     private void getFriendList(){
         getFriendListUnsigned();
