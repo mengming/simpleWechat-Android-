@@ -27,11 +27,12 @@ import static com.example.samsung.myapplication.R.id.tv_signature;
 public class AccountInformation extends ActionBarActivity{
 
     private TextView tvAccount,tvName,tvSex,tvAge,tvSignature;
-    private String account,friendAccount,getSelfClient,getFriendClient,message,saveUrlString;
+    private String account,friendAccount,getSelfClient,getFriendClient,message,saveUrlString
+            ,name,sex,signature;
     final static int self = 1,other = 0;
-    private int statusCode;
+    private int statusCode,age;
     private Button btnAdd;
-    static String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
+    static String baseUrl = "http://115.159.156.241/wechatinterface/index.php?";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +84,16 @@ public class AccountInformation extends ActionBarActivity{
             super.onSuccess(statusCode, headers, response);
             try {
                 JSONObject jsonObject = response.getJSONObject(0);
-                tvAccount.setText("账号:" + jsonObject.getString("identification"));
-                tvName.setText("昵称:" + jsonObject.getString("name"));
-                tvAge.setText("年龄:" + jsonObject.getInt("age"));
-                tvSex.setText("性别:" + jsonObject.getString("sex"));
-                tvSignature.setText("个性签名:" + jsonObject.getString("signature"));
+                account = jsonObject.getString("identification");
+                name = jsonObject.getString("name");
+                age = jsonObject.getInt("age");
+                sex = jsonObject.getString("sex");
+                signature = jsonObject.getString("signature");
+                tvAccount.setText("账号:" + account);
+                tvName.setText("昵称:" + name);
+                tvAge.setText("年龄:" + age);
+                tvSex.setText("性别:" + sex);
+                tvSignature.setText("个性签名:" + signature);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

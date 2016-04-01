@@ -6,10 +6,11 @@
         android:title="@string/add_friend"
         android:icon="@drawable/actionbar_add_icon"
         android:orderInCategory="100"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
     <item android:id="@+id/actionbar_self_information"
         android:title="@string/self_information"
-        app:showAsAction="never"
+        app:showAsAction="always"
+        android:icon="@drawable/self"
         android:orderInCategory="100"/>
     <item android:id="@+id/actionbar_logout"
         android:title="@string/logout"

@@ -147,37 +147,65 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <RadioGroup
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/r_et_age"
-        android:id="@+id/sexRadioGroup"
-        android:layout_toRightOf="@+id/sex">
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/male"
-            android:text="@string/male"/>
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/female"
-            android:text="@string/female"/>
-    </RadioGroup>
+        android:id="@+id/img_btn_boy"
+        android:background="@drawable/avator_boy_unselect"
+        android:layout_below="@+id/r_t_age"
+        android:layout_toRightOf="@+id/sex"
+        android:layout_toEndOf="@+id/sex" />
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/user_avatar_select"
-        android:layout_width="46sp"
-        android:layout_height="46sp"
-        android:layout_below="@+id/sexRadioGroup"
-        android:layout_toRightOf="@+id/btn_avatar"/>
-
-    <Button
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_avatar"
-        android:id="@+id/btn_avatar"
-        android:layout_below="@+id/sexRadioGroup"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:id="@+id/img_btn_girl"
+        android:background="@drawable/avator_girl_unselect"
+        android:layout_alignTop="@+id/img_btn_boy"
+        android:layout_toRightOf="@+id/img_btn_boy"
+        android:layout_toEndOf="@+id/img_btn_boy"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp" />
+
+    <!--<RadioGroup-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/r_et_age"-->
+        <!--android:id="@+id/sexRadioGroup"-->
+        <!--android:layout_toRightOf="@+id/sex">-->
+        <!--<RadioButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:button="@null"-->
+            <!--android:drawableBottom="@drawable/avator_boy"-->
+            <!--android:id="@+id/male"/>-->
+
+        <!--<RadioButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:button="@null"-->
+            <!--android:drawableBottom="@drawable/avator_girl"-->
+            <!--android:id="@+id/female"-->
+            <!--android:text="@string/female"-->
+            <!--android:layout_below="@+id/r_et_age"-->
+            <!--android:layout_toRightOf="@+id/sexRadioGroup"-->
+            <!--android:layout_toEndOf="@+id/sexRadioGroup" />-->
+    <!--</RadioGroup>-->
+
+    <!--<com.facebook.drawee.view.SimpleDraweeView-->
+        <!--android:id="@+id/user_avatar_select"-->
+        <!--android:layout_width="46sp"-->
+        <!--android:layout_height="46sp"-->
+        <!--android:layout_below="@+id/sexRadioGroup"-->
+        <!--android:layout_toRightOf="@+id/btn_avatar"/>-->
+
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/btn_avatar"-->
+        <!--android:id="@+id/btn_avatar"-->
+        <!--android:layout_below="@+id/sexRadioGroup"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true" />-->
+
 </RelativeLayout>

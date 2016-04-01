@@ -2,47 +2,46 @@ package com.example.samsung.myapplication;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.NotificationCompat;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.samsung.Adapter.PagerAdapter;
 import com.example.samsung.Fragment.ChatView;
 import com.example.samsung.Fragment.FriendList;
-import com.example.samsung.Service.FriendListService;
 import com.facebook.drawee.backends.pipeline.Fresco;
+
+import java.util.ArrayList;
 
 public class Main extends ActionBarActivity {
 
-    static int FRIEND_LIST = 0;
-    static int CHAT_VIEW = 1;
-    private int nowFragment = 0;
-    private Button btnFriend,btnChat;
-    private String account,friendAccount,name;
+    final static int FRIEND_LIST = 0;
+    final static int CHAT_VIEW = 1;
+    private Button btnFriend,btnChat,btnAdd,btnLogout,btnSelf;
+    private String account,friendAccount,name,sex;
     private boolean isCreate;
     private Intent intent;
-    private Fragment[] fragments = new Fragment[2];
-    private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
+    private ArrayList<Fragment> fragments = null;
+    private ViewPager viewPager = null;
+    private PagerAdapter pagerAdapter = null;
     private SharedPreferences sharedPreferences;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,77 +49,47 @@ public class Main extends ActionBarActivity {
         Fresco.initialize(this);
         setContentView(R.layout.main);
         getExtra();
-        initMenu();
-
+        initView();
         System.out.println("onCreateF");
 
         isCreate = true;
-        intent = new Intent(this,FriendListService.class);
-        intent.putExtra("account", account);
-        startService(intent);
-        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+//        intent = new Intent(this,FriendListService.class);
+//        intent.putExtra("account", account);
+//        startService(intent);
+//        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void initView() {
+        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+        btnAdd = (Button) findViewById(R.id.bar_add);
+        btnAdd.setOnClickListener(new buttonListener());
+        btnSelf = (Button) findViewById(R.id.bar_self);
+        btnSelf.setOnClickListener(new buttonListener());
+        btnLogout = (Button) findViewById(R.id.bar_logout);
+        btnLogout.setOnClickListener(new buttonListener());
+        fragments = new ArrayList<>();
+        Fragment friendFragment = new FriendList();
+        Bundle accountData = new Bundle();
+        accountData.putString("account", account);
+        friendFragment.setArguments(accountData);
+        fragments.add(friendFragment);
+        viewPager = (ViewPager) findViewById(R.id.fragment_pager);
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager(),fragments);
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setOnPageChangeListener(pageListener);
+        btnFriend = (Button) findViewById(R.id.btn_friend);
+        btnFriend.setOnClickListener(new buttonListener());
+        btnFriend.setEnabled(false);
+        btnChat = (Button) findViewById(R.id.btn_chat);
+        btnChat.setOnClickListener(new buttonListener());
     }
 
     private void getExtra(){
         Intent intent = getIntent();
         name = intent.getStringExtra("name");
         account = intent.getStringExtra("account");
-    }
-
-    private void initMenu() {
-        fragmentManager = getFragmentManager();
-        btnFriend = (Button) findViewById(R.id.btn_friend);
-        btnFriend.setOnClickListener(new menuListener());
-        btnFriend.setEnabled(false);
-        btnChat = (Button) findViewById(R.id.btn_chat);
-        btnChat.setOnClickListener(new menuListener());
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragments[1] = new ChatView();
-        Bundle bundle1 = new Bundle();
-        account = "abc";
-        bundle1.putString("account", account);
-        friendAccount = "321";
-        bundle1.putString("friendAccount", friendAccount);
-        fragments[1].setArguments(bundle1);
-        fragmentTransaction.setCustomAnimations(
-                R.animator.fragment_slide_right_enter, R.animator.fragment_slide_left_exit,
-                R.animator.fragment_slide_left_enter, R.animator.fragment_slide_right_exit);
-        fragmentTransaction.replace(R.id.fragment_container, fragments[1]);
-        fragments[0] = new FriendList();
-        Bundle bundle = new Bundle();
-        bundle.putString("account", account);
-        bundle.putString("name", name);
-        fragments[0].setArguments(bundle);
-        fragmentTransaction.replace(R.id.fragment_container, fragments[0]);
-        fragmentTransaction.commit();
-    }
-
-    class menuListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            fragmentTransaction = fragmentManager.beginTransaction();
-            switch (v.getId()) {
-                case R.id.btn_friend:
-                    btnChat.setEnabled(true);
-                    btnFriend.setEnabled(false);
-                    fragmentTransaction.replace(R.id.fragment_container, fragments[0]).commit();
-                    nowFragment = FRIEND_LIST;
-                    break;
-                case R.id.btn_chat:
-                    if (fragments[1]==null)
-                        Toast.makeText(getApplicationContext(),"请选择聊天对象哦",Toast.LENGTH_SHORT).show();
-                    else {
-                        btnChat.setEnabled(false);
-                        btnFriend.setEnabled(true);
-                        fragments[1] = new ChatView();
-                        fragmentTransaction.replace(R.id.fragment_container, fragments[1]);
-                        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
-                        nowFragment = CHAT_VIEW;
-                    }
-                    break;
-                default:break;
-            }
-        }
+        sex = intent.getStringExtra("sex");
     }
 
     ServiceConnection connection = new ServiceConnection() {
@@ -162,30 +131,54 @@ public class Main extends ActionBarActivity {
         System.out.println("onDestroyF");
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_friendlist, menu);
-        return true;
+    public ViewPager.OnPageChangeListener pageListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            switch (position) {
+                case FRIEND_LIST : btnFriend.setEnabled(false);
+                    btnChat.setEnabled(true);
+                    break;
+                case CHAT_VIEW : btnChat.setEnabled(false);
+                    btnFriend.setEnabled(true);
+                    break;
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
+
+    class buttonListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.bar_logout : logout(); break;
+                case R.id.bar_self : checkSelfInformation(); break;
+                case R.id.bar_add : checkFriendDialog(); break;
+                case R.id.btn_chat :
+                    if (fragments.size()==1) Toast.makeText(getApplicationContext(),"请先选择一个好友喔",Toast.LENGTH_SHORT).show();
+                    else viewPager.setCurrentItem(CHAT_VIEW); break;
+                case R.id.btn_friend : viewPager.setCurrentItem(FRIEND_LIST); break;
+            }
+        }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
-            case R.id.actionbar_add_friend: 
-                checkFriendDialog();
-                break;
-            case R.id.actionbar_logout:
-                logout();
-                break;
-            case R.id.actionbar_self_information:
-                checkSelfInformation();
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-        return true;
+    public void openChat(String friendAccount){
+        Fragment chatFragment = new ChatView();
+        Bundle chatBundle = new Bundle();
+        chatBundle.putString("friendAccount",friendAccount);
+        chatBundle.putString("account",account);
+        chatFragment.setArguments(chatBundle);
+        fragments.add(chatFragment);
+        viewPager.getAdapter().notifyDataSetChanged();
+        viewPager.setCurrentItem(CHAT_VIEW);
     }
 
     private void checkSelfInformation() {

@@ -24,8 +24,8 @@ import cz.msebera.android.httpclient.Header;
 
 public class Login extends ActionBarActivity {
 
-    private String account,password,rightPassword,name,getUserClient;
-    static String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
+    private String account,password,rightPassword,name,sex,getUserClient;
+    static String baseUrl = "http://115.159.156.241/wechatinterface/index.php?";
     private EditText etAccount,etPassword;
     private Button btnLogin,btnRegister;
     private SharedPreferences sharedPreferences;
@@ -40,7 +40,6 @@ public class Login extends ActionBarActivity {
         setEtPassword();
         setBtnRegister();
         setBtnLogin();
-        login();
     }
 
     @Override
@@ -69,7 +68,8 @@ public class Login extends ActionBarActivity {
         Intent friendListIntent = new Intent();
         friendListIntent.setClass(Login.this, Main.class);
         friendListIntent.putExtra("account", account);
-        friendListIntent.putExtra("name",name);
+        friendListIntent.putExtra("name", name);
+        friendListIntent.putExtra("sex",sex);
         startActivity(friendListIntent);
     }
 
@@ -99,36 +99,44 @@ public class Login extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 account = etAccount.getText().toString();
-                password = etPassword.getText().toString();
-//                account="ceshi";password="123456";
-                AsyncHttpClient client = new AsyncHttpClient();
-                getUserClient = baseUrl + getUserParam();
-                client.get(getUserClient, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                        super.onSuccess(statusCode, headers, response);
-                        try {
-                            int length = response.length();
-                            for (int i = 0; i < length; i++) {
-                                rightPassword = response.getJSONObject(i).getString("password");
-                                name = response.getJSONObject(i).getString("name");
+                if (account.length() == 0)
+                    Toast.makeText(getApplicationContext(), "账号不能为空", Toast.LENGTH_SHORT).show();
+                else {
+                    password = etPassword.getText().toString();
+                    if (password.length() == 0)
+                        Toast.makeText(getApplicationContext(), "密码不能为空", Toast.LENGTH_SHORT).show();
+                    else {
+                        AsyncHttpClient client = new AsyncHttpClient();
+                        getUserClient = baseUrl + getUserParam();
+                        client.get(getUserClient, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                                super.onSuccess(statusCode, headers, response);
+                                try {
+                                    int length = response.length();
+                                    for (int i = 0; i < length; i++) {
+                                        rightPassword = response.getJSONObject(i).getString("password");
+                                        name = response.getJSONObject(i).getString("name");
+                                        sex = response.getJSONObject(i).getString("sex");
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                if (rightPassword.equals(password)) {
+                                    rightPassword = null;
+                                    saveAccount();
+                                    login();
+                                } else
+                                    Toast.makeText(getApplicationContext(), "密码不正确", Toast.LENGTH_SHORT).show();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        if (rightPassword.equals(password)) {
-                            rightPassword = null;
-                            saveAccount();
-                            login();
-                        } else
-                            Toast.makeText(getApplicationContext(), "密码不正确", Toast.LENGTH_SHORT).show();
-                    }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        Toast.makeText(getApplicationContext(), "账号不存在", Toast.LENGTH_SHORT).show();
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                                Toast.makeText(getApplicationContext(), "账号不存在", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
-                });
+                }
             }
         });
     }
@@ -143,6 +151,7 @@ public class Login extends ActionBarActivity {
         editor.putString("account", account);
         editor.putString("password",password);
         editor.putString("name",name);
+        editor.putString("sex",sex);
         editor.commit();
     }
 
@@ -151,6 +160,7 @@ public class Login extends ActionBarActivity {
         account = sharedPreferences.getString("account","");
         password = sharedPreferences.getString("password","");
         name = sharedPreferences.getString("name","");
+        sex = sharedPreferences.getString("sex","");
         if (account.length()!=0 && password.length()!=0) login();
     }
 }

@@ -1,19 +1,16 @@
 package com.example.samsung.myapplication;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -22,9 +19,9 @@ import cz.msebera.android.httpclient.Header;
 public class Register extends ActionBarActivity {
 
     private String rAccount,rPassword,rPasswordSure,rName,rSignature,rAge,rSex,avatarUrl;
+    static String baseUrl = "http://115.159.156.241/wechatinterface/index.php?";
     private EditText rEtAccount,rEtPassword,rEtPasswordSure,rEtName,rEtSignature,rEtAge;
-    private RadioButton male,female;
-    private RadioGroup sexRadioGroup;
+    private ImageButton male,female;
     private Button btnSure,btnReturn,btnAvator;
     private int condition;
 
@@ -34,68 +31,19 @@ public class Register extends ActionBarActivity {
         Fresco.initialize(this);
         setContentView(R.layout.register);
 
-        setrEtAccount();
-        setrEtPassword();
-        setrEtPasswordSure();
-        setrEtAge();
-        setrEtName();
-        setrEtSignature();
-        setSexRadioGroup();
-        setBtnSure();
-        setBtnReturn();
-        setBtnAvator();
+        initView();
     }
 
-    private void setBtnAvator() {
-        btnAvator = (Button) findViewById(R.id.btn_avatar);
-        btnAvator.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setAvatorSelect();
-            }
-        });
-    }
-
-    private void setrEtAccount(){
+    private void initView() {
         rEtAccount = (EditText) findViewById(R.id.r_et_account);
-    }
-
-    private void setrEtPassword(){
         rEtPassword = (EditText) findViewById(R.id.r_et_password);
         rEtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-    }
-
-    private void setrEtPasswordSure(){
         rEtPasswordSure = (EditText) findViewById(R.id.r_et_password_sure);
         rEtPasswordSure.setTransformationMethod(PasswordTransformationMethod.getInstance());
-    }
-
-    private void setrEtName(){
-        rEtName = (EditText) findViewById(R.id.r_et_name);
-    }
-
-    private void setrEtSignature(){
-        rEtSignature = (EditText) findViewById(R.id.r_et_signature);
-    }
-
-    private void setrEtAge(){
         rEtAge = (EditText) findViewById(R.id.r_et_age);
-    }
+        rEtName = (EditText) findViewById(R.id.r_et_name);
+        rEtSignature = (EditText) findViewById(R.id.r_et_signature);
 
-    private void setSexRadioGroup(){
-        male = (RadioButton) findViewById(R.id.male);
-        female = (RadioButton) findViewById(R.id.female);
-        sexRadioGroup = (RadioGroup) findViewById(R.id.sexRadioGroup);
-        sexRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == male.getId()) rSex = "男";
-                if (checkedId == female.getId()) rSex = "女";
-            }
-        });
-    }
-
-    private void setBtnSure(){
         btnSure = (Button) findViewById(R.id.b_sure);
         btnSure.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +61,7 @@ public class Register extends ActionBarActivity {
                     case 1:Toast.makeText(getApplicationContext(), "账号长度应在6~20之间", Toast.LENGTH_SHORT).show();break;
                     case 2:Toast.makeText(getApplicationContext(), "密码输入不一致", Toast.LENGTH_SHORT).show();break;
                     case 3:Toast.makeText(getApplicationContext(),"密码长度应在6~20之间",Toast.LENGTH_SHORT).show();break;
-                    case 4:Toast.makeText(getApplicationContext(), "性别不能为空", Toast.LENGTH_SHORT).show();break;
+                    case 4:Toast.makeText(getApplicationContext(), "请选择性别", Toast.LENGTH_SHORT).show();break;
                     case 0:{//send account and password to server
                         saveInformationToServer();
                         startActivity(new Intent(Register.this, Login.class));
@@ -122,9 +70,7 @@ public class Register extends ActionBarActivity {
                 }
             }
         });
-    }
 
-    private void setBtnReturn(){
         btnReturn = (Button) findViewById(R.id.b_return);
         btnReturn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,10 +78,41 @@ public class Register extends ActionBarActivity {
                 startActivity(new Intent(Register.this, Login.class));
             }
         });
+
+        male = (ImageButton) findViewById(R.id.img_btn_boy);
+        male.setOnClickListener(imageButtonListener);
+
+        female = (ImageButton) findViewById(R.id.img_btn_girl);
+        female.setOnClickListener(imageButtonListener);
     }
 
+    private View.OnClickListener imageButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.img_btn_boy : rSex = "男";
+                    male.setBackgroundResource(R.drawable.avator_boy);
+                    female.setBackgroundResource(R.drawable.avator_girl_unselect);
+                    break;
+                case R.id.img_btn_girl : rSex = "女";
+                    male.setBackgroundResource(R.drawable.avator_boy_unselect);
+                    female.setBackgroundResource(R.drawable.avator_girl);
+                    break;
+            }
+        }
+    };
+
+//    private void setBtnAvator() {
+//        btnAvator = (Button) findViewById(R.id.btn_avatar);
+//        btnAvator.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                setAvatorSelect();
+//            }
+//        });
+//    }
+
     private void saveInformationToServer(){
-        String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
         String saveUrlString = baseUrl + "table=users&method=save&data="+accountInformation();
         AsyncHttpClient saveHttpClient = new AsyncHttpClient();
         saveHttpClient.get(saveUrlString, new AsyncHttpResponseHandler() {
@@ -169,24 +146,24 @@ public class Register extends ActionBarActivity {
         return result;
     }
 
-    private void setAvatorSelect(){
-        Intent intent = new Intent();
-        /* 开启Pictures画面Type设定为image */
-        intent.setType("image/*");
-        /* 使用Intent.ACTION_GET_CONTENT这个Action */
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        /* 取得相片后返回本画面 */
-        startActivityForResult(intent, 1);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            avatarUrl = data.getDataString();
-            Uri uri = Uri.parse(avatarUrl);
-            SimpleDraweeView draweeView = (SimpleDraweeView) findViewById(R.id.user_avatar_select);
-            draweeView.setImageURI(uri);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+//    private void setAvatorSelect(){
+//        Intent intent = new Intent();
+//        /* 开启Pictures画面Type设定为image */
+//        intent.setType("image/*");
+//        /* 使用Intent.ACTION_GET_CONTENT这个Action */
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        /* 取得相片后返回本画面 */
+//        startActivityForResult(intent, 1);
+//    }
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode == RESULT_OK) {
+//            avatarUrl = data.getDataString();
+//            Uri uri = Uri.parse(avatarUrl);
+//            SimpleDraweeView draweeView = (SimpleDraweeView) findViewById(R.id.user_avatar_select);
+//            draweeView.setImageURI(uri);
+//        }
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 }

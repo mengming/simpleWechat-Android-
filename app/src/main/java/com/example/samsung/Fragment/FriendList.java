@@ -2,13 +2,12 @@ package com.example.samsung.Fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.samsung.Adapter.FriendListAdapter;
 import com.example.samsung.Data.FriendBean;
+import com.example.samsung.myapplication.Main;
 import com.example.samsung.myapplication.R;
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -34,16 +34,17 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class FriendList extends Fragment{
+public class FriendList extends Fragment {
 
     private String name,account,friendAccount,getUnsignedUrlString, agreeUrlString,askMessage,
             disagreeUrlString,getLatestMessagesUrlString, sendMessageUrlString,countUrlString;
-    static String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
+    static String baseUrl = "http://115.159.156.241/wechatinterface/index.php?";
     private int unsignedNumber,count;
     private PullToRefreshListView friendListView;
     private ArrayList<FriendBean> friendBeans,newFriendBeans;
     private FriendListAdapter friendListAdapter;
     private SharedPreferences sharedPreferences;
+    private Fragment newChat;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,11 +65,11 @@ public class FriendList extends Fragment{
 //    }
 
     private void initFriendListView(View view){
-        Bundle bundle = getArguments();
-        account = bundle.getString("account");
-        name = bundle.getString("name");
+        Bundle accountData = getArguments();
+        account = accountData.getString("account");
         //create friendList
         friendBeans = new ArrayList<>();
+        getFriendList();
         friendListAdapter = new FriendListAdapter(getActivity(),friendBeans,account);
         friendListView = (PullToRefreshListView) view.findViewById(R.id.ptr_friend);
         friendListView.getRefreshableView().setDivider(null);
@@ -89,13 +90,10 @@ public class FriendList extends Fragment{
                         Toast.makeText(getView().getContext(), "等待对方同意", Toast.LENGTH_SHORT).show();
                 } else {
                     friendAccount = judgeFriendAccount(friendBean);
-                    Intent chatViewIntent = new Intent();
                     sharedPreferences = getActivity().getSharedPreferences("IDList", Activity.MODE_PRIVATE);
-                    chatViewIntent.setClass(getActivity(), ChatView.class);
-                    chatViewIntent.putExtra("account", account);
-                    chatViewIntent.putExtra("friendAccount", friendAccount);
+                    ((Main)getActivity()).openChat(friendAccount);
                     sharedPreferences.edit().remove(friendAccount).putInt(friendAccount, friendBean.getID()).commit();
-                    startActivity(chatViewIntent);
+
                 }
             }
         });

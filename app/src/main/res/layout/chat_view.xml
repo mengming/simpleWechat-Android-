@@ -2,9 +2,7 @@
 <RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
-    xmlns:ptr="http://schemas.android.com/tools">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout
         android:id="@+id/rl_bottom"
@@ -12,30 +10,33 @@
         android:layout_height="wrap_content"
         android:background="#AF3F34"
         android:layout_alignParentBottom="true">
-        <info.hoang8f.widget.FButton
-            fbutton:buttonColor="#CDBDBA"
-            fbutton:shadowEnabled="false"
-            fbutton:cornerRadius="5dp"
-            android:id="@+id/btn_send"
-            android:layout_width="60sp"
-            android:layout_height="30sp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10sp"
-            android:layout_centerVertical="true"
-            android:text="@string/send"/>
 
         <EditText
             android:id="@+id/et_sendmessage"
-            android:background="@android:color/white"
+            android:background="@drawable/edittext"
+            android:paddingLeft="5sp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/btn_send"
+            android:layout_marginTop="5sp"
             android:layout_marginLeft="10sp"
-            android:layout_marginRight="10sp"
             android:layout_centerVertical="true"
             android:singleLine="false"
-            android:inputType="textMultiLine"/>
+            android:inputType="textMultiLine"
+            android:layout_toStartOf="@+id/btn_send"
+            android:layout_toLeftOf="@+id/btn_send" />
+
+        <Button
+            android:background="@drawable/round_button"
+            android:id="@+id/btn_send"
+            android:layout_width="60sp"
+            android:layout_height="30sp"
+            android:text="@string/send"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+
     </RelativeLayout>
+
 
     <android:com.handmark.pulltorefresh.library.PullToRefreshListView
         android:layout_above="@id/rl_bottom"

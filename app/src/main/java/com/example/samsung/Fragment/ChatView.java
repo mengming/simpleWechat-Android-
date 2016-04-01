@@ -1,17 +1,19 @@
 package com.example.samsung.Fragment;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import com.example.samsung.Adapter.ChatViewAdapter;
 import com.example.samsung.Data.MessageBean;
 import com.example.samsung.myapplication.R;
 import com.google.gson.Gson;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -25,7 +27,7 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class ChatView extends Fragment{
+public class ChatView extends Fragment {
 
     private PullToRefreshListView chatListView;
     private ArrayList<MessageBean> messageBeans,newMessageBeans;
@@ -33,7 +35,7 @@ public class ChatView extends Fragment{
     private EditText etMessage;
     private Button btnSend;
     private String message,account,friendAccount,sendMessageUrlString,getMessageUrlString;
-    private String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
+    private String baseUrl = "http://115.159.156.241/wechatinterface/index.php?";
     private int count=10,positionStart,positionEnd;
 
     @Override
@@ -83,31 +85,28 @@ public class ChatView extends Fragment{
     }
 
     private void initChatView(View view){
-//        TextView textView = (TextView) view.findViewById(R.id.textView2);
-//        Bundle bundle = getArguments();
-//        account = bundle.getString("account");
-//        friendAccount = bundle.getString("friendAccount");
-//        textView.setText(account);
-//        textView.append("\n"+friendAccount);
-//        messageBeans = new ArrayList<>();
-//        chatViewAdapter = new ChatViewAdapter(getActivity(),messageBeans,account,friendAccount);
-//        chatListView = (PullToRefreshListView) view.findViewById(R.id.chat_list);
-//        chatListView.getRefreshableView().setDivider(null);
-//        chatListView.setMode(PullToRefreshBase.Mode.BOTH);
-//        chatListView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
-//        chatListView.setAdapter(chatViewAdapter);
-//        chatListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
-//            @Override
-//            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-//                count += 10;
-//                getMessageHistory();
-//            }
-//
-//            @Override
-//            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-//                getMessageHistory();
-//            }
-//        });
+        Bundle bundle = getArguments();
+        account = bundle.getString("account");
+        friendAccount = bundle.getString("friendAccount");
+        messageBeans = new ArrayList<>();
+        chatViewAdapter = new ChatViewAdapter(getActivity(),messageBeans,account,friendAccount);
+        chatListView = (PullToRefreshListView) view.findViewById(R.id.chat_list);
+        chatListView.getRefreshableView().setDivider(null);
+        chatListView.setMode(PullToRefreshBase.Mode.BOTH);
+        chatListView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
+        chatListView.setAdapter(chatViewAdapter);
+        chatListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+                count += 10;
+                getMessageHistory();
+            }
+
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+                getMessageHistory();
+            }
+        });
     }
 
     private void getMessageHistory(){

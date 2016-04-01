@@ -21,7 +21,7 @@
         android:gravity="left"
         android:padding="10sp"
         android:id="@+id/chat_right_message"
-        android:background="@drawable/chat_message_background"
+        android:background="@drawable/chattext"
         android:layout_alignTop="@+id/chat_right_pic"
         android:layout_toLeftOf="@+id/chat_right_pic"
         android:layout_toStartOf="@+id/chat_right_pic"
