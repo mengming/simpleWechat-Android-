@@ -6,27 +6,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/name"
-        android:textSize="20sp"
-        android:id="@+id/chat_right_name"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="@string/message"
         android:gravity="left"
         android:padding="10sp"
         android:id="@+id/chat_right_message"
         android:background="@drawable/chattext"
-        android:layout_alignTop="@+id/chat_right_pic"
+        android:layout_below="@+id/chat_right_time"
         android:layout_toLeftOf="@+id/chat_right_pic"
-        android:layout_toStartOf="@+id/chat_right_pic"
-        android:layout_marginRight="5dp"
-        android:layout_marginEnd="5dp" />
+        android:layout_toStartOf="@+id/chat_right_pic" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,7 +31,7 @@
         android:id="@+id/chat_right_pic"
         android:background="@drawable/chat_pic"
         android:gravity="center"
-        android:layout_below="@+id/chat_right_name"
+        android:layout_alignBottom="@+id/chat_right_message"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 </RelativeLayout>

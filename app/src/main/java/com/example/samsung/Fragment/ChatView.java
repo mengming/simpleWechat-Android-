@@ -43,6 +43,7 @@ public class ChatView extends Fragment {
         View view = inflater.inflate(R.layout.chat_view, container, false);
         initView(view);
         initChatView(view);
+        getMessageHistory();
         return view;
     }
 
@@ -77,6 +78,7 @@ public class ChatView extends Fragment {
             }
         });
     }
+
     private String sendMessageData(){
         String result = new String();
         result = "{%22sender%22:%22" + account + "%22,%22receiver%22:%22" + friendAccount +

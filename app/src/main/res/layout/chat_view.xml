@@ -37,6 +37,20 @@
 
     </RelativeLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chat_name"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chat_phone"
+        android:layout_below="@+id/chat_name"
+        android:layout_centerHorizontal="true" />
+
 
     <android:com.handmark.pulltorefresh.library.PullToRefreshListView
         android:layout_above="@id/rl_bottom"

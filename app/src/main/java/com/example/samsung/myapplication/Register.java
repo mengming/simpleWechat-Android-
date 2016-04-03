@@ -1,6 +1,9 @@
 package com.example.samsung.myapplication;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.PasswordTransformationMethod;
@@ -8,18 +11,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import cz.msebera.android.httpclient.Header;
 
 public class Register extends ActionBarActivity {
 
     private String rAccount,rPassword,rPasswordSure,rName,rSignature,rAge,rSex,avatarUrl;
-    static String baseUrl = "http://115.159.156.241/wechatinterface/index.php?";
+    static String baseUrl = "http://115.159.156.241/wechatinterface/index.php";
     private EditText rEtAccount,rEtPassword,rEtPasswordSure,rEtName,rEtSignature,rEtAge;
     private ImageButton male,female;
     private Button btnSure,btnReturn,btnAvator;
@@ -32,6 +44,18 @@ public class Register extends ActionBarActivity {
         setContentView(R.layout.register);
 
         initView();
+        setBtnAvator();
+        AccountManager accountManager = AccountManager.get(this);
+        Account[] accounts = accountManager.getAccounts();
+        for (Account account:accounts) {
+            if (account.type.equals("com.osp.app.signin")) {
+                rAccount = account.name;
+                rEtAccount.setVisibility(View.GONE);
+                TextView defaultAccount = (TextView) findViewById(R.id.tv_account_default);
+                defaultAccount.setText(rAccount);
+            }
+        }
+        if (rAccount==null) Toast.makeText(getApplicationContext(),"请先申请三星账号",Toast.LENGTH_SHORT).show();
     }
 
     private void initView() {
@@ -102,18 +126,18 @@ public class Register extends ActionBarActivity {
         }
     };
 
-//    private void setBtnAvator() {
-//        btnAvator = (Button) findViewById(R.id.btn_avatar);
-//        btnAvator.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                setAvatorSelect();
-//            }
-//        });
-//    }
+    private void setBtnAvator() {
+        btnAvator = (Button) findViewById(R.id.btn_avatar);
+        btnAvator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAvatorSelect();
+            }
+        });
+    }
 
     private void saveInformationToServer(){
-        String saveUrlString = baseUrl + "table=users&method=save&data="+accountInformation();
+        String saveUrlString = baseUrl + "?table=users&method=save&data="+accountInformation();
         AsyncHttpClient saveHttpClient = new AsyncHttpClient();
         saveHttpClient.get(saveUrlString, new AsyncHttpResponseHandler() {
             @Override
@@ -146,24 +170,47 @@ public class Register extends ActionBarActivity {
         return result;
     }
 
-//    private void setAvatorSelect(){
-//        Intent intent = new Intent();
-//        /* 开启Pictures画面Type设定为image */
-//        intent.setType("image/*");
-//        /* 使用Intent.ACTION_GET_CONTENT这个Action */
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//        /* 取得相片后返回本画面 */
-//        startActivityForResult(intent, 1);
-//    }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode == RESULT_OK) {
-//            avatarUrl = data.getDataString();
-//            Uri uri = Uri.parse(avatarUrl);
-//            SimpleDraweeView draweeView = (SimpleDraweeView) findViewById(R.id.user_avatar_select);
-//            draweeView.setImageURI(uri);
-//        }
-//        super.onActivityResult(requestCode, resultCode, data);
-//    }
+    private void setAvatorSelect(){
+        Intent intent = new Intent();
+        /* 开启Pictures画面Type设定为image */
+        intent.setType("image/*");
+        /* 使用Intent.ACTION_GET_CONTENT这个Action */
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        /* 取得相片后返回本画面 */
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            avatarUrl = data.getDataString();
+            Uri uri = Uri.parse(avatarUrl);
+            SimpleDraweeView draweeView = (SimpleDraweeView) findViewById(R.id.user_avatar_select);
+            draweeView.setImageURI(uri);
+            AsyncHttpClient upload = new AsyncHttpClient();
+            RequestParams params = new RequestParams();
+            System.out.println(avatarUrl);
+            File file = new File("/storage/sdcard1/Pictures/boy.jpg");
+            try {
+                params.put("picture",file);
+                System.out.println("图片存在");
+            } catch (FileNotFoundException e) {
+                System.out.println("文件不存在");
+            }
+            upload.post("http://115.159.156.241/wechatinterface/lib/upload.php", params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    System.out.println(statusCode+"\n"+response.toString());
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    System.out.println("statusCode:"+statusCode+"\nheaders:"+headers.toString()+"\nresponseString:"
+                    +responseString+"\nthrowable:"+throwable);
+                }
+            });
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 }

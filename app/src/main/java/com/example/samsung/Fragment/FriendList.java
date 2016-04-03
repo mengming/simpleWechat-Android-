@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.samsung.Adapter.FriendListAdapter;
 import com.example.samsung.Data.FriendBean;
+import com.example.samsung.Data.FriendListEvent;
 import com.example.samsung.myapplication.Main;
 import com.example.samsung.myapplication.R;
 import com.google.gson.Gson;
@@ -45,6 +46,7 @@ public class FriendList extends Fragment {
     private FriendListAdapter friendListAdapter;
     private SharedPreferences sharedPreferences;
     private Fragment newChat;
+    private JSONArray unsign,latest;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,21 +55,21 @@ public class FriendList extends Fragment {
         return view;
     }
 
-//    public void onEvent(FriendListEvent event) {
-//        newFriendBeans = new ArrayList<>();
-//        JSONArray latestMessagesArray = event.latestMessagesArray;
-//        JSONArray unsignedArray = event.unsignedArray;
-//        newFriendBeans.addAll(unsignedArrayHandle(unsignedArray));
-//        newFriendBeans.addAll(latestArrayHandle(latestMessagesArray));
-//        friendBeans.clear();
-//        friendBeans.addAll(newFriendBeans);
-//        friendListAdapter.notifyDataSetChanged();
-//    }
+    public void onEventMainThread(FriendListEvent event) {
+        System.out.println("refresh");
+        newFriendBeans = new ArrayList<>();
+        JSONArray latestMessagesArray = event.latestMessagesArray;
+        JSONArray unsignedArray = event.unsignedArray;
+        newFriendBeans.addAll(unsignedArrayHandle(unsignedArray));
+        newFriendBeans.addAll(latestArrayHandle(latestMessagesArray));
+        friendBeans.clear();
+        friendBeans.addAll(newFriendBeans);
+        friendListAdapter.notifyDataSetChanged();
+    }
 
     private void initFriendListView(View view){
-        Bundle accountData = getArguments();
-        account = accountData.getString("account");
-        //create friendList
+        Bundle Data = getArguments();
+        account = Data.getString("account");
         friendBeans = new ArrayList<>();
         getFriendList();
         friendListAdapter = new FriendListAdapter(getActivity(),friendBeans,account);
@@ -93,7 +95,6 @@ public class FriendList extends Fragment {
                     sharedPreferences = getActivity().getSharedPreferences("IDList", Activity.MODE_PRIVATE);
                     ((Main)getActivity()).openChat(friendAccount);
                     sharedPreferences.edit().remove(friendAccount).putInt(friendAccount, friendBean.getID()).commit();
-
                 }
             }
         });
@@ -319,6 +320,5 @@ public class FriendList extends Fragment {
         }
         return result;
     }
-
 
 }

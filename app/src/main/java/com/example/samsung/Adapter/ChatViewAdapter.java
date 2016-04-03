@@ -56,7 +56,6 @@ public class ChatViewAdapter  extends BaseAdapter{
         if (otherOrSelf) {
             holder1 = new ViewHolder();
             convertView = mInflater.inflate(R.layout.chat_view_right, null);
-            holder1.nameText = (TextView) convertView.findViewById(R.id.chat_right_name);
             holder1.messageText = (TextView) convertView.findViewById(R.id.chat_right_message);
             holder1.timeText = (TextView) convertView.findViewById(R.id.chat_right_time);
             holder1.simpleDraweeView = (SimpleDraweeView) convertView.findViewById(R.id.chat_right_pic);
@@ -64,7 +63,6 @@ public class ChatViewAdapter  extends BaseAdapter{
         else {
             holder2 = new ViewHolder();
             convertView = mInflater.inflate(R.layout.chat_view_left, null);
-            holder2.nameText = (TextView) convertView.findViewById(R.id.chat_left_name);
             holder2.messageText = (TextView) convertView.findViewById(R.id.chat_left_message);
             holder2.timeText = (TextView) convertView.findViewById(R.id.chat_left_time);
             holder2.simpleDraweeView = (SimpleDraweeView) convertView.findViewById(R.id.chat_left_pic);
@@ -72,20 +70,17 @@ public class ChatViewAdapter  extends BaseAdapter{
         if (otherOrSelf) {
             holder1.messageText.setText(messageBean.getMessage());
             holder1.timeText.setText(messageBean.getTime());
-            holder1.nameText.setText(account);
             holder1.simpleDraweeView.setImageURI(uri);
         }
         else {
             holder2.messageText.setText(messageBean.getMessage());
             holder2.timeText.setText(messageBean.getTime());
-            holder2.nameText.setText(friendAccount);
             holder2.simpleDraweeView.setImageURI(uri);
         }
         return convertView;
     }
 
     static class ViewHolder{
-        public TextView nameText;
         public TextView messageText;
         public TextView timeText;
         public SimpleDraweeView simpleDraweeView;

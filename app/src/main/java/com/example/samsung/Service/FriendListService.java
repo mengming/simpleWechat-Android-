@@ -9,20 +9,21 @@ import com.example.samsung.Data.FriendListEvent;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 
 import cz.msebera.android.httpclient.Header;
+import de.greenrobot.event.EventBus;
 
 public class FriendListService extends Service {
 
-    static String baseUrl = "http://8.sundoge.applinzi.com/index.php?";
+    static String baseUrl = "http://115.159.156.241/wechatinterface/index.php?";
     private String account;
     private String getLatestMessagesUrlString,getUnsignedUrlString;
     private JSONArray unsignedArray,latestMessagesArray;
 
     @Override
     public IBinder onBind(Intent intent) {
+        account = intent.getStringExtra("account");
         return new Binder();
     }
 
@@ -35,9 +36,8 @@ public class FriendListService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         System.out.println("onStartCommand");
-        account = intent.getStringExtra("account");
         new MyServerThread().start();
-        return super.onStartCommand(intent, flags, startId);
+        return super.onStartCommand(intent, START_REDELIVER_INTENT, startId);
     }
 
     @Override
@@ -53,6 +53,7 @@ public class FriendListService extends Service {
                 try {
                     getFriendListUnsigned();
                     getLatestMessages();
+                    System.out.println("service");
                     MyServerThread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

@@ -6,6 +6,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -22,12 +23,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.samsung.Adapter.PagerAdapter;
+import com.example.samsung.Adapter.ViewPagerAdapter;
 import com.example.samsung.Fragment.ChatView;
 import com.example.samsung.Fragment.FriendList;
+import com.example.samsung.Service.FriendListService;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
+
+import de.greenrobot.event.EventBus;
 
 public class Main extends ActionBarActivity {
 
@@ -39,9 +43,10 @@ public class Main extends ActionBarActivity {
     private Intent intent;
     private ArrayList<Fragment> fragments = null;
     private ViewPager viewPager = null;
-    private PagerAdapter pagerAdapter = null;
+    private ViewPagerAdapter viewPagerAdapter = null;
     private SharedPreferences sharedPreferences;
     private Toolbar toolbar;
+    private Fragment friendFragment,chatFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +58,10 @@ public class Main extends ActionBarActivity {
         System.out.println("onCreateF");
 
         isCreate = true;
-//        intent = new Intent(this,FriendListService.class);
-//        intent.putExtra("account", account);
-//        startService(intent);
-//        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        intent = new Intent(this,FriendListService.class);
+        intent.putExtra("account", account);
+        startService(intent);
+        bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
     private void initView() {
@@ -69,14 +74,15 @@ public class Main extends ActionBarActivity {
         btnLogout = (Button) findViewById(R.id.bar_logout);
         btnLogout.setOnClickListener(new buttonListener());
         fragments = new ArrayList<>();
-        Fragment friendFragment = new FriendList();
+        friendFragment = new FriendList();
+        EventBus.getDefault().register(friendFragment);
         Bundle accountData = new Bundle();
         accountData.putString("account", account);
         friendFragment.setArguments(accountData);
         fragments.add(friendFragment);
         viewPager = (ViewPager) findViewById(R.id.fragment_pager);
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager(),fragments);
-        viewPager.setAdapter(pagerAdapter);
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(),fragments);
+        viewPager.setAdapter(viewPagerAdapter);
         viewPager.setOnPageChangeListener(pageListener);
         btnFriend = (Button) findViewById(R.id.btn_friend);
         btnFriend.setOnClickListener(new buttonListener());
@@ -127,7 +133,9 @@ public class Main extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        unbindService(connection);
+        unbindService(connection);
+        stopService(intent);
+        EventBus.getDefault().unregister(friendFragment);
         System.out.println("onDestroyF");
     }
 
@@ -171,7 +179,8 @@ public class Main extends ActionBarActivity {
     }
 
     public void openChat(String friendAccount){
-        Fragment chatFragment = new ChatView();
+        if (fragments.size()==2) fragments.remove(1);
+        chatFragment = new ChatView();
         Bundle chatBundle = new Bundle();
         chatBundle.putString("friendAccount",friendAccount);
         chatBundle.putString("account",account);

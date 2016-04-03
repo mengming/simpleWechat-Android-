@@ -3,24 +3,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.Toolbar
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/return_aty"
-        android:textSize="26dp"
-        android:id="@+id/b_return"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:id="@+id/main_toolbar"
+        android:background="#AF3F34">
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="30sp"
+                android:background="@drawable/round_button"
+                android:text="@string/return_aty"
+                android:id="@+id/b_return"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/identification"
-        android:textSize="36dp"
+        android:textSize="30sp"
         android:id="@+id/r_t_account"
-        android:layout_below="@+id/b_return"
+        android:layout_below="@+id/main_toolbar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -29,7 +41,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/password"
-        android:textSize="36dp"
+        android:textSize="30sp"
         android:id="@+id/r_password"
         android:layout_below="@+id/r_t_account"
         android:layout_alignParentLeft="true"
@@ -40,7 +52,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/password_sure"
-        android:textSize="36dp"
+        android:textSize="30sp"
         android:id="@+id/r_password_sure"
         android:layout_below="@+id/r_password"
         android:layout_alignParentLeft="true"
@@ -58,23 +70,26 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/r_et_password"
+        android:layout_alignBottom="@+id/r_password"
+        android:layout_alignRight="@+id/r_et_account"
+        android:layout_alignEnd="@+id/r_et_account"
         android:layout_below="@+id/r_t_account"
-        android:layout_toRightOf="@+id/r_t_account"
-        android:layout_toEndOf="@+id/r_t_account" />
+        android:layout_toRightOf="@+id/r_password"
+        android:layout_toEndOf="@+id/r_password" />
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/r_et_password_sure"
-        android:layout_alignTop="@+id/r_password_sure"
+        android:layout_alignBottom="@+id/r_password_sure"
         android:layout_toRightOf="@+id/r_password_sure"
         android:layout_toEndOf="@+id/r_password_sure" />
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30sp"
+        android:background="@drawable/round_button"
         android:text="@string/sure"
-        android:textSize="26dp"
         android:id="@+id/b_sure"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
@@ -84,7 +99,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/name"
-        android:textSize="36dp"
+        android:textSize="30sp"
         android:id="@+id/r_t_name"
         android:layout_below="@+id/r_et_password_sure"
         android:layout_alignParentLeft="true"
@@ -95,15 +110,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/r_et_name"
         android:layout_below="@+id/r_et_password_sure"
-        android:layout_toRightOf="@+id/r_t_name"
-        android:layout_toEndOf="@+id/r_t_name" />
+        android:layout_toEndOf="@+id/r_t_name"
+        android:layout_alignBottom="@+id/r_t_name"
+        android:layout_toRightOf="@+id/r_t_name" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/signature"
-        android:textSize="36sp"
+        android:textSize="30sp"
         android:id="@+id/r_t_signature"
         android:layout_below="@+id/r_et_name"
         android:layout_alignParentLeft="true"
@@ -114,15 +130,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/r_et_signature"
         android:layout_below="@+id/r_et_name"
-        android:layout_toRightOf="@+id/r_t_signature"
-        android:layout_toEndOf="@+id/r_t_signature" />
+        android:layout_toEndOf="@+id/r_t_signature"
+        android:layout_alignBottom="@+id/r_t_signature"
+        android:layout_toRightOf="@+id/r_t_signature" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/age"
-        android:textSize="36sp"
+        android:textSize="30sp"
         android:id="@+id/r_t_age"
         android:layout_below="@+id/r_t_signature"
         android:layout_alignParentLeft="true"
@@ -132,16 +149,19 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/r_et_age"
-        android:layout_below="@+id/r_t_signature"
-        android:layout_toRightOf="@+id/r_t_age"
-        android:layout_toEndOf="@+id/r_t_age" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/r_et_signature"
+        android:layout_toEndOf="@+id/r_t_age"
+        android:layout_above="@+id/img_btn_boy"
+        android:layout_toRightOf="@+id/r_t_age" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/sex"
-        android:textSize="36sp"
+        android:textSize="30sp"
         android:id="@+id/sex"
         android:layout_below="@+id/r_et_age"
         android:layout_alignParentLeft="true"
@@ -192,20 +212,31 @@
             <!--android:layout_toEndOf="@+id/sexRadioGroup" />-->
     <!--</RadioGroup>-->
 
-    <!--<com.facebook.drawee.view.SimpleDraweeView-->
-        <!--android:id="@+id/user_avatar_select"-->
-        <!--android:layout_width="46sp"-->
-        <!--android:layout_height="46sp"-->
-        <!--android:layout_below="@+id/sexRadioGroup"-->
-        <!--android:layout_toRightOf="@+id/btn_avatar"/>-->
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/user_avatar_select"
+        android:layout_width="46sp"
+        android:layout_height="46sp"
+        android:layout_alignTop="@+id/btn_avatar"
+        android:layout_toRightOf="@+id/btn_avatar"
+        android:layout_toEndOf="@+id/btn_avatar" />
 
-    <!--<Button-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/btn_avatar"-->
-        <!--android:id="@+id/btn_avatar"-->
-        <!--android:layout_below="@+id/sexRadioGroup"-->
-        <!--android:layout_alignParentLeft="true"-->
-        <!--android:layout_alignParentStart="true" />-->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="30sp"
+        android:text="@string/btn_avatar"
+        android:background="@drawable/round_button"
+        android:id="@+id/btn_avatar"
+        android:layout_below="@+id/img_btn_boy"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_account_default"
+        android:layout_alignBottom="@+id/r_t_account"
+        android:layout_alignTop="@+id/r_et_account"
+        android:layout_toRightOf="@+id/r_t_account"
+        android:layout_toEndOf="@+id/r_t_account" />
 
 </RelativeLayout>
