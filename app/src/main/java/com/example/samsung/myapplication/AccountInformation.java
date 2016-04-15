@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -28,19 +29,19 @@ public class AccountInformation extends ActionBarActivity{
 
     private TextView tvAccount,tvName,tvSex,tvAge,tvSignature;
     private String account,friendAccount,getSelfClient,getFriendClient,message,saveUrlString
-            ,name,sex,signature;
+            ,name,friendName,sex,signature;
     final static int self = 1,other = 0;
-    private int statusCode,age;
-    private Button btnAdd;
-    static String baseUrl = "http://115.159.156.241/wechatinterface/index.php?";
+    private int CODE,age;
+    private Button btnAdd,btnBack;
+    static String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_information);
 
-        getExtra();
         init();
+        getExtra();
     }
 
     private void init() {
@@ -49,22 +50,45 @@ public class AccountInformation extends ActionBarActivity{
         tvSex = (TextView) findViewById(R.id.tv_sex);
         tvAge = (TextView) findViewById(R.id.tv_age);
         tvSignature = (TextView) findViewById(tv_signature);
-        setBtnAdd();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.account_information_toolbar);
+        setSupportActionBar(toolbar);
+        btnAdd = (Button) findViewById(R.id.btn_sure_add);
+        btnAdd.setOnClickListener(listener);
+        btnBack = (Button) findViewById(R.id.bar_back);
+        btnBack.setOnClickListener(listener);
     }
 
     private void getExtra() {
         Intent intent = getIntent();
-        statusCode = intent.getIntExtra("statusCode",0);
-        if (statusCode==other) {
+        CODE = intent.getIntExtra("statusCode", 0);
+        if (CODE==other) {
+            name = intent.getStringExtra("name");
+            btnAdd.setText("确认添加");
             account = intent.getStringExtra("account");
             friendAccount = intent.getStringExtra("friendAccount");
             getFriendAccountInformation();
         }
-        if (statusCode==self) {
+        if (CODE==self) {
+            btnAdd.setText("修改个人资料");
             account = intent.getStringExtra("account");
             getSelfAccountInformation();
         }
     }
+
+    private View.OnClickListener listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btn_sure_add :
+                    switch (CODE) {
+                        case other : addFriendDialog(); break;
+                        case self : break;
+                    }
+                    break;
+                case R.id.bar_back : finish(); break;
+            }
+        }
+    };
 
     private void getSelfAccountInformation() {
         AsyncHttpClient getInformationClient = new AsyncHttpClient();
@@ -84,49 +108,18 @@ public class AccountInformation extends ActionBarActivity{
             super.onSuccess(statusCode, headers, response);
             try {
                 JSONObject jsonObject = response.getJSONObject(0);
-                account = jsonObject.getString("identification");
-                name = jsonObject.getString("name");
+                if (CODE==other) friendName = jsonObject.getString("name");
                 age = jsonObject.getInt("age");
                 sex = jsonObject.getString("sex");
                 signature = jsonObject.getString("signature");
-                tvAccount.setText("账号:" + account);
-                tvName.setText("昵称:" + name);
+                tvAccount.setText("账号:" + jsonObject.getString("identification"));
+                tvName.setText("昵称:" + jsonObject.getString("name"));
                 tvAge.setText("年龄:" + age);
                 tvSex.setText("性别:" + sex);
                 tvSignature.setText("个性签名:" + signature);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-    };
-
-    private void setBtnAdd(){
-        btnAdd = (Button) findViewById(R.id.btn_sure_add);
-        switch (statusCode) {
-            case self: {
-                btnAdd.setText("修改个人资料");
-                btnAdd.setOnClickListener(selfOnClickListener);
-                break;
-            }
-            case other: {
-                btnAdd.setText("确认添加");
-                btnAdd.setOnClickListener(otherOnClickListener);
-                break;
-            }
-        }
-    }
-
-    View.OnClickListener selfOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-        }
-    };
-
-    View.OnClickListener otherOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            addFriendDialog();
         }
     };
 
@@ -177,6 +170,7 @@ public class AccountInformation extends ActionBarActivity{
 
     private String friendRequest(){
         return "{%22friendRequest%22:%22"+account+"%22,%22friendResponse%22:%22"+friendAccount
-                +"%22,%22sign%22:%220%22,%22message%22:%22"+message+"%22}";
+                +"%22,%22sign%22:%220%22,%22message%22:%22"+message+"%22,%22friendRequestName%22:%22"+name+
+                "%22,%22friendResponseName%22:%22" +friendName+"%22}";
     }
 }

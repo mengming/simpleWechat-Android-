@@ -31,7 +31,7 @@ import cz.msebera.android.httpclient.Header;
 public class Register extends ActionBarActivity {
 
     private String rAccount,rPassword,rPasswordSure,rName,rSignature,rAge,rSex,avatarUrl;
-    static String baseUrl = "http://115.159.156.241/wechatinterface/index.php";
+    static String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
     private EditText rEtAccount,rEtPassword,rEtPasswordSure,rEtName,rEtSignature,rEtAge;
     private ImageButton male,female;
     private Button btnSure,btnReturn,btnAvator;

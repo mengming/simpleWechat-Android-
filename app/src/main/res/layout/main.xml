@@ -5,7 +5,7 @@
 
     <android.support.v7.widget.Toolbar
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50sp"
         android:id="@+id/main_toolbar"
         android:background="#AF3F34">
         <RelativeLayout
@@ -18,40 +18,34 @@
                 android:layout_centerVertical="true"
                 android:text="@string/app_name"
                 android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:id="@+id/tv_app" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/friend_name"
+                android:text="friend"
+                android:textSize="20sp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
 
             <Button
-                android:background="@drawable/round_button"
-                android:layout_width="wrap_content"
+                android:layout_width="30sp"
                 android:layout_height="30sp"
-                android:layout_margin="2sp"
-                android:text="@string/logout"
-                android:id="@+id/bar_logout"
+                android:background="@drawable/actionbar_add_icon"
+                android:id="@+id/btn_menu"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
 
-            <Button
-                android:background="@drawable/round_button"
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="30sp"
-                android:layout_margin="2sp"
-                android:text="@string/self_information"
-                android:id="@+id/bar_self"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/bar_logout"
-                android:layout_toStartOf="@+id/bar_logout" />
-
-            <Button
-                android:background="@drawable/round_button"
-                android:layout_width="wrap_content"
-                android:layout_height="30sp"
-                android:layout_margin="2sp"
-                android:text="@string/add_friend"
-                android:id="@+id/bar_add"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/bar_self"
-                android:layout_toStartOf="@+id/bar_self" />
+                android:layout_height="wrap_content"
+                android:text="phone"
+                android:id="@+id/tv_phone"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>

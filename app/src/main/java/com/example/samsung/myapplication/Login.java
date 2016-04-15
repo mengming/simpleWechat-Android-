@@ -23,7 +23,7 @@ import cz.msebera.android.httpclient.Header;
 public class Login extends ActionBarActivity {
 
     private String account,password,rightPassword,name,sex,getUserClient;
-    static String baseUrl = "http://115.159.156.241/wechatinterface/index.php?";
+    static String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
     private EditText etAccount,etPassword;
     private Button btnLogin,btnRegister;
     private SharedPreferences sharedPreferences;

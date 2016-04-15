@@ -81,6 +81,8 @@
         android:text="@string/register"
         android:id="@+id/b_register"
         android:background="@drawable/round_button"
+        android:paddingLeft="2sp"
+        android:paddingRight="2sp"
         android:layout_below="@+id/et_password"
         android:layout_alignRight="@+id/et_password"
         android:layout_alignEnd="@+id/et_password" />

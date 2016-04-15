@@ -39,7 +39,7 @@ public class FriendList extends Fragment {
 
     private String name,account,friendAccount,getUnsignedUrlString, agreeUrlString,askMessage,
             disagreeUrlString,getLatestMessagesUrlString, sendMessageUrlString,countUrlString;
-    static String baseUrl = "http://115.159.156.241/wechatinterface/index.php?";
+    static String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
     private int unsignedNumber,count;
     private PullToRefreshListView friendListView;
     private ArrayList<FriendBean> friendBeans,newFriendBeans;
@@ -56,11 +56,10 @@ public class FriendList extends Fragment {
     }
 
     public void onEventMainThread(FriendListEvent event) {
-        System.out.println("refresh");
         newFriendBeans = new ArrayList<>();
         JSONArray latestMessagesArray = event.latestMessagesArray;
         JSONArray unsignedArray = event.unsignedArray;
-        newFriendBeans.addAll(unsignedArrayHandle(unsignedArray));
+        if (unsignedArray != null) newFriendBeans.addAll(unsignedArrayHandle(unsignedArray));
         newFriendBeans.addAll(latestArrayHandle(latestMessagesArray));
         friendBeans.clear();
         friendBeans.addAll(newFriendBeans);
@@ -68,8 +67,9 @@ public class FriendList extends Fragment {
     }
 
     private void initFriendListView(View view){
-        Bundle Data = getArguments();
-        account = Data.getString("account");
+        Bundle data = getArguments();
+        account = data.getString("account");
+        name = data.getString("name");
         friendBeans = new ArrayList<>();
         getFriendList();
         friendListAdapter = new FriendListAdapter(getActivity(),friendBeans,account);
@@ -239,7 +239,7 @@ public class FriendList extends Fragment {
     JsonHttpResponseHandler unsignedHandler = new JsonHttpResponseHandler(){
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-            newFriendBeans.addAll(unsignedArrayHandle(response));
+            if (response != null)newFriendBeans.addAll(unsignedArrayHandle(response));
         }
     };
 
@@ -267,36 +267,37 @@ public class FriendList extends Fragment {
         sharedPreferences = getActivity().getSharedPreferences("IDList", Activity.MODE_PRIVATE);
         int length = response.length();
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        try {
-            for (int i = 0; i <length; i++) {
-                JSONObject friendJsonObject = response.getJSONObject(i);
+        for (int i = 0; i <length; i++) {
+            JSONObject friendJsonObject = null;
+            try {
+                friendJsonObject = response.getJSONObject(i);
                 Gson gson = new Gson();
                 FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
                 friendBean.setSign(1);
                 friendBean.setMessage(friendBean.getSender() + ":" + friendJsonObject.getString("message"));
-                friendAccount = judgeFriendAccount(friendBean);
-                friendBean.setJudgeNew(false);
-                int oldID = sharedPreferences.getInt(friendAccount, 0);
-                int newID = sharedPreferences.getInt(friendAccount+"newID",0);
-                int ID = friendBean.getID();
-                String sender = friendBean.getSender();
-                if (oldID==0) {
-                    if (sender.equals(friendAccount)) editor.putInt(friendAccount+"newID",ID);
-                    else break;
-                }
-                else if (sender.equals(friendAccount)) {
-                    if (oldID!=ID) {
-                        if (newID != ID) {
-                            editor.remove(friendAccount + "newID").putInt(friendAccount + "newID", ID);
-//                            initNotification(friendAccount, friendBean.getMessage());
-                        }
-                        friendBean.setJudgeNew(true);
-                    }
-                }
+//                friendAccount = judgeFriendAccount(friendBean);
+//                friendBean.setJudgeNew(false);
+//                int oldID = sharedPreferences.getInt(friendAccount, 0);
+//                int newID = sharedPreferences.getInt(friendAccount+"newID",0);
+//                int ID = friendBean.getID();
+//                String sender = friendBean.getSender();
+//                if (oldID==0) {
+//                    if (sender.equals(friendAccount)) editor.putInt(friendAccount+"newID",ID);
+//                    else break;
+//                }
+//                else if (sender.equals(friendAccount)) {
+//                    if (oldID!=ID) {
+//                        if (newID != ID) {
+//                            editor.remove(friendAccount + "newID").putInt(friendAccount + "newID", ID);
+////                            initNotification(friendAccount, friendBean.getMessage());
+//                        }
+//                        friendBean.setJudgeNew(true);
+//                    }
+//                }
                 result.add(friendBean);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         editor.commit();
         return result;

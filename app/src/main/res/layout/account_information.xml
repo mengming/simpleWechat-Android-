@@ -2,12 +2,35 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
+    <android.support.v7.widget.Toolbar
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/account_information_toolbar"
+        android:background="#AF3F34">
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <Button
+                android:background="@drawable/round_button"
+                android:layout_width="wrap_content"
+                android:layout_height="30sp"
+                android:layout_margin="2sp"
+                android:text="@string/return_aty"
+                android:id="@+id/bar_back"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/tv_account"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/account_information_toolbar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -49,9 +72,12 @@
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30sp"
+        android:background="@drawable/round_button"
         android:id="@+id/btn_sure_add"
         android:layout_below="@+id/tv_signature"
+        android:paddingLeft="2sp"
+        android:paddingRight="2sp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 

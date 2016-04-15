@@ -65,13 +65,13 @@ public class FriendListAdapter extends BaseAdapter {
         //如果为未添加好友
         if (sign==0) {
             if (friendBean.getFriendResponse().equals(account)) {
-                name = friendBean.getFriendRequest();
+                name = friendBean.getFriendRequestName();
                 holder.nameText.setText(name);
                 holder.messageText.setText("请求添加您为好友:" + friendBean.getMessage());
                 holder.timeText.setText(friendBean.getTime());
             }
             else {
-                name = friendBean.getFriendResponse();
+                name = friendBean.getFriendResponseName();
                 holder.nameText.setText(name);
                 holder.messageText.setText("等待对方同意您的请求");
                 holder.timeText.setText(friendBean.getTime());

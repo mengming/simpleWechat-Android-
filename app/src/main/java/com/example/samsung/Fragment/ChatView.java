@@ -1,6 +1,8 @@
 package com.example.samsung.Fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.samsung.Adapter.ChatViewAdapter;
+import com.example.samsung.Data.ChatViewEvent;
 import com.example.samsung.Data.MessageBean;
 import com.example.samsung.myapplication.R;
 import com.google.gson.Gson;
@@ -18,14 +21,18 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cz.msebera.android.httpclient.Header;
+import de.greenrobot.event.EventBus;
 
 public class ChatView extends Fragment {
 
@@ -35,21 +42,68 @@ public class ChatView extends Fragment {
     private EditText etMessage;
     private Button btnSend;
     private String message,account,friendAccount,sendMessageUrlString,getMessageUrlString;
-    private String baseUrl = "http://115.159.156.241/wechatinterface/index.php?";
+    private String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
     private int count=10,positionStart,positionEnd;
+    public Timer timer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chat_view, container, false);
         initView(view);
         initChatView(view);
-        getMessageHistory();
         return view;
+    }
+
+    public Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            messageBeans.clear();
+            messageBeans.addAll(newMessageBeans);
+            chatViewAdapter.notifyDataSetChanged();
+            chatListView.getRefreshableView().setSelection(messageBeans.size() - 1);
+            chatListView.onRefreshComplete();
+            super.handleMessage(msg);
+        }
+    };
+
+    public void onEventMainThread(ChatViewEvent event){
+        newMessageBeans = event.messageBeans;
+        handler.sendMessage(new Message());
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    private void timerTask() {
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getMessageHistory();
+                    }
+                });
+                thread.start();
+                System.out.println("timer");
+            }
+        }, 0, 5000);
+    }
+
+    @Override
+    public void onResume() {
+        timer = new Timer();
+        timerTask();
+        super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        timer.cancel();
+        System.out.println("stop");
+        super.onStop();
     }
 
     private void initView(View view) {
@@ -111,9 +165,9 @@ public class ChatView extends Fragment {
         });
     }
 
-    private void getMessageHistory(){
+    public void getMessageHistory(){
         newMessageBeans = new ArrayList<>();
-        AsyncHttpClient getMessageClient = new AsyncHttpClient();
+        SyncHttpClient getMessageClient = new SyncHttpClient();
         getMessageUrlString = baseUrl + "table=messageList&method=get&data="+ messageSenderAndReceiver();
         getMessageClient.get(getMessageUrlString,new JsonHttpResponseHandler(){
             @Override
@@ -131,11 +185,8 @@ public class ChatView extends Fragment {
                         e.printStackTrace();
                     }
                 }
-                messageBeans.clear();
-                messageBeans.addAll(newMessageBeans);
-                chatViewAdapter.notifyDataSetChanged();
-                chatListView.getRefreshableView().setSelection(messageBeans.size() - 1);
-                chatListView.onRefreshComplete();
+                EventBus.getDefault().post(new ChatViewEvent(newMessageBeans));
+                handler.sendMessage(new Message());
             }
         });
     }
