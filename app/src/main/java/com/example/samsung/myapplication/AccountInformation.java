@@ -3,6 +3,7 @@ package com.example.samsung.myapplication;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -32,6 +34,7 @@ public class AccountInformation extends ActionBarActivity{
             ,name,friendName,sex,signature;
     final static int self = 1,other = 0;
     private int CODE,age;
+    private SimpleDraweeView draweeView;
     private Button btnAdd,btnBack;
     static String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
 
@@ -50,6 +53,7 @@ public class AccountInformation extends ActionBarActivity{
         tvSex = (TextView) findViewById(R.id.tv_sex);
         tvAge = (TextView) findViewById(R.id.tv_age);
         tvSignature = (TextView) findViewById(tv_signature);
+        draweeView = (SimpleDraweeView) findViewById(R.id.user_avatar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.account_information_toolbar);
         setSupportActionBar(toolbar);
         btnAdd = (Button) findViewById(R.id.btn_sure_add);
@@ -112,11 +116,13 @@ public class AccountInformation extends ActionBarActivity{
                 age = jsonObject.getInt("age");
                 sex = jsonObject.getString("sex");
                 signature = jsonObject.getString("signature");
-                tvAccount.setText("账号:" + jsonObject.getString("identification"));
-                tvName.setText("昵称:" + jsonObject.getString("name"));
-                tvAge.setText("年龄:" + age);
-                tvSex.setText("性别:" + sex);
-                tvSignature.setText("个性签名:" + signature);
+                tvAccount.append(jsonObject.getString("identification"));
+                tvName.append(jsonObject.getString("name"));
+                tvAge.append(age + "");
+                tvSex.append(sex);
+                tvSignature.append(signature);
+                Uri uri = Uri.parse(jsonObject.getString("picUrl"));
+                draweeView.setImageURI(uri);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

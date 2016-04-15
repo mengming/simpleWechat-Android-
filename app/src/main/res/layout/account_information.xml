@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/tv_account"
+        android:text="账号:"
         android:layout_below="@+id/account_information_toolbar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -39,6 +40,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/tv_name"
+        android:text="昵称:"
         android:layout_below="@+id/tv_account"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -48,6 +50,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/tv_sex"
+        android:text="性别:"
         android:layout_below="@+id/tv_name"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -57,6 +60,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/tv_age"
+        android:text="年龄:"
         android:layout_below="@+id/tv_sex"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -66,18 +70,37 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/tv_signature"
+        android:text="个性签名:"
         android:layout_below="@+id/tv_age"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/user_avatar"
+        android:layout_width="46sp"
+        android:layout_height="46sp"
+        android:layout_below="@+id/tv_signature"
+        android:layout_toRightOf="@+id/tv_avatar"
+        android:layout_toEndOf="@+id/tv_avatar" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="30sp"
         android:background="@drawable/round_button"
         android:id="@+id/btn_sure_add"
-        android:layout_below="@+id/tv_signature"
         android:paddingLeft="2sp"
         android:paddingRight="2sp"
+        android:layout_below="@+id/user_avatar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="头像:"
+        android:id="@+id/tv_avatar"
+        android:layout_below="@+id/tv_signature"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 

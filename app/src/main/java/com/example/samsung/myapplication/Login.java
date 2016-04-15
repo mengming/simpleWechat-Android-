@@ -47,6 +47,7 @@ public class Login extends ActionBarActivity {
         friendListIntent.putExtra("name", name);
         friendListIntent.putExtra("sex",sex);
         startActivity(friendListIntent);
+        finish();
     }
 
     private void setEtAccount(){

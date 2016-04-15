@@ -3,7 +3,7 @@ package com.example.samsung.Data;
 public class MessageBean {
 
     private int ID;
-    private String message,time,receiver,sender;
+    private String message,time,receiver,sender,receiverName,senderName;
 
     public void setID(int ID){
         this.ID = ID;
@@ -44,6 +44,22 @@ public class MessageBean {
     public String getSender(){
         return sender;
     }
+
+//    public void setReceiverName(String receiverName) {
+//        this.receiverName = receiverName;
+//    }
+//
+//    public String getReceiverName(){
+//        return receiverName;
+//    }
+//
+//    public void setSenderName(String senderName) {
+//        this.senderName = senderName;
+//    }
+//
+//    public String getSenderName(){
+//        return senderName;
+//    }
 
     @Override
     public String toString(){

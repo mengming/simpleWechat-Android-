@@ -257,10 +257,10 @@ public class Main extends ActionBarActivity {
         builder.create().show();
     }
 
-
     private void logout() {
         sharedPreferences = getSharedPreferences("login",Activity.MODE_PRIVATE);
         sharedPreferences.edit().clear().commit();
+        startActivity(new Intent(this,Login.class));
         finish();
     }
 
