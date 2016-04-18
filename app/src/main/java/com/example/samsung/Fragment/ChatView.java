@@ -41,7 +41,7 @@ public class ChatView extends Fragment {
     private ChatViewAdapter chatViewAdapter;
     private EditText etMessage;
     private Button btnSend;
-    private String message,account,friendAccount,sendMessageUrlString,getMessageUrlString;
+    private String message,account,friendAccount,avatar,friendAvatar,sendMessageUrlString,getMessageUrlString;
     private String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
     private int count=10,positionStart,positionEnd;
     public Timer timer;
@@ -102,6 +102,7 @@ public class ChatView extends Fragment {
     @Override
     public void onStop() {
         timer.cancel();
+        timer.purge();
         System.out.println("stop");
         super.onStop();
     }
@@ -144,8 +145,11 @@ public class ChatView extends Fragment {
         Bundle bundle = getArguments();
         account = bundle.getString("account");
         friendAccount = bundle.getString("friendAccount");
+        avatar = bundle.getString("selfAvatar");
+        friendAvatar = bundle.getString("friendAvatar");
+        System.out.println(account+friendAccount+avatar+"\n"+friendAvatar);
         messageBeans = new ArrayList<>();
-        chatViewAdapter = new ChatViewAdapter(getActivity(),messageBeans,account,friendAccount);
+        chatViewAdapter = new ChatViewAdapter(getActivity(),messageBeans,account,friendAccount,avatar,friendAvatar);
         chatListView = (PullToRefreshListView) view.findViewById(R.id.chat_list);
         chatListView.getRefreshableView().setDivider(null);
         chatListView.setMode(PullToRefreshBase.Mode.BOTH);

@@ -21,6 +21,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:background="@android:color/darker_gray"
         android:text="@string/time"
+        android:textSize="10sp"
         android:id="@+id/chat_right_time"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />

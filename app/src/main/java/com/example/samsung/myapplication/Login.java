@@ -22,7 +22,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class Login extends ActionBarActivity {
 
-    private String account,password,rightPassword,name,sex,getUserClient;
+    private String account,password,rightPassword,name,sex,getUserClient,avatarUrl,phone;
     static String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
     private EditText etAccount,etPassword;
     private Button btnLogin,btnRegister;
@@ -45,10 +45,10 @@ public class Login extends ActionBarActivity {
         friendListIntent.setClass(Login.this, Main.class);
         friendListIntent.putExtra("account", account);
         friendListIntent.putExtra("name", name);
-        friendListIntent.putExtra("sex",sex);
+        friendListIntent.putExtra("avatarUrl",avatarUrl);
         startActivity(friendListIntent);
         finish();
-    }
+     }
 
     private void setEtAccount(){
         etAccount = (EditText) findViewById(R.id.et_account);
@@ -94,7 +94,7 @@ public class Login extends ActionBarActivity {
                                     for (int i = 0; i < length; i++) {
                                         rightPassword = response.getJSONObject(i).getString("password");
                                         name = response.getJSONObject(i).getString("name");
-                                        sex = response.getJSONObject(i).getString("sex");
+                                        avatarUrl = response.getJSONObject(i).getString("picUrl");
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -128,7 +128,7 @@ public class Login extends ActionBarActivity {
         editor.putString("account", account);
         editor.putString("password",password);
         editor.putString("name",name);
-        editor.putString("sex",sex);
+        editor.putString("avatarUrl",avatarUrl);
         editor.commit();
     }
 
@@ -137,7 +137,7 @@ public class Login extends ActionBarActivity {
         account = sharedPreferences.getString("account","");
         password = sharedPreferences.getString("password","");
         name = sharedPreferences.getString("name","");
-        sex = sharedPreferences.getString("sex","");
+        avatarUrl = sharedPreferences.getString("avatarUrl",avatarUrl);
         if (account.length()!=0 && password.length()!=0) login();
     }
 }

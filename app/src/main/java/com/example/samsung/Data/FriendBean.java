@@ -3,8 +3,7 @@ package com.example.samsung.Data;
 public class FriendBean {
 
     private int ID,sign;
-    private String friendRequest,friendResponse,friendRequestName,friendResponseName,
-        message,time,sender,receiver;
+    private String friendRequest,friendResponse,message,time,sender,receiver,friendPic,friendName,friendPhone;
     private boolean judgeNew;
 
     public boolean getJudgeNew(){
@@ -63,20 +62,12 @@ public class FriendBean {
         this.sign = sign;
     }
 
-    public String getFriendRequestName(){
-        return friendRequestName;
+    public String getFriendName(){
+        return friendName;
     }
 
-    public void setFriendRequestName(String friendRequestName){
-        this.friendRequestName = friendRequestName;
-    }
-
-    public String getFriendResponseName(){
-        return friendResponseName;
-    }
-
-    public void setFriendResponseName(String friendResponseName){
-        this.friendResponseName = friendResponseName;
+    public void setFriendName(String friendName){
+        this.friendName = friendName;
     }
 
     public String getSender(){
@@ -95,14 +86,22 @@ public class FriendBean {
         this.receiver = receiver;
     }
 
+    public String getFriendPic(){
+        return friendPic;
+    }
+
+    public void setFriendPic(String friendPic){
+        this.friendPic = friendPic;
+    }
+
+
+
     @Override
     public String toString() {
         return "friendBean{" + ID + "/"
                 + sign + "/"
                 + friendRequest + "/"
                 + friendResponse+ "/"
-                + friendRequestName+ "/"
-                + friendResponseName+ "/"
                 + message+ "/"
                 + time + "/"
                 + sender + "/"

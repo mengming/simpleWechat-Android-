@@ -18,15 +18,18 @@ public class ChatViewAdapter  extends BaseAdapter{
 
     private LayoutInflater mInflater;
     private MessageBean messageBean;
-    private String account,friendAccount;
+    private String account,friendAccount,time,day,times[],selfAvatar,friendAvatar;
     public ArrayList<MessageBean> messageBeans;
+    private Uri uri;
 
     public ChatViewAdapter(Context context,ArrayList<MessageBean> messageBeans
-            ,String account,String friendAccount){
+            ,String account,String friendAccount,String selfAvatar,String friendAvatar){
         mInflater = LayoutInflater.from(context);
         this.messageBeans = messageBeans;
         this.account = account;
         this.friendAccount = friendAccount;
+        this.selfAvatar = selfAvatar;
+        this.friendAvatar = friendAvatar;
     }
 
     @Override
@@ -48,8 +51,9 @@ public class ChatViewAdapter  extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder1 = null;
         ViewHolder holder2 = null;
-        Uri uri = Uri.parse("res:///"+R.drawable.chat_pic);
+//        Uri uri = Uri.parse("res:///"+R.drawable.chat_pic);
         messageBean = messageBeans.get(position);
+        times = messageBean.getTime().split(" ");
         //if sender is self then otherOrSelf is true,else is false;
         Boolean otherOrSelf = false;
         if (messageBean.getSender().equals(account)) otherOrSelf = true;
@@ -69,12 +73,14 @@ public class ChatViewAdapter  extends BaseAdapter{
         }
         if (otherOrSelf) {
             holder1.messageText.setText(messageBean.getMessage());
-            holder1.timeText.setText(messageBean.getTime());
+            holder1.timeText.setText(time);
+            if (selfAvatar!=null) uri = Uri.parse(selfAvatar);
             holder1.simpleDraweeView.setImageURI(uri);
         }
         else {
             holder2.messageText.setText(messageBean.getMessage());
-            holder2.timeText.setText(messageBean.getTime());
+            holder2.timeText.setText(time);
+            if (friendAvatar!=null) uri = Uri.parse(friendAvatar);
             holder2.simpleDraweeView.setImageURI(uri);
         }
         return convertView;

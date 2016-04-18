@@ -42,10 +42,10 @@ public class Main extends ActionBarActivity {
 
     final static int FRIEND_LIST = 0;
     final static int CHAT_VIEW = 1;
-    private Button btnFriend,btnChat,btnMenu;
-    private String account,friendAccount,name,sex;
+    private Button btnFriend,btnChat,btnMenu,btnCommunity;
+    private String account,friendAccount,name,selfAvatar;
     private String items[] = {"添加好友","个人资料","退出登录"};
-    private boolean isCreate,isFirstChat;
+    private boolean isCreate;
     private Intent intent;
     private ArrayList<Fragment> fragments = null;
     private ViewPager viewPager = null;
@@ -61,13 +61,13 @@ public class Main extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         Fresco.initialize(this);
         setContentView(R.layout.main);
+
         getExtra();
         initView();
         initMenu();
         System.out.println("onCreateF");
 
         isCreate = true;
-        isFirstChat = false;
         intent = new Intent(this,FriendListService.class);
         intent.putExtra("account", account);
         startService(intent);
@@ -78,7 +78,7 @@ public class Main extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         btnMenu = (Button) findViewById(R.id.btn_menu);
-        btnMenu.setOnClickListener(new listener());
+        btnMenu.setOnClickListener(listener);
         friendName = (TextView) findViewById(R.id.friend_name);
         phone = (TextView) findViewById(R.id.tv_phone);
         friendName.setVisibility(View.INVISIBLE);
@@ -96,17 +96,19 @@ public class Main extends ActionBarActivity {
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setOnPageChangeListener(pageListener);
         btnFriend = (Button) findViewById(R.id.btn_friend);
-        btnFriend.setOnClickListener(new listener());
+        btnFriend.setOnClickListener(listener);
         btnFriend.setEnabled(false);
         btnChat = (Button) findViewById(R.id.btn_chat);
-        btnChat.setOnClickListener(new listener());
+        btnChat.setOnClickListener(listener);
+        btnCommunity = (Button) findViewById(R.id.btn_community);
+        btnCommunity.setOnClickListener(listener);
     }
 
     private void getExtra(){
         Intent intent = getIntent();
         name = intent.getStringExtra("name");
         account = intent.getStringExtra("account");
-        sex = intent.getStringExtra("sex");
+        selfAvatar = intent.getStringExtra("avatarUrl");
     }
 
     ServiceConnection connection = new ServiceConnection() {
@@ -170,8 +172,6 @@ public class Main extends ActionBarActivity {
                     btnFriend.setEnabled(true);
                     friendName.setVisibility(View.VISIBLE);
                     phone.setVisibility(View.VISIBLE);
-                    if (!isFirstChat) chatFragment.onResume();
-                    else isFirstChat = false;
                     break;
             }
         }
@@ -182,7 +182,7 @@ public class Main extends ActionBarActivity {
         }
     };
 
-    class listener implements View.OnClickListener {
+    private View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
@@ -193,9 +193,10 @@ public class Main extends ActionBarActivity {
                 case R.id.btn_menu:
                     listPopupWindow.setAnchorView(v);
                     listPopupWindow.show(); break;
+                case R.id.btn_community: break;
             }
         }
-    }
+    };
 
     private void initMenu() {
         listPopupWindow = new ListPopupWindow(this);
@@ -214,13 +215,14 @@ public class Main extends ActionBarActivity {
         });
     }
 
-    public void openChat(String friendAccount){
+    public void openChat(String friendAccount,String friendAvatar){
         if (fragments.size()==2) fragments.remove(1);
-        else isFirstChat = true;
         chatFragment = new ChatView();
         Bundle chatBundle = new Bundle();
         chatBundle.putString("friendAccount",friendAccount);
         chatBundle.putString("account",account);
+        chatBundle.putString("selfAvatar",selfAvatar);
+        chatBundle.putString("friendAvatar",friendAvatar);
         chatFragment.setArguments(chatBundle);
         fragments.add(chatFragment);
         viewPager.getAdapter().notifyDataSetChanged();

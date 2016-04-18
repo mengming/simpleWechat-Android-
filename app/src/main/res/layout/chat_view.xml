@@ -33,6 +33,7 @@
             android:layout_width="60sp"
             android:layout_height="30sp"
             android:text="@string/send"
+            android:layout_marginRight="10sp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"/>

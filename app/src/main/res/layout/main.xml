@@ -16,6 +16,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="10sp"
                 android:text="@string/app_name"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -35,6 +36,7 @@
                 android:layout_height="30sp"
                 android:background="@drawable/actionbar_add_icon"
                 android:id="@+id/btn_menu"
+                android:layout_marginRight="10sp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
@@ -82,6 +84,18 @@
             android:layout_marginBottom="5sp"
             android:text="@string/chat_view"
             android:id="@+id/btn_chat" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="30sp"
+            android:background="@drawable/round_button"
+            android:layout_weight="1"
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginTop="5sp"
+            android:layout_marginBottom="5sp"
+            android:text="@string/community"
+            android:id="@+id/btn_community"/>
 
     </LinearLayout>
 

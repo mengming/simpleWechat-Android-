@@ -93,7 +93,7 @@ public class FriendList extends Fragment {
                 } else {
                     friendAccount = judgeFriendAccount(friendBean);
                     sharedPreferences = getActivity().getSharedPreferences("IDList", Activity.MODE_PRIVATE);
-                    ((Main)getActivity()).openChat(friendAccount);
+                    ((Main)getActivity()).openChat(friendAccount,friendBean.getFriendPic());
                     sharedPreferences.edit().remove(friendAccount).putInt(friendAccount, friendBean.getID()).commit();
                 }
             }

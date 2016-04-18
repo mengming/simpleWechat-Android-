@@ -27,4 +27,6 @@
     <string name="unknown_model">未知型号</string>
     <string name="friend_list">朋友列表</string>
     <string name="chat_view">聊天界面</string>
+    <string name="phone">手机型号</string>
+    <string name="community">社区动态</string>
 </resources>

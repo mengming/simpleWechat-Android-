@@ -18,7 +18,7 @@ public class FriendListAdapter extends BaseAdapter {
     public ArrayList<FriendBean> friendBeans;
     private LayoutInflater mInflater;
     private Context context;
-    private String account,name;
+    private String account,name,avatarUrl;
     private int sign;
 
     public FriendListAdapter(Context context,ArrayList<FriendBean> friendBeans,String account)
@@ -46,6 +46,7 @@ public class FriendListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
+        Uri uri = null;
         FriendBean friendBean = friendBeans.get(position);
         sign = friendBean.getSign();
         if(convertView == null)
@@ -55,7 +56,7 @@ public class FriendListAdapter extends BaseAdapter {
             holder.nameText = (TextView) convertView.findViewById(R.id.name);
             holder.messageText =  (TextView)convertView.findViewById(R.id.message);
             holder.timeText = (TextView)convertView.findViewById(R.id.time);
-            holder.avator = (SimpleDraweeView) convertView.findViewById(R.id.pic);
+            holder.avatar = (SimpleDraweeView) convertView.findViewById(R.id.pic);
             holder.newMessageText = (TextView) convertView.findViewById(R.id.newMessageNum);
             convertView.setTag(holder);
         }else
@@ -64,30 +65,24 @@ public class FriendListAdapter extends BaseAdapter {
         }
         //如果为未添加好友
         if (sign==0) {
-            if (friendBean.getFriendResponse().equals(account)) {
-                name = friendBean.getFriendRequestName();
-                holder.nameText.setText(name);
+            if (friendBean.getFriendResponse().equals(account))
                 holder.messageText.setText("请求添加您为好友:" + friendBean.getMessage());
-                holder.timeText.setText(friendBean.getTime());
-            }
-            else {
-                name = friendBean.getFriendResponseName();
-                holder.nameText.setText(name);
-                holder.messageText.setText("等待对方同意您的请求");
-                holder.timeText.setText(friendBean.getTime());
-            }
+            else holder.messageText.setText("等待对方同意您的请求");
+            name = friendBean.getFriendName();
+            avatarUrl = friendBean.getFriendPic();
+            if (avatarUrl != null) uri = Uri.parse(avatarUrl);
         }
         else {
             if (friendBean.getReceiver().equals(account)) name = friendBean.getSender();
             else name = friendBean.getReceiver();
-            holder.nameText.setText(name);
             holder.messageText.setText(friendBean.getMessage());
-            holder.timeText.setText(friendBean.getTime());
+            uri = Uri.parse(friendBean.getFriendPic());
             if (friendBean.getJudgeNew()) holder.newMessageText.setText("new");
             else holder.newMessageText.setText("");
         }
-        Uri uri = Uri.parse("res:///"+R.drawable.chat_pic);
-        holder.avator.setImageURI(uri);
+        holder.nameText.setText(name);
+        holder.timeText.setText(friendBean.getTime());
+        holder.avatar.setImageURI(uri);
         return convertView;
     }
 
@@ -96,7 +91,7 @@ public class FriendListAdapter extends BaseAdapter {
         public TextView messageText;
         public TextView timeText;
         public TextView newMessageText;
-        public SimpleDraweeView avator;
+        public SimpleDraweeView avatar;
     }
 
 }
