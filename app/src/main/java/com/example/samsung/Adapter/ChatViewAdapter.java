@@ -51,7 +51,6 @@ public class ChatViewAdapter  extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder1 = null;
         ViewHolder holder2 = null;
-//        Uri uri = Uri.parse("res:///"+R.drawable.chat_pic);
         messageBean = messageBeans.get(position);
         times = messageBean.getTime().split(" ");
         //if sender is self then otherOrSelf is true,else is false;

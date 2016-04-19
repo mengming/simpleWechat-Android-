@@ -3,6 +3,7 @@ package com.example.samsung.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.PasswordTransformationMethod;
@@ -11,11 +12,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -27,17 +33,27 @@ public class Login extends ActionBarActivity {
     private EditText etAccount,etPassword;
     private Button btnLogin,btnRegister;
     private SharedPreferences sharedPreferences;
+    private SimpleDraweeView draweeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
         setContentView(R.layout.login);
+        initView();
 
         readAccount();
-        setEtAccount();
-        setEtPassword();
         setBtnRegister();
         setBtnLogin();
+    }
+
+    private void initView() {
+        etAccount = (EditText) findViewById(R.id.et_account);
+        etPassword = (EditText) findViewById(R.id.et_password);
+        etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        setBtnRegister();
+        setBtnLogin();
+        draweeView = (SimpleDraweeView) findViewById(R.id.login_user_avatar);
     }
 
     private void login(){
@@ -49,15 +65,6 @@ public class Login extends ActionBarActivity {
         startActivity(friendListIntent);
         finish();
      }
-
-    private void setEtAccount(){
-        etAccount = (EditText) findViewById(R.id.et_account);
-    }
-
-    private void setEtPassword(){
-        etPassword = (EditText) findViewById(R.id.et_password);
-        etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-    }
 
     private void setBtnRegister(){
         btnRegister = (Button) findViewById(R.id.b_register);
@@ -138,6 +145,22 @@ public class Login extends ActionBarActivity {
         password = sharedPreferences.getString("password","");
         name = sharedPreferences.getString("name","");
         avatarUrl = sharedPreferences.getString("avatarUrl",avatarUrl);
-        if (account.length()!=0 && password.length()!=0) login();
+        if (account.length()!=0 && password.length()!=0) {
+            etAccount.setText(account);
+            etPassword.setText(password);
+            btnLogin.setEnabled(false);
+            btnRegister.setEnabled(false);
+            Toast.makeText(getApplicationContext(),"正在自动登录，请稍候",Toast.LENGTH_SHORT).show();
+            Uri uri = Uri.parse(avatarUrl);
+            draweeView.setImageURI(uri);
+            Timer timer = new Timer();
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    login();
+                }
+            };
+            timer.schedule(timerTask,3000);
+        }
     }
 }

@@ -45,12 +45,11 @@ public class Main extends ActionBarActivity {
     private Button btnFriend,btnChat,btnMenu,btnCommunity;
     private String account,friendAccount,name,selfAvatar;
     private String items[] = {"添加好友","个人资料","退出登录"};
-    private boolean isCreate;
     private Intent intent;
     private ArrayList<Fragment> fragments = null;
     private ViewPager viewPager = null;
     private ViewPagerAdapter viewPagerAdapter = null;
-    private TextView friendName,phone;
+    private TextView friendName,phone,appName;
     private SharedPreferences sharedPreferences;
     private Toolbar toolbar;
     private Fragment friendFragment,chatFragment;
@@ -65,9 +64,10 @@ public class Main extends ActionBarActivity {
         getExtra();
         initView();
         initMenu();
-        System.out.println("onCreateF");
+        initService();
+    }
 
-        isCreate = true;
+    private void initService() {
         intent = new Intent(this,FriendListService.class);
         intent.putExtra("account", account);
         startService(intent);
@@ -77,6 +77,7 @@ public class Main extends ActionBarActivity {
     private void initView() {
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
+        appName = (TextView) findViewById(R.id.tv_app);
         btnMenu = (Button) findViewById(R.id.btn_menu);
         btnMenu.setOnClickListener(listener);
         friendName = (TextView) findViewById(R.id.friend_name);
@@ -88,7 +89,7 @@ public class Main extends ActionBarActivity {
         EventBus.getDefault().register(friendFragment);
         Bundle accountData = new Bundle();
         accountData.putString("account", account);
-        accountData.putString("name",name);
+        accountData.putString("name", name);
         friendFragment.setArguments(accountData);
         fragments.add(friendFragment);
         viewPager = (ViewPager) findViewById(R.id.fragment_pager);
@@ -114,33 +115,12 @@ public class Main extends ActionBarActivity {
     ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            System.out.println("onServiceConnected");
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            System.out.println("onServiceDisconnected");
         }
     };
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        System.out.println("onStartF");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        System.out.println("onResumeF");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        isCreate = false;
-        System.out.println("onStopF");
-    }
 
     @Override
     protected void onDestroy() {

@@ -64,6 +64,7 @@ public class FriendList extends Fragment {
         friendBeans.clear();
         friendBeans.addAll(newFriendBeans);
         friendListAdapter.notifyDataSetChanged();
+        System.out.println("friendList");
     }
 
     private void initFriendListView(View view){
@@ -71,7 +72,6 @@ public class FriendList extends Fragment {
         account = data.getString("account");
         name = data.getString("name");
         friendBeans = new ArrayList<>();
-        getFriendList();
         friendListAdapter = new FriendListAdapter(getActivity(),friendBeans,account);
         friendListView = (PullToRefreshListView) view.findViewById(R.id.ptr_friend);
         friendListView.getRefreshableView().setDivider(null);
