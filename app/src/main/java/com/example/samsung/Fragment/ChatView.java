@@ -44,6 +44,7 @@ public class ChatView extends Fragment {
     private String message,account,friendAccount,avatar,friendAvatar,sendMessageUrlString,getMessageUrlString;
     private String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
     private int count=10,positionStart,positionEnd;
+    static int CREATE=0,START=1;
     public Timer timer;
 
     @Override

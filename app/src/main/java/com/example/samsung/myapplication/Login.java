@@ -34,6 +34,7 @@ public class Login extends ActionBarActivity {
     private Button btnLogin,btnRegister;
     private SharedPreferences sharedPreferences;
     private SimpleDraweeView draweeView;
+    static int READACCOUNT = 1,PASSWORDLOGIN = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +57,25 @@ public class Login extends ActionBarActivity {
         draweeView = (SimpleDraweeView) findViewById(R.id.login_user_avatar);
     }
 
-    private void login(){
-        Intent friendListIntent = new Intent();
-        friendListIntent.setClass(Login.this, Main.class);
-        friendListIntent.putExtra("account", account);
-        friendListIntent.putExtra("name", name);
-        friendListIntent.putExtra("avatarUrl",avatarUrl);
-        startActivity(friendListIntent);
-        finish();
+    private void login(int condition){
+        Uri uri = Uri.parse(avatarUrl);
+        draweeView.setImageURI(uri);
+        Timer timer = new Timer();
+        if (condition == PASSWORDLOGIN)
+            Toast.makeText(getApplicationContext(),"正在登录",Toast.LENGTH_SHORT).show();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Intent friendListIntent = new Intent();
+                friendListIntent.setClass(Login.this, Main.class);
+                friendListIntent.putExtra("account", account);
+                friendListIntent.putExtra("name", name);
+                friendListIntent.putExtra("avatarUrl",avatarUrl);
+                startActivity(friendListIntent);
+                finish();
+            }
+        };
+        timer.schedule(timerTask, 3000);
      }
 
     private void setBtnRegister(){
@@ -109,7 +121,7 @@ public class Login extends ActionBarActivity {
                                 if (rightPassword.equals(password)) {
                                     rightPassword = null;
                                     saveAccount();
-                                    login();
+                                    login(PASSWORDLOGIN);
                                 } else
                                     Toast.makeText(getApplicationContext(), "密码不正确", Toast.LENGTH_SHORT).show();
                             }
@@ -151,16 +163,7 @@ public class Login extends ActionBarActivity {
             btnLogin.setEnabled(false);
             btnRegister.setEnabled(false);
             Toast.makeText(getApplicationContext(),"正在自动登录，请稍候",Toast.LENGTH_SHORT).show();
-            Uri uri = Uri.parse(avatarUrl);
-            draweeView.setImageURI(uri);
-            Timer timer = new Timer();
-            TimerTask timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    login();
-                }
-            };
-            timer.schedule(timerTask,3000);
+            login(READACCOUNT);
         }
     }
 }

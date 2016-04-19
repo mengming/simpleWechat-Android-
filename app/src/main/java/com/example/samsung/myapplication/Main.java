@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.samsung.Adapter.ViewPagerAdapter;
 import com.example.samsung.Fragment.ChatView;
+import com.example.samsung.Fragment.Community;
 import com.example.samsung.Fragment.FriendList;
 import com.example.samsung.Service.FriendListService;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -40,8 +41,7 @@ import de.greenrobot.event.EventBus;
 
 public class Main extends ActionBarActivity {
 
-    final static int FRIEND_LIST = 0;
-    final static int CHAT_VIEW = 1;
+    final static int FRIEND_LIST = 0, COMMUNITY = 2, CHAT_VIEW = 1;
     private Button btnFriend,btnChat,btnMenu,btnCommunity;
     private String account,friendAccount,name,selfAvatar;
     private String items[] = {"添加好友","个人资料","退出登录"};
@@ -52,7 +52,7 @@ public class Main extends ActionBarActivity {
     private TextView friendName,phone,appName;
     private SharedPreferences sharedPreferences;
     private Toolbar toolbar;
-    private Fragment friendFragment,chatFragment;
+    private Fragment friendFragment,chatFragment,communityFragment;
     private ListPopupWindow listPopupWindow;
 
     @Override
@@ -92,6 +92,10 @@ public class Main extends ActionBarActivity {
         accountData.putString("name", name);
         friendFragment.setArguments(accountData);
         fragments.add(friendFragment);
+        chatFragment = new ChatView();
+        fragments.add(chatFragment);
+        communityFragment = new Community();
+        fragments.add(communityFragment);
         viewPager = (ViewPager) findViewById(R.id.fragment_pager);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(),fragments);
         viewPager.setAdapter(viewPagerAdapter);
@@ -139,20 +143,16 @@ public class Main extends ActionBarActivity {
 
         @Override
         public void onPageSelected(int position) {
+            btnChange(position);
             switch (position) {
-                case FRIEND_LIST : btnFriend.setEnabled(false);
-                    if (chatFragment != null) EventBus.getDefault().unregister(chatFragment);
-                    btnChat.setEnabled(true);
-                    chatFragment.onStop();
-                    friendName.setVisibility(View.INVISIBLE);
-                    phone.setVisibility(View.INVISIBLE);
+                case FRIEND_LIST :
+                    if (chatFragment != null) {
+                        EventBus.getDefault().unregister(chatFragment);
+                        chatFragment.onStop();
+                    }
                     break;
-                case CHAT_VIEW : btnChat.setEnabled(false);
-                    EventBus.getDefault().register(chatFragment);
-                    btnFriend.setEnabled(true);
-                    friendName.setVisibility(View.VISIBLE);
-                    phone.setVisibility(View.VISIBLE);
-                    break;
+                case COMMUNITY : break;
+                case CHAT_VIEW : EventBus.getDefault().register(chatFragment); break;
             }
         }
 
@@ -161,6 +161,26 @@ public class Main extends ActionBarActivity {
 
         }
     };
+
+    private void btnChange(int index){
+        btnChat.setEnabled(true);
+        btnFriend.setEnabled(true);
+        btnCommunity.setEnabled(true);
+        switch (index) {
+            case FRIEND_LIST : btnFriend.setEnabled(false);
+                friendName.setVisibility(View.INVISIBLE);
+                phone.setVisibility(View.INVISIBLE);
+                break;
+            case CHAT_VIEW : btnChat.setEnabled(false);
+                friendName.setVisibility(View.VISIBLE);
+                phone.setVisibility(View.VISIBLE);
+                break;
+            case COMMUNITY : btnCommunity.setEnabled(false);
+                friendName.setVisibility(View.INVISIBLE);
+                phone.setVisibility(View.INVISIBLE);
+                break;
+        }
+    }
 
     private View.OnClickListener listener = new View.OnClickListener() {
         @Override
@@ -173,7 +193,7 @@ public class Main extends ActionBarActivity {
                 case R.id.btn_menu:
                     listPopupWindow.setAnchorView(v);
                     listPopupWindow.show(); break;
-                case R.id.btn_community: break;
+                case R.id.btn_community: viewPager.setCurrentItem(COMMUNITY); break;
             }
         }
     };
@@ -196,7 +216,7 @@ public class Main extends ActionBarActivity {
     }
 
     public void openChat(String friendAccount,String friendAvatar){
-        if (fragments.size()==2) fragments.remove(1);
+        fragments.remove(1);
         chatFragment = new ChatView();
         Bundle chatBundle = new Bundle();
         chatBundle.putString("friendAccount",friendAccount);

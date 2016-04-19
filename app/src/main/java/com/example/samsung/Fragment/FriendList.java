@@ -74,7 +74,6 @@ public class FriendList extends Fragment {
         friendBeans = new ArrayList<>();
         friendListAdapter = new FriendListAdapter(getActivity(),friendBeans,account);
         friendListView = (PullToRefreshListView) view.findViewById(R.id.ptr_friend);
-        friendListView.getRefreshableView().setDivider(null);
         friendListView.setMode(PullToRefreshBase.Mode.PULL_DOWN_TO_REFRESH);
         friendListView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
         friendListView.getRefreshableView().setDivider(new ColorDrawable(Color.GRAY));
