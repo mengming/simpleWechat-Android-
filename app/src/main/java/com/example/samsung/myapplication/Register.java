@@ -12,11 +12,13 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.PasswordTransformationMethod;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +41,8 @@ public class Register extends ActionBarActivity {
     private EditText rEtAccount,rEtPassword,rEtPasswordSure,rEtName,rEtSignature,rEtAge;
     private RadioGroup radioGroup;
     private RadioButton male,female;
-    private Button btnSure,btnReturn,btnAvator;
+    private Button btnSure,btnReturn,btnAvator,btnPullMore;
+    private ScrollView scrollView;
     private int condition;
     private File file;
 
@@ -76,6 +79,24 @@ public class Register extends ActionBarActivity {
         radioGroup = (RadioGroup) findViewById(R.id.sexRadioGroup);
         male = (RadioButton) findViewById(R.id.male);
         female = (RadioButton) findViewById(R.id.female);
+        btnPullMore = (Button) findViewById(R.id.btn_pull_more);
+        btnPullMore.setOnClickListener(listener);
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
+        scrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        int scrollY = v.getScrollY();
+                        int height = v.getHeight();
+                        int scrollViewMeasuredHeight = scrollView.getChildAt(0).getMeasuredHeight();
+                        if ((scrollY+height) == scrollViewMeasuredHeight) btnPullMore.setText("已到达底部");
+                        else btnPullMore.setText("下拉更多");
+                        break;
+                }
+                return false;
+            }
+        });
         TextView phoneText = (TextView) findViewById(R.id.r_t_phone);
         phoneText.append(Build.MODEL);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -86,46 +107,57 @@ public class Register extends ActionBarActivity {
             }
         });
         btnSure = (Button) findViewById(R.id.b_sure);
-        btnSure.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getAccountInformation();
-                condition = 0;
-                if (rAccount.length()>20 || rAccount.length()<6) condition = 1;
-                else if (!rPassword.equals(rPasswordSure)) condition = 2;
-                else if (rPassword.length()>20 || rPassword.length()<6) condition = 3;
-                else if (rSex == null) condition = 4;
-                else if (avatarUrl == null) condition = 5;
-                if (rName.length()==0) rName = rAccount;
-                if (rSignature.length()==0) rSignature = "无";
-                if (rAge.length()==0) rAge = "0";
-                rPhone = Build.MODEL;
-                switch (condition) {
-                    case 1:Toast.makeText(getApplicationContext(), "账号长度应在6~20之间", Toast.LENGTH_SHORT).show();break;
-                    case 2:Toast.makeText(getApplicationContext(), "密码输入不一致", Toast.LENGTH_SHORT).show();break;
-                    case 3:Toast.makeText(getApplicationContext(),"密码长度应在6~20之间",Toast.LENGTH_SHORT).show();break;
-                    case 4:Toast.makeText(getApplicationContext(), "请选择性别", Toast.LENGTH_SHORT).show();break;
-                    case 5:Toast.makeText(getApplicationContext(), "请选择头像", Toast.LENGTH_SHORT).show();break;
-                    case 0:{//send account and password to server
-                        saveInformationToServer();
-                        startActivity(new Intent(Register.this, Login.class));
-                        finish();
-                        break;
-                    }
-                }
-            }
-        });
-
+        btnSure.setOnClickListener(listener);
         btnReturn = (Button) findViewById(R.id.b_return);
-        btnReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Register.this, Login.class));
-                finish();
-            }
-        });
+        btnReturn.setOnClickListener(listener);
 
     }
+
+    private View.OnClickListener listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.b_return:
+                    startActivity(new Intent(Register.this, Login.class));
+                    finish();
+                    break;
+                case R.id.btn_pull_more:
+                    scrollView.post(new Runnable() {
+                        public void run() {
+                            scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                            btnPullMore.setText("已到达底部");
+                        }
+                    });
+                    break;
+                case R.id.b_sure:
+                    getAccountInformation();
+                    condition = 0;
+                    if (rAccount.length()>20 || rAccount.length()<6) condition = 1;
+                    else if (!rPassword.equals(rPasswordSure)) condition = 2;
+                    else if (rPassword.length()>20 || rPassword.length()<6) condition = 3;
+                    else if (rSex == null) condition = 4;
+                    else if (avatarUrl == null) condition = 5;
+                    if (rName.length()==0) rName = rAccount;
+                    if (rSignature.length()==0) rSignature = "无";
+                    if (rAge.length()==0) rAge = "0";
+                    rPhone = Build.MODEL;
+                    switch (condition) {
+                        case 1:Toast.makeText(getApplicationContext(), "账号长度应在6~20之间", Toast.LENGTH_SHORT).show();break;
+                        case 2:Toast.makeText(getApplicationContext(), "密码输入不一致", Toast.LENGTH_SHORT).show();break;
+                        case 3:Toast.makeText(getApplicationContext(),"密码长度应在6~20之间",Toast.LENGTH_SHORT).show();break;
+                        case 4:Toast.makeText(getApplicationContext(), "请选择性别", Toast.LENGTH_SHORT).show();break;
+                        case 5:Toast.makeText(getApplicationContext(), "请选择头像", Toast.LENGTH_SHORT).show();break;
+                        case 0:{//send account and password to server
+                            saveInformationToServer();
+                            startActivity(new Intent(Register.this, Login.class));
+                            finish();
+                            break;
+                        }
+                    }
+                    break;
+            }
+        }
+    };
 
     private void setBtnAvator() {
         btnAvator = (Button) findViewById(R.id.btn_avatar);

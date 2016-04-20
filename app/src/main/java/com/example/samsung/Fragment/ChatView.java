@@ -43,8 +43,8 @@ public class ChatView extends Fragment {
     private Button btnSend;
     private String message,account,friendAccount,avatar,friendAvatar,sendMessageUrlString,getMessageUrlString;
     private String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
-    private int count=10,positionStart,positionEnd;
-    static int CREATE=0,START=1;
+    private int count=10,positionStart,positionEnd,condition;
+    static int CREATE=0;
     public Timer timer;
 
     @Override
@@ -95,16 +95,19 @@ public class ChatView extends Fragment {
 
     @Override
     public void onResume() {
-        timer = new Timer();
-        timerTask();
+        if (condition != CREATE) {
+            timer = new Timer();
+            timerTask();
+        }
         super.onResume();
     }
 
     @Override
     public void onStop() {
-        timer.cancel();
-        timer.purge();
-        System.out.println("stop");
+        if (condition != CREATE) {
+            timer.cancel();
+            timer.purge();
+        }
         super.onStop();
     }
 
@@ -144,11 +147,13 @@ public class ChatView extends Fragment {
 
     private void initChatView(View view){
         Bundle bundle = getArguments();
-        account = bundle.getString("account");
-        friendAccount = bundle.getString("friendAccount");
-        avatar = bundle.getString("selfAvatar");
-        friendAvatar = bundle.getString("friendAvatar");
-        System.out.println(account+friendAccount+avatar+"\n"+friendAvatar);
+        condition = bundle.getInt("condition");
+        if (condition != CREATE) {
+            account = bundle.getString("account");
+            friendAccount = bundle.getString("friendAccount");
+            avatar = bundle.getString("selfAvatar");
+            friendAvatar = bundle.getString("friendAvatar");
+        }
         messageBeans = new ArrayList<>();
         chatViewAdapter = new ChatViewAdapter(getActivity(),messageBeans,account,friendAccount,avatar,friendAvatar);
         chatListView = (PullToRefreshListView) view.findViewById(R.id.chat_list);

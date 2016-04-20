@@ -54,6 +54,7 @@ public class Main extends ActionBarActivity {
     private Toolbar toolbar;
     private Fragment friendFragment,chatFragment,communityFragment;
     private ListPopupWindow listPopupWindow;
+    private int chatViewCondition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +94,9 @@ public class Main extends ActionBarActivity {
         friendFragment.setArguments(accountData);
         fragments.add(friendFragment);
         chatFragment = new ChatView();
+        Bundle chatBundle = new Bundle();
+        chatBundle.putInt("condition", 0);
+        chatFragment.setArguments(chatBundle);
         fragments.add(chatFragment);
         communityFragment = new Community();
         fragments.add(communityFragment);
@@ -146,13 +150,16 @@ public class Main extends ActionBarActivity {
             btnChange(position);
             switch (position) {
                 case FRIEND_LIST :
-                    if (chatFragment != null) {
+                    if (chatViewCondition == 1) {
                         EventBus.getDefault().unregister(chatFragment);
                         chatFragment.onStop();
                     }
                     break;
                 case COMMUNITY : break;
-                case CHAT_VIEW : EventBus.getDefault().register(chatFragment); break;
+                case CHAT_VIEW :
+                    if (chatViewCondition == 1)
+                        EventBus.getDefault().register(chatFragment);
+                    break;
             }
         }
 
@@ -218,7 +225,9 @@ public class Main extends ActionBarActivity {
     public void openChat(String friendAccount,String friendAvatar){
         fragments.remove(1);
         chatFragment = new ChatView();
+        chatViewCondition = 1;
         Bundle chatBundle = new Bundle();
+        chatBundle.putInt("condition",1);
         chatBundle.putString("friendAccount",friendAccount);
         chatBundle.putString("account",account);
         chatBundle.putString("selfAvatar",selfAvatar);
