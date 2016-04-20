@@ -41,7 +41,8 @@ public class ChatView extends Fragment {
     private ChatViewAdapter chatViewAdapter;
     private EditText etMessage;
     private Button btnSend;
-    private String message,account,friendAccount,avatar,friendAvatar,sendMessageUrlString,getMessageUrlString;
+    private String message,account,friendAccount,name,friendName,friendPhone,avatar,friendAvatar,
+            sendMessageUrlString,getMessageUrlString;
     private String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
     private int count=10,positionStart,positionEnd,condition;
     static int CREATE=0;
@@ -153,6 +154,9 @@ public class ChatView extends Fragment {
             friendAccount = bundle.getString("friendAccount");
             avatar = bundle.getString("selfAvatar");
             friendAvatar = bundle.getString("friendAvatar");
+            name = bundle.getString("name");
+            friendName = bundle.getString("friendName");
+            friendPhone = bundle.getString("friendPhone");
         }
         messageBeans = new ArrayList<>();
         chatViewAdapter = new ChatViewAdapter(getActivity(),messageBeans,account,friendAccount,avatar,friendAvatar);

@@ -51,7 +51,7 @@ public class CommunityAdapter extends BaseAdapter{
         }
         else holder = (ViewHolder) convertView.getTag();
         holder.nameText.setText(communityBean.getPosterName());
-        holder.messageText.setText(communityBean.getTime());
+        holder.messageText.setText(communityBean.getMessage());
         holder.timeText.setText(communityBean.getTime());
         return convertView;
     }

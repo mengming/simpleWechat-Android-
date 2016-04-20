@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.samsung.Adapter.CommunityAdapter;
@@ -34,6 +35,7 @@ public class Community extends Fragment{
     private String getUrl,saveUrl;
     private ArrayList<CommunityBean> communityBeans,newCommunityBeans;
     private CommunityAdapter adapter;
+    private Button btnSend;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +45,13 @@ public class Community extends Fragment{
     }
 
     private void initView(View view){
+        btnSend = (Button) view.findViewById(R.id.btn_send_posting);
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         communityBeans = new ArrayList<>();
         communityListView = (PullToRefreshListView) view.findViewById(R.id.ptr_community);
         adapter = new CommunityAdapter(getActivity(),communityBeans);

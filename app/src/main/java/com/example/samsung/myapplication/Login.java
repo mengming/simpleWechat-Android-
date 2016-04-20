@@ -43,9 +43,9 @@ public class Login extends ActionBarActivity {
         setContentView(R.layout.login);
         initView();
 
-        readAccount();
         setBtnRegister();
         setBtnLogin();
+        readAccount();
     }
 
     private void initView() {
@@ -160,8 +160,8 @@ public class Login extends ActionBarActivity {
         if (account.length()!=0 && password.length()!=0) {
             etAccount.setText(account);
             etPassword.setText(password);
-            btnLogin.setEnabled(false);
-            btnRegister.setEnabled(false);
+            btnLogin.setClickable(false);
+            btnRegister.setClickable(false);
             Toast.makeText(getApplicationContext(),"正在自动登录，请稍候",Toast.LENGTH_SHORT).show();
             login(READACCOUNT);
         }

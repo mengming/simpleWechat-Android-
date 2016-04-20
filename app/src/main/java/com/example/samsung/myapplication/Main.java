@@ -49,12 +49,12 @@ public class Main extends ActionBarActivity {
     private ArrayList<Fragment> fragments = null;
     private ViewPager viewPager = null;
     private ViewPagerAdapter viewPagerAdapter = null;
-    private TextView friendName,phone,appName;
+    private TextView tvFriendName,phone,appName;
     private SharedPreferences sharedPreferences;
     private Toolbar toolbar;
     private Fragment friendFragment,chatFragment,communityFragment;
     private ListPopupWindow listPopupWindow;
-    private int chatViewCondition = 0;
+    private int chatViewCondition = 0,nowFragment = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +81,9 @@ public class Main extends ActionBarActivity {
         appName = (TextView) findViewById(R.id.tv_app);
         btnMenu = (Button) findViewById(R.id.btn_menu);
         btnMenu.setOnClickListener(listener);
-        friendName = (TextView) findViewById(R.id.friend_name);
+        tvFriendName = (TextView) findViewById(R.id.friend_name);
         phone = (TextView) findViewById(R.id.tv_phone);
-        friendName.setVisibility(View.INVISIBLE);
+        tvFriendName.setVisibility(View.INVISIBLE);
         phone.setVisibility(View.INVISIBLE);
         fragments = new ArrayList<>();
         friendFragment = new FriendList();
@@ -157,10 +157,12 @@ public class Main extends ActionBarActivity {
                     break;
                 case COMMUNITY : break;
                 case CHAT_VIEW :
-                    if (chatViewCondition == 1)
+                    if (chatViewCondition == 1 && nowFragment != 2) {
                         EventBus.getDefault().register(chatFragment);
+                    }
                     break;
             }
+            nowFragment = position;
         }
 
         @Override
@@ -175,15 +177,15 @@ public class Main extends ActionBarActivity {
         btnCommunity.setEnabled(true);
         switch (index) {
             case FRIEND_LIST : btnFriend.setEnabled(false);
-                friendName.setVisibility(View.INVISIBLE);
+                tvFriendName.setVisibility(View.INVISIBLE);
                 phone.setVisibility(View.INVISIBLE);
                 break;
             case CHAT_VIEW : btnChat.setEnabled(false);
-                friendName.setVisibility(View.VISIBLE);
+                tvFriendName.setVisibility(View.VISIBLE);
                 phone.setVisibility(View.VISIBLE);
                 break;
             case COMMUNITY : btnCommunity.setEnabled(false);
-                friendName.setVisibility(View.INVISIBLE);
+                tvFriendName.setVisibility(View.INVISIBLE);
                 phone.setVisibility(View.INVISIBLE);
                 break;
         }
@@ -209,7 +211,7 @@ public class Main extends ActionBarActivity {
         listPopupWindow = new ListPopupWindow(this);
         listPopupWindow.setAdapter(new ArrayAdapter<String>(this, R.layout.popup_item, items));
         listPopupWindow.setWidth(450);
-        listPopupWindow.setBackgroundDrawable(new ColorDrawable(0xFFAF3F34));
+        listPopupWindow.setBackgroundDrawable(new ColorDrawable(0xFF191d8c));
         listPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -222,20 +224,25 @@ public class Main extends ActionBarActivity {
         });
     }
 
-    public void openChat(String friendAccount,String friendAvatar){
-        fragments.remove(1);
+    public void openChat(String friendAccount,String friendAvatar,String friendName,String friendPhone){
         chatFragment = new ChatView();
         chatViewCondition = 1;
         Bundle chatBundle = new Bundle();
         chatBundle.putInt("condition",1);
-        chatBundle.putString("friendAccount",friendAccount);
-        chatBundle.putString("account",account);
-        chatBundle.putString("selfAvatar",selfAvatar);
+        chatBundle.putString("friendAccount", friendAccount);
+        chatBundle.putString("account", account);
+        chatBundle.putString("name", name);
+        chatBundle.putString("friendName", friendName);
+        chatBundle.putString("selfAvatar", selfAvatar);
         chatBundle.putString("friendAvatar",friendAvatar);
+        chatBundle.putString("friendPhone",friendPhone);
+        tvFriendName.setText(friendName);
+        phone.setText(friendPhone);
         chatFragment.setArguments(chatBundle);
-        fragments.add(chatFragment);
+        fragments.set(1,chatFragment);
         viewPager.getAdapter().notifyDataSetChanged();
         viewPager.setCurrentItem(CHAT_VIEW);
+        viewPager.setOffscreenPageLimit(2);
     }
 
     private void checkSelfInformation() {

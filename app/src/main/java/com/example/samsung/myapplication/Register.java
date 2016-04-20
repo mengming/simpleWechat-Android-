@@ -220,6 +220,7 @@ public class Register extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             avatarUrl = data.getDataString();
+            btnAvator.setVisibility(View.GONE);
             SimpleDraweeView draweeView = (SimpleDraweeView) findViewById(R.id.user_avatar_select);
             Uri uri = Uri.parse(avatarUrl);
             file = new File(getRealFilePath(this,uri));

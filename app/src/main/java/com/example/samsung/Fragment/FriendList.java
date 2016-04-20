@@ -37,7 +37,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class FriendList extends Fragment {
 
-    private String name,account,friendAccount,getUnsignedUrlString, agreeUrlString,askMessage,
+    private String name,account,friendAccount,friendName,getUnsignedUrlString, agreeUrlString,askMessage,
             disagreeUrlString,getLatestMessagesUrlString, sendMessageUrlString,countUrlString;
     static String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
     private int unsignedNumber,count;
@@ -91,8 +91,9 @@ public class FriendList extends Fragment {
                         Toast.makeText(getView().getContext(), "等待对方同意", Toast.LENGTH_SHORT).show();
                 } else {
                     friendAccount = judgeFriendAccount(friendBean);
+                    friendName = friendBean.getFriendName();
                     sharedPreferences = getActivity().getSharedPreferences("IDList", Activity.MODE_PRIVATE);
-                    ((Main)getActivity()).openChat(friendAccount,friendBean.getFriendPic());
+                    ((Main)getActivity()).openChat(friendAccount,friendBean.getFriendPic(),friendName,friendBean.getFriendPhone());
                     sharedPreferences.edit().remove(friendAccount).putInt(friendAccount, friendBean.getID()).commit();
                 }
             }
@@ -273,7 +274,6 @@ public class FriendList extends Fragment {
                 Gson gson = new Gson();
                 FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
                 friendBean.setSign(1);
-                friendBean.setMessage(friendBean.getSender() + ":" + friendJsonObject.getString("message"));
 //                friendAccount = judgeFriendAccount(friendBean);
 //                friendBean.setJudgeNew(false);
 //                int oldID = sharedPreferences.getInt(friendAccount, 0);

@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.handmark.pulltorefresh.library.PullToRefreshListView
-    android:id="@+id/ptr_community"
-    android:layout_height="match_parent"
-    android:layout_width="fill_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"/>
+<RelativeLayout android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:id="@+id/ptr_community"
+        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_below="@+id/btn_send_posting"
+        xmlns:android="http://schemas.android.com/apk/res/android"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send_posting"
+        android:id="@+id/btn_send_posting"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

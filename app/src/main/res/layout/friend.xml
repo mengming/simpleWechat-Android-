@@ -20,7 +20,7 @@
         android:layout_height="20sp"
         android:gravity="center"
         android:text="@string/message"
-        android:maxEms="10"
+        android:maxEms="15"
         android:singleLine="true"
         android:ellipsize="end"
         android:id="@+id/message"

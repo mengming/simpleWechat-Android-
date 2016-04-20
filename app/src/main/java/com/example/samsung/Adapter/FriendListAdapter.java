@@ -18,7 +18,7 @@ public class FriendListAdapter extends BaseAdapter {
     public ArrayList<FriendBean> friendBeans;
     private LayoutInflater mInflater;
     private Context context;
-    private String account,name,avatarUrl;
+    private String account,name,avatarUrl,message;
     private int sign;
 
     public FriendListAdapter(Context context,ArrayList<FriendBean> friendBeans,String account)
@@ -66,21 +66,22 @@ public class FriendListAdapter extends BaseAdapter {
         //如果为未添加好友
         if (sign==0) {
             if (friendBean.getFriendResponse().equals(account))
-                holder.messageText.setText("请求添加您为好友:" + friendBean.getMessage());
-            else holder.messageText.setText("等待对方同意您的请求");
+                message = "请求添加您为好友:" + friendBean.getMessage();
+            else message = "等待对方同意您的请求";
             name = friendBean.getFriendName();
             avatarUrl = friendBean.getFriendPic();
             if (avatarUrl != null) uri = Uri.parse(avatarUrl);
         }
         else {
-            if (friendBean.getReceiver().equals(account)) name = friendBean.getSender();
-            else name = friendBean.getReceiver();
-            holder.messageText.setText(friendBean.getMessage());
+            name = friendBean.getFriendName();
+            if (friendBean.getSender().equals(account)) message = "我:"+friendBean.getMessage();
+            else message = name + ":" + friendBean.getMessage();
             uri = Uri.parse(friendBean.getFriendPic());
             if (friendBean.getJudgeNew()) holder.newMessageText.setText("new");
             else holder.newMessageText.setText("");
         }
         holder.nameText.setText(name);
+        holder.messageText.setText(message);
         holder.timeText.setText(friendBean.getTime());
         holder.avatar.setImageURI(uri);
         return convertView;

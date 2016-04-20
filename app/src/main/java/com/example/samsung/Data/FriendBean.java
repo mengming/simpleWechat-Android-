@@ -94,7 +94,13 @@ public class FriendBean {
         this.friendPic = friendPic;
     }
 
+    public String getFriendPhone() {
+        return friendPhone;
+    }
 
+    public void setFriendPhone(String friendPhone) {
+        this.friendPhone = friendPhone;
+    }
 
     @Override
     public String toString() {

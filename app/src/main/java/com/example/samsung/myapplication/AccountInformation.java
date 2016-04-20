@@ -67,13 +67,13 @@ public class AccountInformation extends ActionBarActivity{
         CODE = intent.getIntExtra("statusCode", 0);
         if (CODE==other) {
             name = intent.getStringExtra("name");
-            btnAdd.setText("确认添加");
+            btnAdd.setText("添加");
             account = intent.getStringExtra("account");
             friendAccount = intent.getStringExtra("friendAccount");
             getFriendAccountInformation();
         }
         if (CODE==self) {
-            btnAdd.setText("修改个人资料");
+            btnAdd.setText("修改");
             account = intent.getStringExtra("account");
             getSelfAccountInformation();
         }
