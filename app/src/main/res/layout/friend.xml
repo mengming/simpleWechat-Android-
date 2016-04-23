@@ -6,27 +6,29 @@
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:gravity="center"
-        android:layout_height="30sp"
+        android:layout_height="20sp"
         android:text="@string/name"
         android:textStyle="bold"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_alignTop="@+id/pic"
         android:layout_toRightOf="@+id/pic"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="3sp"
         android:layout_toEndOf="@+id/pic" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="20sp"
         android:gravity="center"
         android:text="@string/message"
-        android:maxEms="15"
+        android:maxEms="12"
         android:singleLine="true"
         android:ellipsize="end"
         android:id="@+id/message"
-        android:textSize="15sp"
+        android:textSize="12sp"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="3sp"
         android:layout_below="@+id/name"
         android:layout_toRightOf="@+id/pic"
         android:layout_toEndOf="@+id/name" />
@@ -35,8 +37,9 @@
         android:layout_height="30sp"
         android:gravity="center"
         android:text="time"
-        android:textSize="15sp"
+        android:textSize="10sp"
         android:id="@+id/time"
+        android:layout_marginRight="10sp"
         android:layout_alignTop="@+id/name"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
@@ -45,7 +48,7 @@
         android:layout_width="46sp"
         android:layout_height="46sp"
         android:id="@+id/pic"
-        android:background="@drawable/chat_pic"
+        android:background="@drawable/default_avatar"
         android:gravity="center"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp" />
@@ -58,4 +61,5 @@
         android:layout_alignBottom="@+id/pic"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
 </RelativeLayout>

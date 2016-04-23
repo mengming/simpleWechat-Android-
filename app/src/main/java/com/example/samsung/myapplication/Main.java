@@ -131,12 +131,11 @@ public class Main extends ActionBarActivity {
     };
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         unbindService(connection);
         stopService(intent);
         EventBus.getDefault().unregister(friendFragment);
-        System.out.println("onDestroyF");
     }
 
     public ViewPager.OnPageChangeListener pageListener = new ViewPager.OnPageChangeListener() {
@@ -173,18 +172,24 @@ public class Main extends ActionBarActivity {
 
     private void btnChange(int index){
         btnChat.setEnabled(true);
+        btnChat.setBackgroundResource(R.drawable.chatview_unselect);
         btnFriend.setEnabled(true);
+        btnFriend.setBackgroundResource(R.drawable.friendlist_unselect);
         btnCommunity.setEnabled(true);
+        btnCommunity.setBackgroundResource(R.drawable.community_unselect);
         switch (index) {
             case FRIEND_LIST : btnFriend.setEnabled(false);
+                btnFriend.setBackgroundResource(R.drawable.friendlist);
                 tvFriendName.setVisibility(View.INVISIBLE);
                 phone.setVisibility(View.INVISIBLE);
                 break;
             case CHAT_VIEW : btnChat.setEnabled(false);
+                btnChat.setBackgroundResource(R.drawable.chatview);
                 tvFriendName.setVisibility(View.VISIBLE);
                 phone.setVisibility(View.VISIBLE);
                 break;
             case COMMUNITY : btnCommunity.setEnabled(false);
+                btnCommunity.setBackgroundResource(R.drawable.community);
                 tvFriendName.setVisibility(View.INVISIBLE);
                 phone.setVisibility(View.INVISIBLE);
                 break;
@@ -210,8 +215,8 @@ public class Main extends ActionBarActivity {
     private void initMenu() {
         listPopupWindow = new ListPopupWindow(this);
         listPopupWindow.setAdapter(new ArrayAdapter<String>(this, R.layout.popup_item, items));
-        listPopupWindow.setWidth(450);
-        listPopupWindow.setBackgroundDrawable(new ColorDrawable(0xFF191d8c));
+        listPopupWindow.setWidth(280);
+        listPopupWindow.setBackgroundDrawable(new ColorDrawable(0xFF2980b9));
         listPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -284,7 +289,7 @@ public class Main extends ActionBarActivity {
 
     private void initNotification(String friendAccount,String message){
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        int icon = R.drawable.chat_pic;
+        int icon = R.drawable.default_avatar;
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setSmallIcon(icon)
                 .setContentTitle(friendAccount)

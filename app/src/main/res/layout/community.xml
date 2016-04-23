@@ -7,16 +7,40 @@
         android:id="@+id/ptr_community"
         android:layout_height="match_parent"
         android:layout_width="fill_parent"
-        android:layout_below="@+id/btn_send_posting"
-        xmlns:android="http://schemas.android.com/apk/res/android"/>
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_below="@+id/community_bar" />
 
-    <Button
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/send_posting"
-        android:id="@+id/btn_send_posting"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:id="@+id/community_bar">
+
+        <Button
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:id="@+id/btn_send_text"
+            android:background="@drawable/posting_text"
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginTop="10sp"
+            android:layout_marginBottom="5sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:id="@+id/btn_send_picture"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginTop="10sp"
+            android:layout_marginBottom="5sp"
+            android:background="@drawable/posting_picture"
+            android:layout_toLeftOf="@+id/btn_send_text"
+            android:layout_toStartOf="@+id/btn_send_text" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

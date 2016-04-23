@@ -21,7 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Register" />
+        <activity android:name=".Register"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".Main" />
         <activity android:name=".AccountInformation" />
 

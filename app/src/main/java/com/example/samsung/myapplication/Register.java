@@ -16,8 +16,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,8 +37,7 @@ public class Register extends ActionBarActivity {
     static String baseUrl = "http://119.29.186.49/wechatInterface/index.php?",
         uploadPicUrl = "http://119.29.186.49/wechatInterface/lib/upload.func.php?identification=";
     private EditText rEtAccount,rEtPassword,rEtPasswordSure,rEtName,rEtSignature,rEtAge;
-    private RadioGroup radioGroup;
-    private RadioButton male,female;
+    private Button male,female;
     private Button btnSure,btnReturn,btnAvator,btnPullMore;
     private ScrollView scrollView;
     private int condition;
@@ -76,11 +73,12 @@ public class Register extends ActionBarActivity {
         rEtAge = (EditText) findViewById(R.id.r_et_age);
         rEtName = (EditText) findViewById(R.id.r_et_name);
         rEtSignature = (EditText) findViewById(R.id.r_et_signature);
-        radioGroup = (RadioGroup) findViewById(R.id.sexRadioGroup);
-        male = (RadioButton) findViewById(R.id.male);
-        female = (RadioButton) findViewById(R.id.female);
         btnPullMore = (Button) findViewById(R.id.btn_pull_more);
         btnPullMore.setOnClickListener(listener);
+        male = (Button) findViewById(R.id.btn_male);
+        female = (Button) findViewById(R.id.btn_female);
+        male.setOnClickListener(listener);
+        female.setOnClickListener(listener);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         scrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -90,7 +88,8 @@ public class Register extends ActionBarActivity {
                         int scrollY = v.getScrollY();
                         int height = v.getHeight();
                         int scrollViewMeasuredHeight = scrollView.getChildAt(0).getMeasuredHeight();
-                        if ((scrollY+height) == scrollViewMeasuredHeight) btnPullMore.setText("已到达底部");
+                        if ((scrollY + height) == scrollViewMeasuredHeight)
+                            btnPullMore.setText("已到达底部");
                         else btnPullMore.setText("下拉更多");
                         break;
                 }
@@ -99,13 +98,6 @@ public class Register extends ActionBarActivity {
         });
         TextView phoneText = (TextView) findViewById(R.id.r_t_phone);
         phoneText.append(Build.MODEL);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.male) rSex = "男";
-                if (checkedId == R.id.female) rSex = "女";
-            }
-        });
         btnSure = (Button) findViewById(R.id.b_sure);
         btnSure.setOnClickListener(listener);
         btnReturn = (Button) findViewById(R.id.b_return);
@@ -129,6 +121,14 @@ public class Register extends ActionBarActivity {
                         }
                     });
                     break;
+                case R.id.btn_male: rSex = "男";
+                    male.setBackgroundResource(R.drawable.avator_boy);
+                    female.setBackgroundResource(R.drawable.avator_girl_unselect);
+                    break;
+                case R.id.btn_female: rSex = "女";
+                    male.setBackgroundResource(R.drawable.avator_boy_unselect);
+                    female.setBackgroundResource(R.drawable.avator_girl);
+                    break;
                 case R.id.b_sure:
                     getAccountInformation();
                     condition = 0;
@@ -140,7 +140,6 @@ public class Register extends ActionBarActivity {
                     if (rName.length()==0) rName = rAccount;
                     if (rSignature.length()==0) rSignature = "无";
                     if (rAge.length()==0) rAge = "0";
-                    rPhone = Build.MODEL;
                     switch (condition) {
                         case 1:Toast.makeText(getApplicationContext(), "账号长度应在6~20之间", Toast.LENGTH_SHORT).show();break;
                         case 2:Toast.makeText(getApplicationContext(), "密码输入不一致", Toast.LENGTH_SHORT).show();break;
@@ -194,6 +193,7 @@ public class Register extends ActionBarActivity {
         rAge = rEtAge.getText().toString();
         rPassword = rEtPassword.getText().toString();
         rPasswordSure = rEtPasswordSure.getText().toString();
+        rPhone = Build.MODEL;
     }
 
     private String accountInformation(){
@@ -206,12 +206,8 @@ public class Register extends ActionBarActivity {
 
     //选择相片界面
     private void setAvatorSelect(){
-        Intent intent = new Intent();
-        /* 开启Pictures画面Type设定为image */
-        intent.setType("image/*");
-        /* 使用Intent.ACTION_GET_CONTENT这个Action */
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        /* 取得相片后返回本画面 */
+        Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(intent, 1);
     }
 
@@ -220,7 +216,8 @@ public class Register extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             avatarUrl = data.getDataString();
-            btnAvator.setVisibility(View.GONE);
+            System.out.println(avatarUrl);
+            btnAvator.setText("");
             SimpleDraweeView draweeView = (SimpleDraweeView) findViewById(R.id.user_avatar_select);
             Uri uri = Uri.parse(avatarUrl);
             file = new File(getRealFilePath(this,uri));

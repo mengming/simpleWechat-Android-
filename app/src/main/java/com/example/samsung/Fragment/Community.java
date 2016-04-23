@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.samsung.Adapter.CommunityAdapter;
 import com.example.samsung.Data.CommunityBean;
@@ -35,7 +36,7 @@ public class Community extends Fragment{
     private String getUrl,saveUrl;
     private ArrayList<CommunityBean> communityBeans,newCommunityBeans;
     private CommunityAdapter adapter;
-    private Button btnSend;
+    private Button btnSendText,btnSendPicture;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,20 +46,17 @@ public class Community extends Fragment{
     }
 
     private void initView(View view){
-        btnSend = (Button) view.findViewById(R.id.btn_send_posting);
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        btnSendText = (Button) view.findViewById(R.id.btn_send_text);
+        btnSendText.setOnClickListener(listener);
+        btnSendPicture = (Button) view.findViewById(R.id.btn_send_picture);
+        btnSendPicture.setOnClickListener(listener);
         communityBeans = new ArrayList<>();
         communityListView = (PullToRefreshListView) view.findViewById(R.id.ptr_community);
         adapter = new CommunityAdapter(getActivity(),communityBeans);
         communityListView.setMode(PullToRefreshBase.Mode.PULL_DOWN_TO_REFRESH);
         communityListView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
         communityListView.getRefreshableView().setDivider(new ColorDrawable(Color.GRAY));
-        communityListView.getRefreshableView().setDividerHeight(1);
+        communityListView.getRefreshableView().setDividerHeight(0);
         communityListView.setAdapter(adapter);
         communityListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
@@ -79,6 +77,20 @@ public class Community extends Fragment{
         });
         getPostings();
     }
+
+    private View.OnClickListener listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btn_send_picture :
+                    Toast.makeText(getActivity().getApplicationContext(),"图片",Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.btn_send_text :
+                    Toast.makeText(getActivity().getApplicationContext(),"文字",Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
 
     private void getPostings(){
         AsyncHttpClient asyncHttpClient = new AsyncHttpClient();

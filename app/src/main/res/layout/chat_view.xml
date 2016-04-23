@@ -8,8 +8,9 @@
         android:id="@+id/rl_bottom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#191d8c"
-        android:layout_alignParentBottom="true">
+        android:background="#2980b9"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5sp">
 
         <EditText
             android:id="@+id/et_sendmessage"
@@ -58,8 +59,9 @@
 
 
     <android:com.handmark.pulltorefresh.library.PullToRefreshListView
-        android:layout_above="@id/rl_bottom"
+        android:layout_above="@+id/rl_bottom"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/chat_list"/>
+
 </RelativeLayout>

@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.samsung.Data.FriendBean;
+import com.example.samsung.Data.JudgeTime;
 import com.example.samsung.myapplication.R;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -65,12 +66,15 @@ public class FriendListAdapter extends BaseAdapter {
         }
         //如果为未添加好友
         if (sign==0) {
-            if (friendBean.getFriendResponse().equals(account))
+            if (friendBean.getFriendResponse().equals(account)) {
                 message = "请求添加您为好友:" + friendBean.getMessage();
-            else message = "等待对方同意您的请求";
-            name = friendBean.getFriendName();
-            avatarUrl = friendBean.getFriendPic();
-            if (avatarUrl != null) uri = Uri.parse(avatarUrl);
+                name = friendBean.getFriendRequest();
+            }
+            else {
+                message = "等待对方同意您的请求";
+                name = friendBean.getFriendResponse();
+            }
+            uri = Uri.parse("res:///"+R.drawable.default_avatar);
         }
         else {
             name = friendBean.getFriendName();
@@ -82,7 +86,8 @@ public class FriendListAdapter extends BaseAdapter {
         }
         holder.nameText.setText(name);
         holder.messageText.setText(message);
-        holder.timeText.setText(friendBean.getTime());
+        JudgeTime judgeTime = new JudgeTime(friendBean.getTime(),0);
+        holder.timeText.setText(judgeTime.returnTime());
         holder.avatar.setImageURI(uri);
         return convertView;
     }

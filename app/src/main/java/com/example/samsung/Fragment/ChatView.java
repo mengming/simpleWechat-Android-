@@ -120,7 +120,6 @@ public class ChatView extends Fragment {
             public void onClick(View v) {
                 //send message to server
                 message = etMessage.getText().toString();
-                System.out.println(message);
                 sendMessageUrlString = baseUrl + "table=messageList&method=save&data=" + sendMessageData();
                 AsyncHttpClient sendMessageHttpClient = new AsyncHttpClient();
                 sendMessageHttpClient.get(sendMessageUrlString, new AsyncHttpResponseHandler() {

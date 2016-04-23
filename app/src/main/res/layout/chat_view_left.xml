@@ -7,11 +7,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/message"
+        android:textColor="#ffffff"
         android:background="@drawable/chattext"
         android:gravity="left"
         android:padding="10sp"
         android:id="@+id/chat_left_message"
-        android:layout_below="@+id/chat_left_time"
+        android:layout_marginLeft="5sp"
+        android:layout_marginRight="50sp"
+        android:layout_alignTop="@+id/chat_left_pic"
         android:layout_toRightOf="@+id/chat_left_pic"
         android:layout_toEndOf="@+id/chat_left_pic" />
 
@@ -19,20 +22,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:background="@android:color/darker_gray"
         android:text="@string/time"
         android:textSize="10sp"
+        android:layout_marginTop="5sp"
         android:id="@+id/chat_left_time"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:layout_width="46sp"
-        android:layout_height="46sp"
+        android:layout_width="38sp"
+        android:layout_height="38sp"
         android:id="@+id/chat_left_pic"
-        android:background="@drawable/chat_pic"
+        android:background="@drawable/default_avatar"
         android:gravity="center"
-        android:layout_alignBottom="@+id/chat_left_message"
+        android:layout_below="@+id/chat_left_time"
+        android:layout_marginTop="5sp"
+        android:layout_marginLeft="10sp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="10sp" />
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

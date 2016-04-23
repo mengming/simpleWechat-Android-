@@ -1,33 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/posting_name"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:background="#b4d9f1"
+        android:layout_marginRight="10sp"
+        android:layout_marginLeft="10sp"
+        android:layout_marginTop="5sp"
+        android:layout_marginBottom="5sp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/community_text_color"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:id="@+id/posting_name"
+            android:layout_marginTop="5sp"
+            android:layout_marginLeft="10sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/posting_message"
-        android:layout_below="@+id/posting_name"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/posting_message"
+            android:layout_below="@+id/posting_name"
+            android:layout_marginLeft="10sp"
+            android:layout_marginBottom="5sp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/posting_time"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/posting_time"
+            android:layout_marginRight="10sp"
+            android:layout_marginTop="5sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <!--<com.facebook.drawee.view.SimpleDraweeView-->
+        <!--android:layout_width="46sp"-->
+        <!--android:layout_height="46sp"-->
+        <!--android:id="@+id/posting_pic"-->
+        <!--android:background="@color/buttonColor"-->
+        <!--android:layout_below="@+id/posting_message"-->
+        <!--android:layout_marginLeft="5sp"-->
+        <!--android:layout_marginTop="5sp"/>-->
+
+    </RelativeLayout>
+
 </RelativeLayout>

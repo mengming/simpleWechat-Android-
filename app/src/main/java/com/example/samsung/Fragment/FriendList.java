@@ -45,8 +45,6 @@ public class FriendList extends Fragment {
     private ArrayList<FriendBean> friendBeans,newFriendBeans;
     private FriendListAdapter friendListAdapter;
     private SharedPreferences sharedPreferences;
-    private Fragment newChat;
-    private JSONArray unsign,latest;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

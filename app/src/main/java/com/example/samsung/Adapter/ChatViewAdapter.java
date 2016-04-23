@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.samsung.Data.JudgeTime;
 import com.example.samsung.Data.MessageBean;
 import com.example.samsung.myapplication.R;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -18,7 +19,7 @@ public class ChatViewAdapter  extends BaseAdapter{
 
     private LayoutInflater mInflater;
     private MessageBean messageBean;
-    private String account,friendAccount,time,day,times[],selfAvatar,friendAvatar;
+    private String account,friendAccount,selfAvatar,friendAvatar,time;
     public ArrayList<MessageBean> messageBeans;
     private Uri uri;
 
@@ -52,7 +53,6 @@ public class ChatViewAdapter  extends BaseAdapter{
         ViewHolder holder1 = null;
         ViewHolder holder2 = null;
         messageBean = messageBeans.get(position);
-        times = messageBean.getTime().split(" ");
         //if sender is self then otherOrSelf is true,else is false;
         Boolean otherOrSelf = false;
         if (messageBean.getSender().equals(account)) otherOrSelf = true;
@@ -70,15 +70,23 @@ public class ChatViewAdapter  extends BaseAdapter{
             holder2.timeText = (TextView) convertView.findViewById(R.id.chat_left_time);
             holder2.simpleDraweeView = (SimpleDraweeView) convertView.findViewById(R.id.chat_left_pic);
         }
+        if (position != 0) {
+            JudgeTime judgeTime = new JudgeTime(messageBean.getTime(),1);
+            judgeTime.setLastTime(messageBeans.get(position-1).getTime());
+            time = judgeTime.returnTime();
+        }
+        else time = messageBeans.get(position).getTime();
         if (otherOrSelf) {
             holder1.messageText.setText(messageBean.getMessage());
-            holder1.timeText.setText(time);
+            if (time != null) holder1.timeText.setText(time);
+            else holder1.timeText.setVisibility(View.GONE);
             if (selfAvatar!=null) uri = Uri.parse(selfAvatar);
             holder1.simpleDraweeView.setImageURI(uri);
         }
         else {
             holder2.messageText.setText(messageBean.getMessage());
-            holder2.timeText.setText(time);
+            if (time != null) holder2.timeText.setText(time);
+            else holder2.timeText.setVisibility(View.GONE);
             if (friendAvatar!=null) uri = Uri.parse(friendAvatar);
             holder2.simpleDraweeView.setImageURI(uri);
         }
