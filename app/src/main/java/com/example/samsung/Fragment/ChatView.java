@@ -53,6 +53,7 @@ public class ChatView extends Fragment {
         View view = inflater.inflate(R.layout.chat_view, container, false);
         initView(view);
         initChatView(view);
+        System.out.println("logonCreateView");
         return view;
     }
 
@@ -71,11 +72,6 @@ public class ChatView extends Fragment {
     public void onEventMainThread(ChatViewEvent event){
         newMessageBeans = event.messageBeans;
         handler.sendMessage(new Message());
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     private void timerTask() {
@@ -103,6 +99,7 @@ public class ChatView extends Fragment {
         super.onResume();
     }
 
+
     @Override
     public void onStop() {
         if (condition != CREATE) {
@@ -115,6 +112,7 @@ public class ChatView extends Fragment {
     private void initView(View view) {
         etMessage =  (EditText) view.findViewById(R.id.et_sendmessage);
         btnSend = (Button) view.findViewById(R.id.btn_send);
+        System.out.println("loginitView");
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,6 +145,7 @@ public class ChatView extends Fragment {
 
     private void initChatView(View view){
         Bundle bundle = getArguments();
+        System.out.println("loginitChatView");
         condition = bundle.getInt("condition");
         if (condition != CREATE) {
             account = bundle.getString("account");
@@ -157,12 +156,20 @@ public class ChatView extends Fragment {
             friendName = bundle.getString("friendName");
             friendPhone = bundle.getString("friendPhone");
         }
+        System.out.println("log"+account+"\n"+friendAccount);
         messageBeans = new ArrayList<>();
         chatViewAdapter = new ChatViewAdapter(getActivity(),messageBeans,account,friendAccount,avatar,friendAvatar);
         chatListView = (PullToRefreshListView) view.findViewById(R.id.chat_list);
         chatListView.getRefreshableView().setDivider(null);
         chatListView.setMode(PullToRefreshBase.Mode.BOTH);
-        chatListView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
+        chatListView.getLoadingLayoutProxy(true, false).setLastUpdatedLabel("下拉加载更多记录");
+        chatListView.getLoadingLayoutProxy(true, false).setPullLabel("下拉加载");
+        chatListView.getLoadingLayoutProxy(true, false).setRefreshingLabel("正在加载...");
+        chatListView.getLoadingLayoutProxy(true, false).setReleaseLabel("放开以加载");
+        chatListView.getLoadingLayoutProxy(false, true).setLastUpdatedLabel("上拉刷新最新消息");
+        chatListView.getLoadingLayoutProxy(false, true).setPullLabel("上拉刷新");
+        chatListView.getLoadingLayoutProxy(false, true).setRefreshingLabel("正在刷新...");
+        chatListView.getLoadingLayoutProxy(false, true).setReleaseLabel("放开以刷新");
         chatListView.setAdapter(chatViewAdapter);
         chatListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override

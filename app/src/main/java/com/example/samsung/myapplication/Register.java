@@ -56,7 +56,7 @@ public class Register extends ActionBarActivity {
         for (Account account:accounts) {
             if (account.type.equals("com.osp.app.signin")) {
                 rAccount = account.name;
-                rEtAccount.setVisibility(View.GONE);
+                rEtAccount.setVisibility(View.INVISIBLE);
                 TextView defaultAccount = (TextView) findViewById(R.id.tv_account_default);
                 defaultAccount.setText(rAccount);
             }

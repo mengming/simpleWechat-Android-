@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">简易微信</string>
+    <string name="app_name">星讯</string>
 
     <string name="identification">账号</string>
     <string name="password">密码</string>
@@ -31,4 +31,10 @@
     <string name="community">社区动态</string>
     <string name="pull_more">下拉更多</string>
     <string name="send_posting">发帖</string>
+    <string name="remind_account">请输入6~20位的账号</string>
+    <string name="remind_password">请输入6~20位的密码</string>
+    <string name="remind_password_sure">请确认您的输入密码</string>
+    <string name="remind_name">请输入昵称</string>
+    <string name="remind_signature">请输入个性签名</string>
+    <string name="remind_age">请输入年龄</string>
 </resources>

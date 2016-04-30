@@ -80,14 +80,14 @@ public class ChatViewAdapter  extends BaseAdapter{
             holder1.messageText.setText(messageBean.getMessage());
             if (time != null) holder1.timeText.setText(time);
             else holder1.timeText.setVisibility(View.GONE);
-            if (selfAvatar!=null) uri = Uri.parse(selfAvatar);
+            if (selfAvatar != null) uri = Uri.parse(selfAvatar);
             holder1.simpleDraweeView.setImageURI(uri);
         }
         else {
             holder2.messageText.setText(messageBean.getMessage());
             if (time != null) holder2.timeText.setText(time);
             else holder2.timeText.setVisibility(View.GONE);
-            if (friendAvatar!=null) uri = Uri.parse(friendAvatar);
+            if (friendAvatar != null) uri = Uri.parse(friendAvatar);
             holder2.simpleDraweeView.setImageURI(uri);
         }
         return convertView;

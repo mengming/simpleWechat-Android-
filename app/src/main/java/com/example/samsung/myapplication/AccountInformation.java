@@ -36,7 +36,7 @@ public class AccountInformation extends ActionBarActivity{
     private int CODE,age;
     private SimpleDraweeView draweeView;
     private Button btnAdd,btnBack;
-    static String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
+    private String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

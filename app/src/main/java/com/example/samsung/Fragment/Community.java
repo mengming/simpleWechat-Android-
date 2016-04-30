@@ -1,7 +1,6 @@
 package com.example.samsung.Fragment;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.samsung.Adapter.CommunityAdapter;
 import com.example.samsung.Data.CommunityBean;
+import com.example.samsung.myapplication.Posting;
 import com.example.samsung.myapplication.R;
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -32,8 +32,8 @@ import cz.msebera.android.httpclient.Header;
 public class Community extends Fragment{
 
     private PullToRefreshListView communityListView;
-    static String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
-    private String getUrl,saveUrl;
+    private String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
+    private String getUrl;
     private ArrayList<CommunityBean> communityBeans,newCommunityBeans;
     private CommunityAdapter adapter;
     private Button btnSendText,btnSendPicture;
@@ -55,7 +55,6 @@ public class Community extends Fragment{
         adapter = new CommunityAdapter(getActivity(),communityBeans);
         communityListView.setMode(PullToRefreshBase.Mode.PULL_DOWN_TO_REFRESH);
         communityListView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
-        communityListView.getRefreshableView().setDivider(new ColorDrawable(Color.GRAY));
         communityListView.getRefreshableView().setDividerHeight(0);
         communityListView.setAdapter(adapter);
         communityListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
@@ -86,11 +85,12 @@ public class Community extends Fragment{
                     Toast.makeText(getActivity().getApplicationContext(),"图片",Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.btn_send_text :
-                    Toast.makeText(getActivity().getApplicationContext(),"文字",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getActivity(), Posting.class));
                     break;
             }
         }
     };
+
 
     private void getPostings(){
         AsyncHttpClient asyncHttpClient = new AsyncHttpClient();

@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "C:\\Android\\simpleWechat-Android-\\pull_to_refresh_library\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\default_ptr_flip.png",
+        "source": "C:\\Android\\simpleWechat-Android-\\pull_to_refresh_library\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\default_ptr_flip.png"
+    },
+    {
+        "merged": "C:\\Android\\simpleWechat-Android-\\pull_to_refresh_library\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\indicator_arrow.png",
+        "source": "C:\\Android\\simpleWechat-Android-\\pull_to_refresh_library\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\indicator_arrow.png"
+    },
+    {
+        "merged": "C:\\Android\\simpleWechat-Android-\\pull_to_refresh_library\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\default_ptr_rotate.png",
+        "source": "C:\\Android\\simpleWechat-Android-\\pull_to_refresh_library\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\default_ptr_rotate.png"
+    }
+]

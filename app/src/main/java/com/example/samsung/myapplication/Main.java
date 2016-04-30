@@ -41,7 +41,7 @@ import de.greenrobot.event.EventBus;
 
 public class Main extends ActionBarActivity {
 
-    final static int FRIEND_LIST = 0, COMMUNITY = 2, CHAT_VIEW = 1;
+    final private int FRIEND_LIST = 0, COMMUNITY = 2, CHAT_VIEW = 1;
     private Button btnFriend,btnChat,btnMenu,btnCommunity;
     private String account,friendAccount,name,selfAvatar;
     private String items[] = {"添加好友","个人资料","退出登录"};
@@ -55,6 +55,7 @@ public class Main extends ActionBarActivity {
     private Fragment friendFragment,chatFragment,communityFragment;
     private ListPopupWindow listPopupWindow;
     private int chatViewCondition = 0,nowFragment = 0;
+    private boolean isBound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,7 @@ public class Main extends ActionBarActivity {
         intent = new Intent(this,FriendListService.class);
         intent.putExtra("account", account);
         startService(intent);
-        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        isBound = bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
     private void initView() {
@@ -95,7 +96,7 @@ public class Main extends ActionBarActivity {
         fragments.add(friendFragment);
         chatFragment = new ChatView();
         Bundle chatBundle = new Bundle();
-        chatBundle.putInt("condition", 0);
+        chatBundle.putInt("condition", 1);
         chatFragment.setArguments(chatBundle);
         fragments.add(chatFragment);
         communityFragment = new Community();
@@ -133,7 +134,10 @@ public class Main extends ActionBarActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        unbindService(connection);
+        if (isBound) {
+            unbindService(connection);
+            isBound = false;
+        }
         stopService(intent);
         EventBus.getDefault().unregister(friendFragment);
     }

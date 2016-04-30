@@ -47,7 +47,7 @@ public class JudgeTime {
                 lastMessageTimes[3+i] = Integer.valueOf(second[i]);
             }
             int i = 0;
-            while (lastMessageTimes[i] == messageTimes[i]) i++;
+            while (i < 5 && lastMessageTimes[i] == messageTimes[i]) i++;
             if (i == 0) return messageTime;
             else if (i < 3) return addZero(messageTimes[1]) + "-" + addZero(messageTimes[2]);
             else if (i < 4) return addZero(messageTimes[3]) + ":" + addZero(messageTimes[4]);
@@ -65,7 +65,7 @@ public class JudgeTime {
     }
 
     private String addZero(int a){
-        if (a <= 0) return "ERROR";
+        if (a < 0) return "ERROR";
         else if (a < 10) return "0"+a;
         else return Integer.toString(a);
     }

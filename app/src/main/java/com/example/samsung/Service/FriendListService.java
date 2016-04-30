@@ -16,7 +16,7 @@ import de.greenrobot.event.EventBus;
 
 public class FriendListService extends Service {
 
-    static String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
+    private String baseUrl = "http://119.29.186.49/wechatInterface/index.php?";
     private String account;
     private String getLatestMessagesUrlString,getUnsignedUrlString;
     private JSONArray unsignedArray,latestMessagesArray;
