@@ -2,9 +2,6 @@ package com.example.samsung.myapplication;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,7 +14,6 @@ import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
@@ -62,6 +58,11 @@ public class Main extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         Fresco.initialize(this);
         setContentView(R.layout.main);
+
+//        GridView gridView = (GridView) findViewById(R.id.gridview);
+//        String[] data = {"1","2","3"};
+//        gridView.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,data));
+
 
         getExtra();
         initView();
@@ -291,27 +292,4 @@ public class Main extends ActionBarActivity {
         finish();
     }
 
-    private void initNotification(String friendAccount,String message){
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        int icon = R.drawable.default_avatar;
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setSmallIcon(icon)
-                .setContentTitle(friendAccount)
-                .setTicker(message)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setDefaults(Notification.FLAG_AUTO_CANCEL)
-                .setContentIntent(getDefalutIntent(friendAccount))
-                .setContentText(message)
-                .setWhen(System.currentTimeMillis())
-                .setAutoCancel(true);
-        notificationManager.notify(1, builder.build());
-    }
-
-    public PendingIntent getDefalutIntent(String friendAccount){
-        Intent notificationIntent = new Intent(this,ChatView.class);
-        notificationIntent.putExtra("account",account);
-        notificationIntent.putExtra("friendAccount", friendAccount);
-        PendingIntent pendingIntent= PendingIntent.getActivity(this, 1, notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-        return pendingIntent;
-    }
 }

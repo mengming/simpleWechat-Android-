@@ -1,13 +1,21 @@
 package com.example.samsung.Fragment;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -272,7 +281,14 @@ public class FriendList extends Fragment {
                 Gson gson = new Gson();
                 FriendBean friendBean = gson.fromJson(friendJsonObject.toString(), FriendBean.class);
                 friendBean.setSign(1);
-//                friendAccount = judgeFriendAccount(friendBean);
+                friendAccount = judgeFriendAccount(friendBean);
+                int gotID = sharedPreferences.getInt(friendAccount+"got",0);
+                int ID = friendBean.getID();
+                if (gotID != ID) {
+                    if (isBackground(getActivity())) initNotification(friendBean.getFriendName(),friendBean.getMessage());
+                    gotID = ID;
+                    editor.remove(friendAccount+"got").putInt(friendAccount+"got",ID);
+                }
 //                friendBean.setJudgeNew(false);
 //                int oldID = sharedPreferences.getInt(friendAccount, 0);
 //                int newID = sharedPreferences.getInt(friendAccount+"newID",0);
@@ -319,4 +335,45 @@ public class FriendList extends Fragment {
         return result;
     }
 
+    private void initNotification(String friendName,String message){
+        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Main.NOTIFICATION_SERVICE);
+        int icon = R.drawable.default_avatar;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity());
+        builder.setSmallIcon(icon)
+                .setContentTitle(friendName)
+                .setTicker(message)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setDefaults(Notification.FLAG_AUTO_CANCEL)
+                .setContentIntent(getDefalutIntent(friendName))
+                .setContentText(message)
+                .setWhen(System.currentTimeMillis())
+                .setAutoCancel(true);
+        notificationManager.notify(1, builder.build());
+    }
+
+    public PendingIntent getDefalutIntent(String friendAccount){
+        Intent notificationIntent = new Intent(getActivity(),Main.class);
+        notificationIntent.putExtra("account",account);
+        notificationIntent.putExtra("friendAccount", friendAccount);
+        PendingIntent pendingIntent= PendingIntent.getActivity(getActivity(), 1, notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        return pendingIntent;
+    }
+
+
+    public static boolean isBackground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.processName.equals(context.getPackageName())) {
+                if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND) {
+                    Log.i("后台", appProcess.processName);
+                    return true;
+                }else{
+                    Log.i("前台", appProcess.processName);
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
 }
